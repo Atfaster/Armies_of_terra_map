@@ -95,7 +95,7 @@ for factor in PREVIEW_FACTORS:
     preview = canvas.resize((out_w, out_h), Image.Resampling.LANCZOS)
 
     # ВАЖНО: белый фон
-    rgb = Image.new("RGB", preview.size, (255, 255, 255))
+    rgb = Image.new("RGB", preview.size, (221, 221, 221))
     rgb.paste(preview, mask=preview.getchannel("A"))
 
     out_file = PREVIEWS_DIR / f"overview_{factor}x.jpg"
