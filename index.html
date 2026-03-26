@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Minecraft World Map</title>
+
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+
+  <style>
+    html, body, #map {
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+      background: #111;
+    }
+
+    .coord-box, .status-box {
+      background: rgba(0, 0, 0, 0.75);
+      color: #fff;
+      padding: 6px 10px;
+      font: 14px/1.2 Arial, sans-serif;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+
+  <script>
+    const TILE_SIZE = 512;
+
+    // Пороги переключения слоёв
+    const ZOOM_OVERVIEW_16 = -6; // самый дальний
+    const ZOOM_OVERVIEW_8  = -4;
+    const ZOOM_OVERVIEW_4  = -2;
+    const ZOOM_DETAILS     = 0;  // детальные тайлы с этого зума и выше
+
+    const map = L.map('map', {
+      crs: L.CRS.Simple,
+      minZoom: -6,
+      maxZoom: 4,
+      zoomSnap: 0.25
+    });
+
+    function gameToLatLng(x, y) {
+      return L.latLng(-y, x);
+    }
+
+    function latLngToGame(latlng) {
+      return {
+        x: Math.round(latlng.lng),
+        y: Math.round(-latlng.lat)
+      };
+    }
+
+    const CoordControl = L.Control.extend({
+      onAdd: function() {
+        this._div = L.DomUtil.create('div', 'coord-box');
+        this._div.innerHTML = 'X: -, Y: -';
+        return this._div;
+      },
+      update: function(latlng) {
+        if (!latlng) return;
+        const p = latLngToGame(latlng);
+        this._div.innerHTML = `X: ${p.x}, Y: ${p.y}`;
+      }
+    });
+
+    const StatusControl = L.Control.extend({
+      onAdd: function() {
+        this._div = L.DomUtil.create('div', 'status-box');
+        this._div.innerHTML = 'Загрузка...';
+        return this._div;
+      },
+      setText: function(text) {
+        this._div.innerHTML = text;
+      }
+    });
+
+    const coordControl = new CoordControl({ position: 'bottomleft' });
+    coordControl.addTo(map);
+
+    const statusControl = new StatusControl({ position: 'topright' });
+    statusControl.addTo(map);
+
+    map.on('mousemove', function(e) {
+      coordControl.update(e.latlng);
+    });
+
+    function getTileBounds(tileX, tileY) {
+      const x1 = tileX * TILE_SIZE;
+      const y1 = tileY * TILE_SIZE;
+      const x2 = x1 + TILE_SIZE;
+      const y2 = y1 + TILE_SIZE;
+
+      return L.latLngBounds(
+        gameToLatLng(x1, y2), // SW
+        gameToLatLng(x2, y1)  // NE
+      );
+    }
+
+    // Группы слоёв
+    const overview16Group = L.layerGroup();
+    const overview8Group  = L.layerGroup();
+    const overview4Group  = L.layerGroup();
+    const detailsGroup    = L.layerGroup();
+
+    let detailsLoaded = false;
+
+    function showOnly(groupToShow) {
+      const groups = [overview16Group, overview8Group, overview4Group, detailsGroup];
+
+      for (const g of groups) {
+        if (g === groupToShow) {
+          if (!map.hasLayer(g)) g.addTo(map);
+        } else {
+          if (map.hasLayer(g)) map.removeLayer(g);
+        }
+      }
+    }
+
+    function updateZoomLayers() {
+      const z = map.getZoom();
+
+      if (z < ZOOM_OVERVIEW_8) {
+        showOnly(overview16Group);
+        statusControl.setText(`Zoom ${z}: overview 16x`);
+      } else if (z < ZOOM_OVERVIEW_4) {
+        showOnly(overview8Group);
+        statusControl.setText(`Zoom ${z}: overview 8x`);
+      } else if (z < ZOOM_DETAILS) {
+        showOnly(overview4Group);
+        statusControl.setText(`Zoom ${z}: overview 4x`);
+      } else {
+        showOnly(detailsGroup);
+        statusControl.setText(`Zoom ${z}: detailed tiles`);
+      }
+    }
+
+    async function loadMap() {
+      // Загружаем метаданные overview
+      const metaResp = await fetch('previews/overview_meta.json');
+      if (!metaResp.ok) {
+        throw new Error(`Не удалось загрузить previews/overview_meta.json: ${metaResp.status}`);
+      }
+      const meta = await metaResp.json();
+
+      const fullBounds = L.latLngBounds(
+        gameToLatLng(meta.min_x, meta.max_y), // SW
+        gameToLatLng(meta.max_x, meta.min_y)  // NE
+      );
+
+      // Загружаем overview-картинки
+      L.imageOverlay('previews/overview_16x.jpg', fullBounds).addTo(overview16Group);
+      L.imageOverlay('previews/overview_8x.jpg',  fullBounds).addTo(overview8Group);
+      L.imageOverlay('previews/overview_4x.jpg',  fullBounds).addTo(overview4Group);
+
+      // Загружаем список детальных тайлов
+      const tilesResp = await fetch('tiles.json');
+      if (!tilesResp.ok) {
+        throw new Error(`Не удалось загрузить tiles.json: ${tilesResp.status}`);
+      }
+      const tiles = await tilesResp.json();
+
+      for (const tile of tiles) {
+        const bounds = getTileBounds(tile.x, tile.y);
+        L.imageOverlay(tile.file, bounds).addTo(detailsGroup);
+      }
+
+      detailsLoaded = true;
+
+      map.fitBounds(fullBounds);
+      updateZoomLayers();
+
+      statusControl.setText(`Готово. Тайлов: ${tiles.length}`);
+    }
+
+    map.on('zoomend', updateZoomLayers);
+
+    loadMap().catch(err => {
+      console.error(err);
+      statusControl.setText(`Ошибка: ${err.message}`);
+      alert(err.message);
+    });
+  </script>
+</body>
+</html>
