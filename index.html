@@ -119,8 +119,6 @@
     const overview4Group  = L.layerGroup();
     const detailsGroup    = L.layerGroup();
 
-    let detailsLoaded = false;
-
     function showOnly(groupToShow) {
       const groups = [overview16Group, overview8Group, overview4Group, detailsGroup];
 
@@ -180,8 +178,6 @@
         const bounds = getTileBounds(tile.x, tile.y);
         L.imageOverlay(tile.file, bounds).addTo(detailsGroup);
       }
-
-      detailsLoaded = true;
 
       map.fitBounds(fullBounds);
       updateZoomLayers();

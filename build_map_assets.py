@@ -3,7 +3,7 @@ import re
 from pathlib import Path
 from PIL import Image
 
-ROOT = Path(r"C:\Users\atfas\Drive\Games\Minecraft\Armies of Terra\WorldMap\leaflet_map")
+ROOT = Path(__file__).resolve().parent
 TILES_DIR = ROOT / "tiles"
 PREVIEWS_DIR = ROOT / "previews"
 
@@ -12,7 +12,7 @@ TILES_JSON = ROOT / "tiles.json"
 TILE_SIZE = 512
 PREVIEW_FACTORS = [4, 8, 16]
 
-PREVIEWS_DIR.mkdir(exist_ok=True)
+PREVIEWS_DIR.mkdir(parents=True, exist_ok=True)
 
 pattern = re.compile(r"^(-?\d+),(-?\d+)\.png$", re.IGNORECASE)
 
