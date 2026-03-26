@@ -1,15 +1,18 @@
-# Feature Spec: Cities, Outposts, POI and Roads
+# Feature Spec: Historical City Markers
 
 ## Overview
 
-This project will add vector layers on top of the existing raster Leaflet map:
+This project renders city markers on top of the raster Leaflet map and supports historical playback.
 
-- cities with hierarchy and nation affiliation
-- outposts bound to cities
-- points of interest (POI)
-- roads with multiple surface types
+Core requirements:
 
-All vector data uses the Minecraft coordinate system:
+- city markers are loaded from static JSON
+- each city can have multiple historical states
+- the map shows the state active for the selected timeline date
+- ruined or unclaimed cities are not deleted from data
+- ruined cities can be hidden with a dedicated filter
+
+All vector data uses Minecraft coordinates:
 
 ```text
 X -> right
@@ -17,130 +20,156 @@ Y -> down
 (0,0) -> top-left
 ```
 
-## Data model
+For imported JourneyMap waypoints:
 
-### Nations
+- source `x` maps to map `x`
+- source `z` maps to map `y`
+- source `y` is treated as elevation only and is not used for marker placement
 
-```json
-{
-  "id": "nation_red",
-  "name": "Red Empire",
-  "color": "#e53935"
-}
+## Storage
+
+City runtime data is stored in a single static bundle:
+
+```text
+data/
+  cities.json
 ```
 
-Rules:
+This bundle contains:
 
-- each nation has a unique `color`
-- nation color is reused by cities and outposts
+- timeline metadata
+- nations used by city states
+- city definitions with state history
 
-### Cities
+Other vector layers may continue to use separate files later.
 
-```json
-{
-  "id": "city_1",
-  "name": "Aldburg",
-  "type": "capital",
-  "x": 1234,
-  "y": 5678,
-  "nation_id": "nation_red"
-}
-```
-
-Allowed city types:
-
-- `capital`
-- `city`
-- `free`
-
-Rules:
-
-- `nation_id` may be `null` for a free city
-- free cities must render in gray
-
-### Outposts
+## Runtime JSON model
 
 ```json
 {
-  "id": "outpost_1",
-  "name": "North Watch",
-  "x": 1300,
-  "y": 5800,
-  "city_id": "city_1"
-}
-```
-
-Rules:
-
-- each outpost must belong to an existing city
-- deleting a city must also delete its outposts
-- outpost color is derived from the parent city
-
-### POI
-
-```json
-{
-  "id": "poi_1",
-  "name": "Ancient Ruins",
-  "x": 9000,
-  "y": 12000,
-  "type": "ruins"
-}
-```
-
-Rules:
-
-- POI is independent from cities and nations
-- custom icon system can be added later
-
-### Roads
-
-```json
-{
-  "id": "road_1",
-  "type": "cobble",
-  "points": [
-    [100, 200],
-    [300, 400],
-    [800, 900]
+  "schema_version": 1,
+  "generated_at": "2026-03-26T23:16:02+00:00",
+  "timeline": {
+    "dates": ["2026-03-25", "2026-04-01"],
+    "default_date": "2026-04-01"
+  },
+  "nations": [
+    {
+      "id": "avernia",
+      "name": "Avernia",
+      "color": "#d46f35"
+    }
+  ],
+  "cities": [
+    {
+      "id": "nova-roma",
+      "name": "Nova Roma",
+      "kind": "city",
+      "x": 6064,
+      "y": -103,
+      "states": [
+        {
+          "from": "2026-03-25",
+          "to": "2026-04-01",
+          "status": "active",
+          "nation_id": "avernia",
+          "label": "Nova Roma",
+          "tags": [],
+          "source": {
+            "type": "journeymap-waypoint",
+            "file": "town-Nova_Roma-nation-Avernia_6064-78-103.json",
+            "waypoint_id": "town-Nova_Roma-nation-Avernia_6064-78-103"
+          }
+        },
+        {
+          "from": "2026-04-01",
+          "to": null,
+          "status": "ruins",
+          "nation_id": null,
+          "label": "Nova Roma",
+          "tags": ["bankrupt"]
+        }
+      ]
+    }
   ]
 }
 ```
 
-Allowed road types:
+## Data model rules
 
-- `trail`
-- `gravel`
-- `cobble`
-- `concrete`
+### Nations
+
+- `id` must be unique
+- `color` must be unique in practice for readability
+- nation color is used by active city markers
+
+### Cities
+
+- `id` must be unique
+- `x` and `y` must stay in map coordinates
+- `kind` is reserved for future marker classes, currently `city`
+- a city object persists even after destruction or loss of claim
+
+### City states
+
+Allowed `status` values:
+
+- `active`
+- `ruins`
+
+Rules:
+
+- state intervals use `from <= date < to`
+- `to: null` means the state is active until replaced
+- states for one city must not overlap
+- `nation_id` may be `null`
+- ruined or unclaimed cities must use `status: "ruins"` instead of being removed
+- `label` may change over time
+- `tags` are optional annotations such as `shop`, `bankrupt`, `unclaimed`
 
 ## Visual rules
 
-### City markers
+### Active cities
 
-- `capital`: star, large, nation color
-- `city`: circle, medium, nation color
-- `free`: circle, gray `#9e9e9e`
+- marker shape: circle
+- marker color: nation color if `nation_id` exists
+- free city fallback color: `#9e9e9e`
 
-### Outposts
+### Ruins
 
-- small circle or square
-- color inherited from parent city
-- smaller than city markers
+- marker shape: distinct ruined marker
+- marker color: muted gray
+- must remain available in popups and timeline playback
+- must be hideable through a UI filter without removing data
 
-### POI
+### Labels
 
-- custom icons in a future step
-- no nation color dependency
+- labels are always rendered next to visible city markers
+- label text comes from active `state.label`
 
-### Roads
+## Timeline behavior
 
-| Type | Color | Width |
-| --- | --- | --- |
-| `trail` | `#8d6e63` | `2` |
-| `gravel` | `#9e9e9e` | `3` |
-| `cobble` | `#616161` | `4` |
-| `concrete` | `#212121` | `5` |
+- the horizontal timeline selects a single active date
+- all visible markers are recalculated for that date
+- if a city has no active state for the selected date, it is not rendered
+- `timeline.dates` provides slider stops
+- if omitted, slider stops may be derived from all `from` and `to` boundaries
+
+## Import from JourneyMap
+
+Source directory:
+
+```text
+C:\Users\atfas\curseforge\minecraft\Instances\Armies of Terra\journeymap\data\mp\Armies~of~Terra\waypoints
+```
+
+Import rules:
+
+- read all files matching `town*.json`
+- parse coordinates from waypoint JSON
+- parse city name, nation, and special markers from waypoint filename
+- map prefixes like `ruin`, `bankrupt`, or unclaimed-city names to `status: "ruins"`
+- keep source file metadata in each imported state
 
 ## Rendering notes
 
@@ -152,52 +181,16 @@ function gameToLatLng(x, y) {
 }
 ```
 
-Recommended Leaflet layer structure:
+Recommended client seams:
 
-```js
-const layers = {
-  cities: L.layerGroup(),
-  outposts: L.layerGroup(),
-  poi: L.layerGroup(),
-  roads: L.layerGroup()
-};
-```
-
-Recommended layer control:
-
-```js
-L.control.layers(null, {
-  "Cities": layers.cities,
-  "Outposts": layers.outposts,
-  "POI": layers.poi,
-  "Roads": layers.roads
-});
-```
-
-## Data consistency constraints
-
-- no outpost without city
-- city may exist without nation
-- referenced nation must exist and contain a color
-- all data must stay compatible with static hosting
-
-## Storage
-
-Initial storage format:
-
-```text
-data/
-  nations.json
-  cities.json
-  outposts.json
-  poi.json
-  roads.json
-```
+- `loadCities()`
+- `validateCityDataset()`
+- `resolveCityState()`
+- `renderCities()`
+- `setActiveDateByIndex()`
 
 ## Next implementation tasks
 
-1. render cities and outposts
-2. implement nation to city to outpost color propagation
-3. add layer toggling
-4. render roads
-5. prepare hooks for editing
+1. Allow manual editing of additional historical states.
+2. Add a small legend for nation colors and ruin markers.
+3. Extend the same time model to outposts and POI if needed.

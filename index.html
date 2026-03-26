@@ -13,6 +13,16 @@
   />
 
   <style>
+    :root {
+      --panel-bg: rgba(12, 16, 22, 0.86);
+      --panel-border: rgba(255, 255, 255, 0.18);
+      --panel-text: #f3f4f6;
+      --muted-text: #cbd5e1;
+      --free-city-color: #9e9e9e;
+      --ruins-color: #6b7280;
+      --accent-color: #d9c27a;
+    }
+
     html, body, #map {
       height: 100%;
       margin: 0;
@@ -20,19 +30,205 @@
 
     body {
       background: #111;
+      color: var(--panel-text);
+      font: 14px/1.4 "Segoe UI", Tahoma, sans-serif;
     }
 
     .coord-box, .status-box {
-      background: rgba(0, 0, 0, 0.75);
-      color: #fff;
+      background: var(--panel-bg);
+      color: var(--panel-text);
       padding: 6px 10px;
-      font: 14px/1.2 Arial, sans-serif;
-      border-radius: 4px;
+      border: 1px solid var(--panel-border);
+      border-radius: 6px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+    }
+
+    .map-panel {
+      position: absolute;
+      z-index: 1000;
+      background: var(--panel-bg);
+      color: var(--panel-text);
+      border: 1px solid var(--panel-border);
+      border-radius: 10px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+      backdrop-filter: blur(8px);
+    }
+
+    .filter-panel {
+      top: 12px;
+      left: 56px;
+      padding: 10px 12px;
+      min-width: 180px;
+    }
+
+    .timeline-panel {
+      left: 50%;
+      bottom: 12px;
+      transform: translateX(-50%);
+      width: min(560px, calc(100vw - 24px));
+      padding: 12px 14px;
+    }
+
+    .panel-title {
+      margin: 0 0 8px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-color);
+    }
+
+    .panel-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .panel-row + .panel-row {
+      margin-top: 8px;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted-text);
+    }
+
+    .checkbox-row input {
+      margin: 0;
+    }
+
+    .timeline-value {
+      font-weight: 700;
+      color: var(--panel-text);
+      white-space: nowrap;
+    }
+
+    .timeline-range {
+      width: 100%;
+      accent-color: var(--accent-color);
+    }
+
+    .timeline-hint {
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--muted-text);
+    }
+
+    .leaflet-control-layers {
+      background: var(--panel-bg);
+      color: var(--panel-text);
+      border: 1px solid var(--panel-border);
+      border-radius: 10px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+    }
+
+    .leaflet-control-layers label {
+      color: var(--panel-text);
+    }
+
+    .city-icon {
+      background: transparent;
+      border: 0;
+    }
+
+    .city-marker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transform: translate(-8px, -8px);
+      white-space: nowrap;
+    }
+
+    .city-pin {
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      border: 2px solid rgba(12, 16, 22, 0.95);
+      background: var(--marker-color);
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.18);
+      flex: 0 0 auto;
+    }
+
+    .city-marker.is-ruins .city-pin {
+      border-radius: 2px;
+      transform: rotate(45deg);
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.16) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.16) 50%, rgba(255, 255, 255, 0.16) 75%, transparent 75%, transparent),
+        var(--marker-color);
+      background-size: 6px 6px;
+    }
+
+    .city-label {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(12, 16, 22, 0.88);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #f8fafc;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    .city-popup-title {
+      margin-bottom: 6px;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .city-popup-meta {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      color: #e5e7eb;
+      font-size: 13px;
+    }
+
+    .city-popup-meta li + li {
+      margin-top: 4px;
+    }
+
+    @media (max-width: 720px) {
+      .filter-panel {
+        top: auto;
+        bottom: 104px;
+        left: 12px;
+        right: 12px;
+        min-width: 0;
+      }
+
+      .timeline-panel {
+        width: calc(100vw - 24px);
+      }
+
+      .city-label {
+        font-size: 11px;
+      }
     }
   </style>
 </head>
 <body>
   <div id="map"></div>
+
+  <div class="map-panel filter-panel">
+    <div class="panel-title">City Filters</div>
+    <label class="checkbox-row">
+      <input id="toggle-ruins" type="checkbox" checked />
+      <span>Show ruins</span>
+    </label>
+  </div>
+
+  <div class="map-panel timeline-panel">
+    <div class="panel-row">
+      <div class="panel-title">Timeline</div>
+      <div id="timeline-value" class="timeline-value">-</div>
+    </div>
+    <input id="timeline-range" class="timeline-range" type="range" min="0" max="0" step="1" value="0" />
+    <div class="timeline-hint">Move the slider to inspect city ownership and ruin states for a selected date.</div>
+  </div>
 
   <script
     src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
@@ -42,19 +238,43 @@
 
   <script>
     const TILE_SIZE = 512;
+    const FREE_CITY_COLOR = "#9e9e9e";
+    const RUINS_COLOR = "#6b7280";
 
-    // Пороги переключения слоёв
-    const ZOOM_OVERVIEW_16 = -6; // самый дальний
-    const ZOOM_OVERVIEW_8  = -4;
-    const ZOOM_OVERVIEW_4  = -2;
-    const ZOOM_DETAILS     = 0;  // детальные тайлы с этого зума и выше
+    const ZOOM_OVERVIEW_16 = -6;
+    const ZOOM_OVERVIEW_8 = -4;
+    const ZOOM_OVERVIEW_4 = -2;
+    const ZOOM_DETAILS = 0;
 
-    const map = L.map('map', {
+    const map = L.map("map", {
       crs: L.CRS.Simple,
       minZoom: -6,
       maxZoom: 4,
       zoomSnap: 0.25
     });
+
+    const tileLayers = {
+      overview16: L.layerGroup(),
+      overview8: L.layerGroup(),
+      overview4: L.layerGroup(),
+      details: L.layerGroup()
+    };
+
+    const layers = {
+      cities: L.layerGroup().addTo(map)
+    };
+
+    const runtime = {
+      cityDataset: null,
+      nationById: new Map(),
+      activeDate: null,
+      timelineDates: [],
+      showRuins: true,
+      visibleCities: 0,
+      totalCities: 0,
+      tileCount: 0,
+      tileModeLabel: "Loading"
+    };
 
     function gameToLatLng(x, y) {
       return L.latLng(-y, x);
@@ -67,39 +287,38 @@
       };
     }
 
-    const CoordControl = L.Control.extend({
-      onAdd: function() {
-        this._div = L.DomUtil.create('div', 'coord-box');
-        this._div.innerHTML = 'X: -, Y: -';
-        return this._div;
-      },
-      update: function(latlng) {
-        if (!latlng) return;
-        const p = latLngToGame(latlng);
-        this._div.innerHTML = `X: ${p.x}, Y: ${p.y}`;
+    async function fetchJson(path) {
+      const response = await fetch(path);
+      if (!response.ok) {
+        throw new Error(`Failed to load ${path}: ${response.status}`);
       }
-    });
+      return response.json();
+    }
 
-    const StatusControl = L.Control.extend({
-      onAdd: function() {
-        this._div = L.DomUtil.create('div', 'status-box');
-        this._div.innerHTML = 'Загрузка...';
-        return this._div;
-      },
-      setText: function(text) {
-        this._div.innerHTML = text;
-      }
-    });
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "\"": "&quot;",
+        "'": "&#39;"
+      })[char]);
+    }
 
-    const coordControl = new CoordControl({ position: 'bottomleft' });
-    coordControl.addTo(map);
+    function formatDate(isoDate) {
+      if (!isoDate) return "No date";
+      const date = new Date(`${isoDate}T00:00:00Z`);
+      return new Intl.DateTimeFormat("ru-RU", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        timeZone: "UTC"
+      }).format(date);
+    }
 
-    const statusControl = new StatusControl({ position: 'topright' });
-    statusControl.addTo(map);
-
-    map.on('mousemove', function(e) {
-      coordControl.update(e.latlng);
-    });
+    function describeStatus(status) {
+      return status === "ruins" ? "Ruins" : "Active";
+    }
 
     function getTileBounds(tileX, tileY) {
       const x1 = tileX * TILE_SIZE;
@@ -108,89 +327,287 @@
       const y2 = y1 + TILE_SIZE;
 
       return L.latLngBounds(
-        gameToLatLng(x1, y2), // SW
-        gameToLatLng(x2, y1)  // NE
+        gameToLatLng(x1, y2),
+        gameToLatLng(x2, y1)
       );
     }
 
-    // Группы слоёв
-    const overview16Group = L.layerGroup();
-    const overview8Group  = L.layerGroup();
-    const overview4Group  = L.layerGroup();
-    const detailsGroup    = L.layerGroup();
+    const CoordControl = L.Control.extend({
+      onAdd: function() {
+        this._div = L.DomUtil.create("div", "coord-box");
+        this._div.innerHTML = "X: -, Y: -";
+        return this._div;
+      },
+      update: function(latlng) {
+        if (!latlng) return;
+        const point = latLngToGame(latlng);
+        this._div.innerHTML = `X: ${point.x}, Y: ${point.y}`;
+      }
+    });
+
+    const StatusControl = L.Control.extend({
+      onAdd: function() {
+        this._div = L.DomUtil.create("div", "status-box");
+        this._div.innerHTML = "Loading...";
+        return this._div;
+      },
+      setText: function(text) {
+        this._div.innerHTML = text;
+      }
+    });
+
+    const coordControl = new CoordControl({ position: "bottomleft" });
+    const statusControl = new StatusControl({ position: "topright" });
+    coordControl.addTo(map);
+    statusControl.addTo(map);
+
+    L.control.layers(null, {
+      "Cities": layers.cities
+    }, {
+      collapsed: false
+    }).addTo(map);
+
+    map.on("mousemove", function(event) {
+      coordControl.update(event.latlng);
+    });
+
+    function renderStatus() {
+      const parts = [
+        `${runtime.tileModeLabel}`,
+        `Tiles: ${runtime.tileCount}`,
+        `Cities: ${runtime.visibleCities}/${runtime.totalCities}`,
+        `Date: ${runtime.activeDate ?? "-"}`
+      ];
+      statusControl.setText(parts.join(" | "));
+    }
 
     function showOnly(groupToShow) {
-      const groups = [overview16Group, overview8Group, overview4Group, detailsGroup];
+      const groups = [
+        tileLayers.overview16,
+        tileLayers.overview8,
+        tileLayers.overview4,
+        tileLayers.details
+      ];
 
-      for (const g of groups) {
-        if (g === groupToShow) {
-          if (!map.hasLayer(g)) g.addTo(map);
-        } else {
-          if (map.hasLayer(g)) map.removeLayer(g);
+      for (const group of groups) {
+        if (group === groupToShow) {
+          if (!map.hasLayer(group)) group.addTo(map);
+        } else if (map.hasLayer(group)) {
+          map.removeLayer(group);
         }
       }
     }
 
     function updateZoomLayers() {
-      const z = map.getZoom();
+      const zoom = map.getZoom();
 
-      if (z < ZOOM_OVERVIEW_8) {
-        showOnly(overview16Group);
-        statusControl.setText(`Zoom ${z}: overview 16x`);
-      } else if (z < ZOOM_OVERVIEW_4) {
-        showOnly(overview8Group);
-        statusControl.setText(`Zoom ${z}: overview 8x`);
-      } else if (z < ZOOM_DETAILS) {
-        showOnly(overview4Group);
-        statusControl.setText(`Zoom ${z}: overview 4x`);
+      if (zoom < ZOOM_OVERVIEW_8) {
+        showOnly(tileLayers.overview16);
+        runtime.tileModeLabel = `Zoom ${zoom}: overview 16x`;
+      } else if (zoom < ZOOM_OVERVIEW_4) {
+        showOnly(tileLayers.overview8);
+        runtime.tileModeLabel = `Zoom ${zoom}: overview 8x`;
+      } else if (zoom < ZOOM_DETAILS) {
+        showOnly(tileLayers.overview4);
+        runtime.tileModeLabel = `Zoom ${zoom}: overview 4x`;
       } else {
-        showOnly(detailsGroup);
-        statusControl.setText(`Zoom ${z}: detailed tiles`);
+        showOnly(tileLayers.details);
+        runtime.tileModeLabel = `Zoom ${zoom}: detailed tiles`;
       }
+
+      renderStatus();
+    }
+
+    function validateCityDataset(dataset) {
+      const nations = Array.isArray(dataset?.nations) ? dataset.nations : [];
+      const cities = Array.isArray(dataset?.cities) ? dataset.cities : [];
+      return {
+        nations,
+        cities,
+        timelineDates: collectTimelineDates(dataset, cities)
+      };
+    }
+
+    function collectTimelineDates(dataset, cities) {
+      const dates = new Set(Array.isArray(dataset?.timeline?.dates) ? dataset.timeline.dates : []);
+      for (const city of cities) {
+        for (const state of city.states ?? []) {
+          if (state.from) dates.add(state.from);
+          if (state.to) dates.add(state.to);
+        }
+      }
+      return Array.from(dates).sort();
+    }
+
+    function resolveCityState(city, activeDate) {
+      for (const state of city.states ?? []) {
+        const startsBefore = !state.from || state.from <= activeDate;
+        const endsAfter = !state.to || activeDate < state.to;
+        if (startsBefore && endsAfter) return state;
+      }
+      return null;
+    }
+
+    function getCityColor(state) {
+      if (state.status === "ruins") return RUINS_COLOR;
+      if (!state.nation_id) return FREE_CITY_COLOR;
+      return runtime.nationById.get(state.nation_id)?.color ?? FREE_CITY_COLOR;
+    }
+
+    function buildCityIcon(city, state) {
+      const color = getCityColor(state);
+      const classes = ["city-marker"];
+      if (state.status === "ruins") classes.push("is-ruins");
+
+      return L.divIcon({
+        className: "city-icon",
+        html: `
+          <span class="${classes.join(" ")}" style="--marker-color: ${color}">
+            <span class="city-pin"></span>
+            <span class="city-label">${escapeHtml(state.label || city.name)}</span>
+          </span>
+        `
+      });
+    }
+
+    function buildCityPopup(city, state) {
+      const nation = state.nation_id ? runtime.nationById.get(state.nation_id) : null;
+      const tags = Array.isArray(state.tags) && state.tags.length ? state.tags.join(", ") : "none";
+
+      return `
+        <div class="city-popup-title">${escapeHtml(state.label || city.name)}</div>
+        <ul class="city-popup-meta">
+          <li><strong>Status:</strong> ${escapeHtml(describeStatus(state.status))}</li>
+          <li><strong>Nation:</strong> ${escapeHtml(nation?.name ?? "Free city")}</li>
+          <li><strong>Coordinates:</strong> X ${city.x}, Y ${city.y}</li>
+          <li><strong>Active from:</strong> ${escapeHtml(formatDate(state.from))}</li>
+          <li><strong>Tags:</strong> ${escapeHtml(tags)}</li>
+        </ul>
+      `;
+    }
+
+    function renderCities() {
+      layers.cities.clearLayers();
+
+      if (!runtime.cityDataset || !runtime.activeDate) {
+        runtime.visibleCities = 0;
+        runtime.totalCities = 0;
+        renderStatus();
+        return;
+      }
+
+      let visibleCities = 0;
+      const cities = runtime.cityDataset.cities;
+      runtime.totalCities = cities.length;
+
+      for (const city of cities) {
+        const state = resolveCityState(city, runtime.activeDate);
+        if (!state) continue;
+        if (state.status === "ruins" && !runtime.showRuins) continue;
+
+        const marker = L.marker(gameToLatLng(city.x, city.y), {
+          icon: buildCityIcon(city, state),
+          keyboard: false
+        });
+        marker.bindPopup(buildCityPopup(city, state));
+        marker.addTo(layers.cities);
+        visibleCities += 1;
+      }
+
+      runtime.visibleCities = visibleCities;
+      renderStatus();
+    }
+
+    function syncTimelineUi() {
+      const range = document.getElementById("timeline-range");
+      const value = document.getElementById("timeline-value");
+      const dates = runtime.timelineDates;
+
+      if (!dates.length) {
+        range.disabled = true;
+        range.min = 0;
+        range.max = 0;
+        range.value = 0;
+        value.textContent = "No dates";
+        return;
+      }
+
+      range.disabled = dates.length === 1;
+      range.min = 0;
+      range.max = dates.length - 1;
+
+      let index = dates.indexOf(runtime.activeDate);
+      if (index === -1) index = dates.length - 1;
+      range.value = index;
+      value.textContent = formatDate(dates[index]);
+    }
+
+    function setActiveDateByIndex(index) {
+      const dates = runtime.timelineDates;
+      if (!dates.length) return;
+
+      const safeIndex = Math.max(0, Math.min(index, dates.length - 1));
+      runtime.activeDate = dates[safeIndex];
+      syncTimelineUi();
+      renderCities();
+    }
+
+    async function loadCities() {
+      const dataset = await fetchJson("data/cities.json");
+      const validated = validateCityDataset(dataset);
+
+      runtime.cityDataset = {
+        nations: validated.nations,
+        cities: validated.cities
+      };
+      runtime.nationById = new Map(validated.nations.map((nation) => [nation.id, nation]));
+      runtime.timelineDates = validated.timelineDates;
+      runtime.activeDate = dataset?.timeline?.default_date ?? validated.timelineDates[validated.timelineDates.length - 1] ?? null;
+
+      syncTimelineUi();
+      renderCities();
     }
 
     async function loadMap() {
-      // Загружаем метаданные overview
-      const metaResp = await fetch('previews/overview_meta.json');
-      if (!metaResp.ok) {
-        throw new Error(`Не удалось загрузить previews/overview_meta.json: ${metaResp.status}`);
-      }
-      const meta = await metaResp.json();
+      const [meta, tiles] = await Promise.all([
+        fetchJson("previews/overview_meta.json"),
+        fetchJson("tiles.json")
+      ]);
 
       const fullBounds = L.latLngBounds(
-        gameToLatLng(meta.min_x, meta.max_y), // SW
-        gameToLatLng(meta.max_x, meta.min_y)  // NE
+        gameToLatLng(meta.min_x, meta.max_y),
+        gameToLatLng(meta.max_x, meta.min_y)
       );
 
-      // Загружаем overview-картинки
-      L.imageOverlay('previews/overview_16x.jpg', fullBounds).addTo(overview16Group);
-      L.imageOverlay('previews/overview_8x.jpg',  fullBounds).addTo(overview8Group);
-      L.imageOverlay('previews/overview_4x.jpg',  fullBounds).addTo(overview4Group);
-
-      // Загружаем список детальных тайлов
-      const tilesResp = await fetch('tiles.json');
-      if (!tilesResp.ok) {
-        throw new Error(`Не удалось загрузить tiles.json: ${tilesResp.status}`);
-      }
-      const tiles = await tilesResp.json();
+      L.imageOverlay("previews/overview_16x.jpg", fullBounds).addTo(tileLayers.overview16);
+      L.imageOverlay("previews/overview_8x.jpg", fullBounds).addTo(tileLayers.overview8);
+      L.imageOverlay("previews/overview_4x.jpg", fullBounds).addTo(tileLayers.overview4);
 
       for (const tile of tiles) {
-        const bounds = getTileBounds(tile.x, tile.y);
-        L.imageOverlay(tile.file, bounds).addTo(detailsGroup);
+        L.imageOverlay(tile.file, getTileBounds(tile.x, tile.y)).addTo(tileLayers.details);
       }
 
+      runtime.tileCount = tiles.length;
       map.fitBounds(fullBounds);
       updateZoomLayers();
-
-      statusControl.setText(`Готово. Тайлов: ${tiles.length}`);
+      await loadCities();
     }
 
-    map.on('zoomend', updateZoomLayers);
+    document.getElementById("toggle-ruins").addEventListener("change", function(event) {
+      runtime.showRuins = event.target.checked;
+      renderCities();
+    });
 
-    loadMap().catch(err => {
-      console.error(err);
-      statusControl.setText(`Ошибка: ${err.message}`);
-      alert(err.message);
+    document.getElementById("timeline-range").addEventListener("input", function(event) {
+      setActiveDateByIndex(Number(event.target.value));
+    });
+
+    map.on("zoomend", updateZoomLayers);
+
+    loadMap().catch((error) => {
+      console.error(error);
+      statusControl.setText(`Error: ${error.message}`);
+      alert(error.message);
     });
   </script>
 </body>
