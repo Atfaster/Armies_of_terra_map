@@ -222,6 +222,30 @@ python scripts/merge_journeymap_tiles.py --keep-inbox
 python scripts/merge_journeymap_tiles.py --skip-previews
 ```
 
+## Локальный запуск карты с прямым сохранением geography.json
+
+Для обычного просмотра можно использовать любой статический HTTP server.
+
+Если нужен безопасный `Save Geo` без диалога выбора файла, запускай локальный сервер проекта:
+
+```powershell
+python scripts/local_map_server.py
+```
+
+После этого открой:
+
+```text
+http://127.0.0.1:8000
+```
+
+В этом режиме кнопка `Save Geo` сохраняет только в:
+
+```text
+data/geography.json
+```
+
+Она не предлагает выбрать другой файл и не может случайно перезаписать `cities.json`.
+
 ## Полезная практика
 
 - Для первичного периода всегда держи год `1408`.

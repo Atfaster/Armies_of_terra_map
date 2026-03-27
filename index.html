@@ -228,6 +228,10 @@
       color: var(--panel-text);
     }
 
+    .leaflet-control-layers-list > label {
+      margin-bottom: 8px;
+    }
+
     .leaflet-control-layers input[type="checkbox"] {
       margin: 0;
     }
@@ -239,7 +243,7 @@
     }
 
     .leaflet-geo-kind-section.is-inline-first {
-      margin-top: 0;
+      margin-top: 8px;
       padding-top: 0;
       border-top: 0;
     }
@@ -715,6 +719,37 @@
     }, {
       collapsed: false
     }).addTo(map);
+
+    function normalizeLayerControlLabels() {
+      const labels = layerControl.getContainer().querySelectorAll(".leaflet-control-layers-overlays label");
+      for (const label of labels) {
+        const textParts = [];
+        for (const node of Array.from(label.childNodes)) {
+          if (node.nodeType === Node.TEXT_NODE) {
+            const value = node.textContent.trim();
+            if (value) textParts.push(value);
+            label.removeChild(node);
+          }
+        }
+
+        if (!textParts.length) continue;
+
+        let textSpan = label.querySelector(".leaflet-control-label-text");
+        if (!textSpan) {
+          textSpan = document.createElement("span");
+          textSpan.className = "leaflet-control-label-text";
+          label.appendChild(textSpan);
+        }
+        textSpan.textContent = textParts.join(" ");
+      }
+    }
+
+    normalizeLayerControlLabels();
+
+    const mapSettingsTitle = document.createElement("div");
+    mapSettingsTitle.className = "leaflet-geo-kind-title";
+    mapSettingsTitle.textContent = "MAP SETTINGS";
+    layerControl.getContainer().querySelector(".leaflet-control-layers-list").prepend(mapSettingsTitle);
 
     const geographyKindSection = document.createElement("div");
     geographyKindSection.className = "leaflet-geo-kind-section is-inline-first";
@@ -1253,7 +1288,29 @@
     async function saveGeographyToFile() {
       if (!EDITOR_IS_LOCAL) return;
 
-      const json = serializeGeography();
+      const payload = serializeGeographyObject();
+      const json = JSON.stringify(payload, null, 2);
+      document.getElementById("geography-json").value = json;
+
+      try {
+        const response = await fetch("/api/save-geography", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: json
+        });
+
+        if (response.ok) {
+          markGeographySaved();
+          renderStatus();
+          statusControl.setText("Geography saved");
+          return;
+        }
+      } catch (error) {
+        console.warn("Direct geography save endpoint unavailable, falling back to browser file save", error);
+      }
+
       if (!window.showSaveFilePicker) {
         downloadTextFile("geography.json", json);
         return;
