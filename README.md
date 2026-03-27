@@ -164,6 +164,7 @@ python scripts/import_city_waypoints.py "C:\Users\atfas\curseforge\minecraft\Ins
 
 На карте доступны фильтры:
 
+- `World border`
 - `Show capitals`
 - `Show national cities`
 - `Show free cities`
@@ -171,6 +172,29 @@ python scripts/import_city_waypoints.py "C:\Users\atfas\curseforge\minecraft\Ins
 - отдельные чекбоксы по каждой нации
 
 Фильтр нации скрывает все города этой нации, включая её столицу.
+
+## Граница мира
+
+На карте отображается квадратная граница мира. По умолчанию она проходит по координатам `-10000` и `10000` по обеим осям, то есть рисуется квадрат:
+
+- от `X = -10000` до `X = 10000`
+- от `Y = -10000` до `Y = 10000`
+
+Настройка вынесена в объект `WORLD_BORDER_CONFIG` в `index.html`.
+
+Если границу мира расширят, достаточно поменять эти параметры:
+
+- `minX`
+- `maxX`
+- `minY`
+- `maxY`
+
+Дополнительно там же можно быстро настроить внешний вид линии:
+
+- `color`
+- `weight`
+- `opacity`
+- `dashArray`
 
 ## Команды для тайлов карты
 

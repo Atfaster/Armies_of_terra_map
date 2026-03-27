@@ -303,6 +303,17 @@
     const TILE_SIZE = 512;
     const FREE_CITY_COLOR = "#9e9e9e";
     const RUINS_COLOR = "#6b7280";
+    const WORLD_BORDER_CONFIG = {
+      minX: -10000,
+      maxX: 10000,
+      minY: -10000,
+      maxY: 10000,
+      color: "#f4d35e",
+      weight: 3,
+      opacity: 0.9,
+      fillOpacity: 0,
+      dashArray: "12 8"
+    };
 
     const ZOOM_OVERVIEW_16 = -6;
     const ZOOM_OVERVIEW_8 = -4;
@@ -324,6 +335,7 @@
     };
 
     const layers = {
+      worldBorder: L.layerGroup().addTo(map),
       cities: L.layerGroup().addTo(map)
     };
 
@@ -374,6 +386,7 @@
 
     function formatDate(isoDate) {
       if (!isoDate) return "No date";
+      if (/^\d{4}$/.test(isoDate)) return isoDate;
       const date = new Date(`${isoDate}T00:00:00Z`);
       if (Number.isNaN(date.getTime())) return isoDate;
       return new Intl.DateTimeFormat("ru-RU", {
@@ -398,6 +411,26 @@
         gameToLatLng(x1, y2),
         gameToLatLng(x2, y1)
       );
+    }
+
+    function getWorldBorderBounds() {
+      return L.latLngBounds(
+        gameToLatLng(WORLD_BORDER_CONFIG.minX, WORLD_BORDER_CONFIG.maxY),
+        gameToLatLng(WORLD_BORDER_CONFIG.maxX, WORLD_BORDER_CONFIG.minY)
+      );
+    }
+
+    function renderWorldBorder() {
+      layers.worldBorder.clearLayers();
+
+      L.rectangle(getWorldBorderBounds(), {
+        color: WORLD_BORDER_CONFIG.color,
+        weight: WORLD_BORDER_CONFIG.weight,
+        opacity: WORLD_BORDER_CONFIG.opacity,
+        fillOpacity: WORLD_BORDER_CONFIG.fillOpacity,
+        dashArray: WORLD_BORDER_CONFIG.dashArray,
+        interactive: false
+      }).addTo(layers.worldBorder);
     }
 
     const CoordControl = L.Control.extend({
@@ -430,6 +463,7 @@
     statusControl.addTo(map);
 
     L.control.layers(null, {
+      "World border": layers.worldBorder,
       "Cities": layers.cities
     }, {
       collapsed: false
@@ -680,6 +714,7 @@
         gameToLatLng(meta.min_x, meta.max_y),
         gameToLatLng(meta.max_x, meta.min_y)
       );
+      const mapBounds = L.latLngBounds(fullBounds.getSouthWest(), fullBounds.getNorthEast());
 
       L.imageOverlay("previews/overview_16x.jpg", fullBounds).addTo(tileLayers.overview16);
       L.imageOverlay("previews/overview_8x.jpg", fullBounds).addTo(tileLayers.overview8);
@@ -689,8 +724,11 @@
         L.imageOverlay(tile.file, getTileBounds(tile.x, tile.y)).addTo(tileLayers.details);
       }
 
+      renderWorldBorder();
+
       runtime.tileCount = tiles.length;
-      map.fitBounds(fullBounds);
+      mapBounds.extend(getWorldBorderBounds());
+      map.fitBounds(mapBounds);
       updateZoomLayers();
       await loadCities();
     }
