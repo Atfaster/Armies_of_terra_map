@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-03-27T05:54:48+00:00",
+  "generated_at": "2026-03-27T17:40:54+00:00",
   "timeline": {
     "dates": [
       "1408"
@@ -24,6 +24,11 @@
       "color": "#d4a435"
     },
     {
+      "id": "lusitania",
+      "name": "Lusitania",
+      "color": "#4f35d4"
+    },
+    {
       "id": "visigoth",
       "name": "Visigoth",
       "color": "#35d497"
@@ -32,6 +37,11 @@
       "id": "warbound",
       "name": "Warbound",
       "color": "#35d479"
+    },
+    {
+      "id": "zaistan",
+      "name": "Zaistan",
+      "color": "#d4a435"
     }
   ],
   "cities": [
@@ -55,6 +65,30 @@
             "file": "town-Aachen-nation-Eleftheria_644-67-184.json",
             "waypoint_id": "town-Aachen-nation-Eleftheria_644-67-184",
             "waypoint_name": "town Aachen nation Eleftheria"
+          }
+        }
+      ]
+    },
+    {
+      "id": "aetheris",
+      "name": "Aetheris",
+      "kind": "city",
+      "x": 3300,
+      "y": 8650,
+      "states": [
+        {
+          "from": "1408",
+          "to": null,
+          "status": "active",
+          "nation_id": "lusitania",
+          "label": "Aetheris",
+          "tags": [],
+          "is_capital": false,
+          "source": {
+            "type": "journeymap-waypoint",
+            "file": "town-Aetheris-nation-Lusitania_3300-77-8650.json",
+            "waypoint_id": "town-Aetheris-nation-Lusitania_3300-77-8650",
+            "waypoint_name": "town Aetheris nation Lusitania"
           }
         }
       ]
@@ -108,6 +142,30 @@
       ]
     },
     {
+      "id": "camalot",
+      "name": "Camalot",
+      "kind": "city",
+      "x": 4490,
+      "y": 8310,
+      "states": [
+        {
+          "from": "1408",
+          "to": null,
+          "status": "active",
+          "nation_id": "lusitania",
+          "label": "Camalot",
+          "tags": [],
+          "is_capital": true,
+          "source": {
+            "type": "journeymap-waypoint",
+            "file": "town-Camalot-nation-Lusitania-capital_4490-77-8310.json",
+            "waypoint_id": "town-Camalot-nation-Lusitania-capital_4490-77-8310",
+            "waypoint_name": "town Camalot nation Lusitania capital"
+          }
+        }
+      ]
+    },
+    {
       "id": "cornbreadvil",
       "name": "Cornbreadvil",
       "kind": "city",
@@ -117,16 +175,18 @@
         {
           "from": "1408",
           "to": null,
-          "status": "active",
+          "status": "ruins",
           "nation_id": null,
           "label": "Cornbreadvil",
-          "tags": [],
+          "tags": [
+            "bankrupt"
+          ],
           "is_capital": false,
           "source": {
             "type": "journeymap-waypoint",
-            "file": "town-Cornbreadvil_-300-77-5200.json",
-            "waypoint_id": "town-Cornbreadvil_-300-77-5200",
-            "waypoint_name": "town Cornbreadvil"
+            "file": "town-Cornbreadvil-bankrupt_-300-77-5200.json",
+            "waypoint_id": "town-Cornbreadvil-bankrupt_-300-77-5200",
+            "waypoint_name": "town Cornbreadvil bankrupt"
           }
         }
       ]
@@ -400,6 +460,30 @@
       ]
     },
     {
+      "id": "leesburg",
+      "name": "Leesburg",
+      "kind": "city",
+      "x": -6500,
+      "y": 400,
+      "states": [
+        {
+          "from": "1408",
+          "to": null,
+          "status": "active",
+          "nation_id": null,
+          "label": "Leesburg",
+          "tags": [],
+          "is_capital": false,
+          "source": {
+            "type": "journeymap-waypoint",
+            "file": "town-Leesburg_-6500-77-400.json",
+            "waypoint_id": "town-Leesburg_-6500-77-400",
+            "waypoint_name": "town Leesburg"
+          }
+        }
+      ]
+    },
+    {
       "id": "levengyard",
       "name": "Levengyard",
       "kind": "city",
@@ -443,6 +527,30 @@
             "file": "town-Limnion-nation-Eleftheria-capital_1455-83-1316.json",
             "waypoint_id": "town-Limnion-nation-Eleftheria-capital_1455-83-1316",
             "waypoint_name": "town Limnion nation Eleftheria capital"
+          }
+        }
+      ]
+    },
+    {
+      "id": "neoheim",
+      "name": "Neoheim",
+      "kind": "city",
+      "x": 3500,
+      "y": -8000,
+      "states": [
+        {
+          "from": "1408",
+          "to": null,
+          "status": "active",
+          "nation_id": "warbound",
+          "label": "Neoheim",
+          "tags": [],
+          "is_capital": false,
+          "source": {
+            "type": "journeymap-waypoint",
+            "file": "town-Neoheim-nation-Warbound_3500-77-8000.json",
+            "waypoint_id": "town-Neoheim-nation-Warbound_3500-77-8000",
+            "waypoint_name": "town Neoheim nation Warbound"
           }
         }
       ]
@@ -568,6 +676,54 @@
       ]
     },
     {
+      "id": "rebelion",
+      "name": "Rebelion",
+      "kind": "city",
+      "x": 2800,
+      "y": 9300,
+      "states": [
+        {
+          "from": "1408",
+          "to": null,
+          "status": "active",
+          "nation_id": null,
+          "label": "Rebelion",
+          "tags": [],
+          "is_capital": false,
+          "source": {
+            "type": "journeymap-waypoint",
+            "file": "town-Rebelion_2800-77-9300.json",
+            "waypoint_id": "town-Rebelion_2800-77-9300",
+            "waypoint_name": "town Rebelion"
+          }
+        }
+      ]
+    },
+    {
+      "id": "roguespia",
+      "name": "Roguespia",
+      "kind": "city",
+      "x": 2150,
+      "y": 1420,
+      "states": [
+        {
+          "from": "1408",
+          "to": null,
+          "status": "active",
+          "nation_id": "zaistan",
+          "label": "Roguespia",
+          "tags": [],
+          "is_capital": true,
+          "source": {
+            "type": "journeymap-waypoint",
+            "file": "town-Roguespia-nation-Zaistan-capital_2150-77-1420.json",
+            "waypoint_id": "town-Roguespia-nation-Zaistan-capital_2150-77-1420",
+            "waypoint_name": "town Roguespia nation Zaistan capital"
+          }
+        }
+      ]
+    },
+    {
       "id": "slutsk",
       "name": "Slutsk",
       "kind": "city",
@@ -632,12 +788,12 @@
           "nation_id": "visigoth",
           "label": "Yawozaburg",
           "tags": [],
-          "is_capital": false,
+          "is_capital": true,
           "source": {
             "type": "journeymap-waypoint",
-            "file": "town-Yawozaburg-nation-Visigoth_-4300-77-3600.json",
-            "waypoint_id": "town-Yawozaburg-nation-Visigoth_-4300-77-3600",
-            "waypoint_name": "town Yawozaburg nation Visigoth"
+            "file": "town-Yawozaburg-nation-Visigoth-capital_-4300-77-3600.json",
+            "waypoint_id": "town-Yawozaburg-nation-Visigoth-capital_-4300-77-3600",
+            "waypoint_name": "town Yawozaburg nation Visigoth capital"
           }
         }
       ]

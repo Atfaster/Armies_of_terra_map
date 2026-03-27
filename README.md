@@ -13,7 +13,7 @@
 Скрипт городов читает waypoint-файлы из папки:
 
 ```text
-C:\Users\atfas\curseforge\minecraft\Instances\Armies of Terra\journeymap\data\mp\Armies~of~Terra\waypoints
+\curseforge\minecraft\Instances\Armies of Terra\journeymap\data\mp\Armies~of~Terra\waypoints
 ```
 
 Берутся все файлы `town*.json`.
