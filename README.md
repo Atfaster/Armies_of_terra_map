@@ -198,6 +198,19 @@ python scripts/import_city_waypoints.py "C:\Users\atfas\curseforge\minecraft\Ins
 
 ## Команды для тайлов карты
 
+По умолчанию `scripts/merge_journeymap_tiles.py` берет данные из двух источников:
+
+- твои локальные тайлы JourneyMap из папки игры
+- входящие файлы из `imports\journeymap_inbox`
+
+В `imports\journeymap_inbox` можно класть:
+
+- `.zip` архивы с тайлами
+- папки с тайлами
+- отдельные файлы `x,y.png` прямо в корень inbox
+
+После успешного merge скрипт автоматически удаляет обработанные архивы, папки и отдельные `png` из inbox.
+
 Основной merge:
 
 ```powershell
@@ -215,6 +228,8 @@ python scripts/merge_journeymap_tiles.py --dry-run
 ```powershell
 python scripts/merge_journeymap_tiles.py --keep-inbox
 ```
+
+Этот флаг также сохраняет отдельные `png`-тайлы, если они лежат в inbox без архива.
 
 Не пересобирать preview:
 

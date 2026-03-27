@@ -170,6 +170,9 @@ def collect_inbox_items(inbox_dir: Path) -> list[InboxItem]:
         if path.is_dir():
             items.append(InboxItem(path=path, kind="directory"))
             continue
+        if path.is_file() and TILE_NAME_PATTERN.match(path.name):
+            items.append(InboxItem(path=path, kind="tile"))
+            continue
         if path.is_file() and path.suffix.lower() == ZIP_SUFFIX:
             items.append(InboxItem(path=path, kind="zip"))
     return items
@@ -185,6 +188,22 @@ def collect_all_sources(
     for item in inbox_items:
         if item.kind == "directory":
             tiles.extend(iter_tile_files_recursive(item.path))
+            continue
+        if item.kind == "tile":
+            stat = item.path.stat()
+            match = TILE_NAME_PATTERN.match(item.path.name)
+            if match is None:
+                continue
+            tiles.append(
+                TileFile(
+                    name=item.path.name,
+                    path=item.path,
+                    x=int(match.group(1)),
+                    y=int(match.group(2)),
+                    mtime=int(stat.st_mtime),
+                    payload=None,
+                )
+            )
             continue
 
         tiles.extend(iter_zip_tile_files(item.path))
