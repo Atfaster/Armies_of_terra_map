@@ -513,6 +513,19 @@
       zoomSnap: 0.25
     });
 
+    map.createPane("geoBasePane");
+    map.getPane("geoBasePane").style.zIndex = 410;
+    map.createPane("geoRegionPane");
+    map.getPane("geoRegionPane").style.zIndex = 420;
+    map.createPane("geoFeaturePane");
+    map.getPane("geoFeaturePane").style.zIndex = 430;
+    map.createPane("geoLabelPane");
+    map.getPane("geoLabelPane").style.zIndex = 590;
+    map.createPane("cityPane");
+    map.getPane("cityPane").style.zIndex = 640;
+    map.createPane("capitalPane");
+    map.getPane("capitalPane").style.zIndex = 650;
+
     const tileLayers = {
       overview16: L.layerGroup(),
       overview8: L.layerGroup(),
@@ -749,6 +762,17 @@
       return `geo-label is-${kind || "feature"}`;
     }
 
+    function getGeographyPaneName(layer, kind) {
+      const normalizedKind = normalizeKind(kind);
+      if (["continent", "island", "sea"].includes(normalizedKind)) {
+        return "geoBasePane";
+      }
+      if (normalizedKind === "region") {
+        return "geoRegionPane";
+      }
+      return "geoFeaturePane";
+    }
+
     function markGeographyDirty() {
       if (!EDITOR_IS_LOCAL) return;
       runtime.geographyDirty = true;
@@ -823,6 +847,8 @@
 
     function styleGeographyLayer(layer) {
       const kind = getFeatureProperties(layer).kind ?? getLayerKind(layer);
+      layer.options.pane = getGeographyPaneName(layer, kind);
+
       if (layer instanceof L.Marker) {
         layer.setIcon(L.divIcon({
           className: "geo-marker-icon",
@@ -916,6 +942,7 @@
         L.marker(latlng, {
           interactive: false,
           keyboard: false,
+          pane: "geoLabelPane",
           icon: L.divIcon({
             className: "geo-label-icon",
             html: `<span class="${getLabelClass(kind)}">${escapeHtml(name)}</span>`
@@ -1353,6 +1380,7 @@
 
         const marker = L.marker(gameToLatLng(city.x, city.y), {
           icon: buildCityIcon(city, state),
+          pane: state.is_capital ? "capitalPane" : "cityPane",
           keyboard: false
         });
         marker.bindPopup(buildCityPopup(city, state));
