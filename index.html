@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Minecraft World Map</title>
+  <title>Armies Of Terra World Map</title>
 
   <link
     rel="stylesheet"
@@ -36,6 +36,25 @@
       background: #111;
       color: var(--panel-text);
       font: 14px/1.4 "Segoe UI", Tahoma, sans-serif;
+    }
+
+    .leaflet-container,
+    .leaflet-container.leaflet-grab,
+    .leaflet-container.leaflet-touch-drag {
+      cursor: default;
+    }
+
+    .leaflet-container.is-map-dragging,
+    .leaflet-container.is-map-dragging *,
+    .leaflet-container.is-map-dragging .leaflet-grab,
+    .leaflet-container.is-map-dragging .leaflet-interactive {
+      cursor: grabbing !important;
+    }
+
+    .leaflet-interactive,
+    .leaflet-marker-icon,
+    .leaflet-popup-close-button {
+      cursor: pointer;
     }
 
     .coord-box, .status-box {
@@ -202,7 +221,15 @@
     }
 
     .leaflet-control-layers label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
       color: var(--panel-text);
+    }
+
+    .leaflet-control-layers input[type="checkbox"] {
+      margin: 0;
     }
 
     .leaflet-geo-kind-section {
@@ -703,6 +730,14 @@
 
     map.on("mousemove", function(event) {
       coordControl.update(event.latlng);
+    });
+
+    map.on("dragstart", function() {
+      map.getContainer().classList.add("is-map-dragging");
+    });
+
+    map.on("dragend", function() {
+      map.getContainer().classList.remove("is-map-dragging");
     });
 
     function renderStatus() {
