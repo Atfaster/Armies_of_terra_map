@@ -11,6 +11,10 @@
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
     crossorigin=""
   />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/@geoman-io/leaflet-geoman-free@2.18.3/dist/leaflet-geoman.css"
+  />
 
   <style>
     :root {
@@ -67,6 +71,18 @@
       transform: translateX(-50%);
       width: min(560px, calc(100vw - 24px));
       padding: 12px 14px;
+    }
+
+    .geography-panel {
+      display: none;
+      right: 12px;
+      bottom: 104px;
+      width: min(320px, calc(100vw - 24px));
+      padding: 12px 14px;
+    }
+
+    body.local-edit-enabled .geography-panel {
+      display: block;
     }
 
     .panel-title {
@@ -131,6 +147,48 @@
 
     .timeline-hint {
       margin-top: 6px;
+      font-size: 12px;
+      color: var(--muted-text);
+    }
+
+    .panel-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .panel-button {
+      appearance: none;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--panel-text);
+      padding: 7px 10px;
+      cursor: pointer;
+      font: inherit;
+    }
+
+    .panel-button:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .panel-text {
+      margin-top: 10px;
+      width: 100%;
+      min-height: 150px;
+      resize: vertical;
+      box-sizing: border-box;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 8px;
+      background: rgba(12, 16, 22, 0.75);
+      color: var(--panel-text);
+      padding: 10px;
+      font: 12px/1.5 Consolas, "Courier New", monospace;
+    }
+
+    .panel-note {
+      margin-top: 8px;
       font-size: 12px;
       color: var(--muted-text);
     }
@@ -236,6 +294,72 @@
       margin-top: 4px;
     }
 
+    .geo-label {
+      pointer-events: none;
+      color: #ecf8ff;
+      text-shadow:
+        0 1px 1px rgba(255, 255, 255, 0.92),
+        0 0 4px rgba(255, 255, 255, 0.78),
+        0 1px 8px rgba(8, 15, 24, 0.65);
+      padding: 2px 6px;
+      font-size: 15px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .geo-label.is-sea,
+    .geo-label.is-lake,
+    .geo-label.is-river {
+      color: #dff6ff;
+      font-style: italic;
+      letter-spacing: 0.05em;
+    }
+
+    .geo-label.is-sea,
+    .geo-label.is-continent {
+      font-size: 18px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+    }
+
+    .geo-label.is-island {
+      color: #fff7d6;
+    }
+
+    .geo-marker {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transform: translate(-10px, -18px);
+      white-space: nowrap;
+    }
+
+    .geo-marker-pin {
+      width: 14px;
+      height: 14px;
+      position: relative;
+      flex: 0 0 auto;
+      transform: rotate(45deg);
+      border-radius: 2px;
+      border: 2px solid rgba(46, 30, 14, 0.9);
+      background:
+        linear-gradient(135deg, #d9d9d9 0%, #b29b79 45%, #796347 100%);
+      box-shadow:
+        0 0 0 2px rgba(255, 250, 240, 0.45),
+        0 6px 12px rgba(0, 0, 0, 0.35);
+    }
+
+    .geo-marker-label {
+      display: inline-block;
+      padding: 2px 0;
+      color: #fff6db;
+      font-size: 14px;
+      font-weight: 600;
+      text-shadow:
+        0 1px 1px rgba(35, 23, 11, 0.95),
+        0 0 4px rgba(35, 23, 11, 0.9);
+    }
+
     @media (max-width: 720px) {
       .filter-panel {
         top: auto;
@@ -247,6 +371,13 @@
 
       .timeline-panel {
         width: calc(100vw - 24px);
+      }
+
+      .geography-panel {
+        top: 12px;
+        right: 12px;
+        left: 12px;
+        width: auto;
       }
 
       .city-label {
@@ -293,11 +424,27 @@
     <div class="timeline-hint">Move the slider to inspect city ownership and ruin states for a selected date.</div>
   </div>
 
+  <div class="map-panel geography-panel">
+    <div class="panel-row">
+      <div class="panel-title">Geography Editor</div>
+      <div id="geography-count" class="timeline-value">0</div>
+    </div>
+    <div class="panel-note">Use the Geoman toolbar on the left to draw markers, lines and polygons. Double-click an object to rename it.</div>
+    <div class="panel-actions">
+      <button id="save-geography" class="panel-button" type="button">Save Geo</button>
+      <button id="export-geography" class="panel-button" type="button">Export GeoJSON</button>
+      <button id="copy-geography" class="panel-button" type="button">Copy JSON</button>
+      <button id="reload-geography" class="panel-button" type="button">Reload file</button>
+    </div>
+    <textarea id="geography-json" class="panel-text" spellcheck="false" readonly></textarea>
+  </div>
+
   <script
     src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
     crossorigin=""
   ></script>
+  <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@2.18.3/dist/leaflet-geoman.min.js"></script>
 
   <script>
     const TILE_SIZE = 512;
@@ -319,6 +466,7 @@
     const ZOOM_OVERVIEW_8 = -4;
     const ZOOM_OVERVIEW_4 = -2;
     const ZOOM_DETAILS = 0;
+    const EDITOR_IS_LOCAL = isLocalEnvironment();
 
     const map = L.map("map", {
       crs: L.CRS.Simple,
@@ -336,7 +484,9 @@
 
     const layers = {
       worldBorder: L.layerGroup().addTo(map),
-      cities: L.layerGroup().addTo(map)
+      cities: L.layerGroup().addTo(map),
+      geography: L.featureGroup().addTo(map),
+      geographyLabels: L.layerGroup().addTo(map)
     };
 
     const runtime = {
@@ -351,12 +501,22 @@
       showFreeCities: true,
       visibleCities: 0,
       totalCities: 0,
+      geographyCount: 0,
+      geographyFileHandle: null,
       tileCount: 0,
       tileModeLabel: "Loading"
     };
 
+    if (EDITOR_IS_LOCAL) {
+      document.body.classList.add("local-edit-enabled");
+    }
+
     function gameToLatLng(x, y) {
       return L.latLng(-y, x);
+    }
+
+    function isLocalEnvironment() {
+      return location.protocol === "file:" || ["localhost", "127.0.0.1", "::1"].includes(location.hostname);
     }
 
     function latLngToGame(latlng) {
@@ -464,7 +624,9 @@
 
     L.control.layers(null, {
       "World border": layers.worldBorder,
-      "Cities": layers.cities
+      "Cities": layers.cities,
+      "Geography": layers.geography,
+      "Geography labels": layers.geographyLabels
     }, {
       collapsed: false
     }).addTo(map);
@@ -478,9 +640,449 @@
         `${runtime.tileModeLabel}`,
         `Tiles: ${runtime.tileCount}`,
         `Cities: ${runtime.visibleCities}/${runtime.totalCities}`,
+        `Geo: ${runtime.geographyCount}`,
         `Date: ${runtime.activeDate ?? "-"}`
       ];
       statusControl.setText(parts.join(" | "));
+    }
+
+    function getLayerKind(layer) {
+      if (layer instanceof L.Marker) return "mountain";
+      if (layer instanceof L.Polygon && !(layer instanceof L.Rectangle)) return "region";
+      if (layer instanceof L.Rectangle) return "region";
+      if (layer instanceof L.Polyline) return "river";
+      return "feature";
+    }
+
+    function getLayerName(layer) {
+      return layer.feature?.properties?.name?.trim() || "";
+    }
+
+    function getFeatureProperties(layer) {
+      return layer.feature?.properties ?? {};
+    }
+
+    function ensureFeatureMetadata(layer) {
+      if (!layer.feature) {
+        layer.feature = {
+          type: "Feature",
+          properties: {}
+        };
+      }
+      if (!layer.feature.properties) {
+        layer.feature.properties = {};
+      }
+      return layer.feature.properties;
+    }
+
+    function promptForFeatureMetadata(layer) {
+      const properties = ensureFeatureMetadata(layer);
+      const currentName = properties.name ?? "";
+      const currentKind = properties.kind ?? getLayerKind(layer);
+      const name = window.prompt("Object name", currentName);
+      if (name === null) return false;
+      const kind = window.prompt("Object type (continent, sea, lake, river, island, mountain, region)", currentKind);
+      if (kind === null) return false;
+      properties.name = name.trim();
+      properties.kind = kind.trim() || currentKind;
+      return true;
+    }
+
+    function getLayerLabelLatLng(layer) {
+      if (layer instanceof L.Marker) return layer.getLatLng();
+      if (typeof layer.getBounds === "function") return layer.getBounds().getCenter();
+      return null;
+    }
+
+    function getLabelClass(kind) {
+      return `geo-label is-${kind || "feature"}`;
+    }
+
+    function flattenLatLngs(latlngs) {
+      if (!Array.isArray(latlngs)) return [];
+      if (!latlngs.length) return [];
+      if (Array.isArray(latlngs[0])) {
+        return flattenLatLngs(latlngs[0]);
+      }
+      return latlngs;
+    }
+
+    function getPolylineLabelLatLng(layer) {
+      const points = flattenLatLngs(layer.getLatLngs());
+      if (!points.length) return null;
+      if (points.length === 1) return points[0];
+
+      let total = 0;
+      const segments = [];
+      for (let i = 1; i < points.length; i += 1) {
+        const length = points[i - 1].distanceTo(points[i]);
+        segments.push(length);
+        total += length;
+      }
+
+      if (!total) {
+        return points[Math.floor(points.length / 2)];
+      }
+
+      const halfway = total / 2;
+      let traversed = 0;
+      for (let i = 1; i < points.length; i += 1) {
+        const segmentLength = segments[i - 1];
+        if (traversed + segmentLength >= halfway) {
+          const ratio = (halfway - traversed) / segmentLength;
+          return L.latLng(
+            points[i - 1].lat + (points[i].lat - points[i - 1].lat) * ratio,
+            points[i - 1].lng + (points[i].lng - points[i - 1].lng) * ratio
+          );
+        }
+        traversed += segmentLength;
+      }
+
+      return points[points.length - 1];
+    }
+
+    function styleGeographyLayer(layer) {
+      const kind = getFeatureProperties(layer).kind ?? getLayerKind(layer);
+      if (layer instanceof L.Marker) {
+        layer.setIcon(L.divIcon({
+          className: "geo-marker-icon",
+          html: `
+            <span class="geo-marker">
+              <span class="geo-marker-pin"></span>
+              <span class="geo-marker-label">${escapeHtml(getLayerName(layer) || kind)}</span>
+            </span>
+          `
+        }));
+        return;
+      }
+
+      const styleByKind = {
+        river: {
+          color: "#76b8ff",
+          weight: 4,
+          opacity: 0.95,
+          lineCap: "round",
+          lineJoin: "round"
+        },
+        lake: {
+          color: "#89c8ff",
+          weight: 1.5,
+          opacity: 0.95,
+          fillColor: "#68b7ff",
+          fillOpacity: 0.25
+        },
+        sea: {
+          color: "#9fd7ff",
+          weight: 1.25,
+          opacity: 0.9,
+          fillColor: "#6ab7f5",
+          fillOpacity: 0.18
+        },
+        continent: {
+          color: "#d7cf9c",
+          weight: 1.5,
+          opacity: 0.82,
+          fillColor: "#8a885e",
+          fillOpacity: 0.08
+        },
+        island: {
+          color: "#e6d39f",
+          weight: 1.5,
+          opacity: 0.9,
+          fillColor: "#9f8c55",
+          fillOpacity: 0.1
+        },
+        region: {
+          color: "#f2dfaa",
+          weight: 1.5,
+          opacity: 0.8,
+          fillOpacity: 0.03,
+          dashArray: "9 6"
+        }
+      };
+      const style = styleByKind[kind] ?? { color: "#d9c27a", weight: 2, opacity: 0.9, fillOpacity: 0.06 };
+      if (typeof layer.setStyle === "function") {
+        layer.setStyle(style);
+      }
+    }
+
+    function bindGeographyInteractions(layer) {
+      if (!EDITOR_IS_LOCAL) return;
+      layer.on("dblclick", function(event) {
+        L.DomEvent.stop(event);
+        if (!promptForFeatureMetadata(layer)) return;
+        refreshGeographyLayer(layer);
+        syncGeographyEditor();
+      });
+    }
+
+    function refreshGeographyLabels() {
+      layers.geographyLabels.clearLayers();
+      let count = 0;
+
+      layers.geography.eachLayer(function(layer) {
+        count += 1;
+        const kind = getFeatureProperties(layer).kind ?? getLayerKind(layer);
+        const name = getLayerName(layer);
+        if (!name) return;
+        const latlng = kind === "river" && layer instanceof L.Polyline
+          ? getPolylineLabelLatLng(layer)
+          : getLayerLabelLatLng(layer);
+        if (!latlng) return;
+
+        L.marker(latlng, {
+          interactive: false,
+          keyboard: false,
+          icon: L.divIcon({
+            className: "geo-label-icon",
+            html: `<span class="${getLabelClass(kind)}">${escapeHtml(name)}</span>`
+          })
+        }).addTo(layers.geographyLabels);
+      });
+
+      runtime.geographyCount = count;
+      document.getElementById("geography-count").textContent = String(count);
+      renderStatus();
+    }
+
+    function refreshGeographyLayer(layer) {
+      styleGeographyLayer(layer);
+      bindGeographyInteractions(layer);
+      const properties = ensureFeatureMetadata(layer);
+      if (!properties.kind) {
+        properties.kind = getLayerKind(layer);
+      }
+      if (!properties.name) {
+        properties.name = "";
+      }
+      const name = properties.name || properties.kind;
+      layer.bindPopup(`
+        <div class="city-popup-title">${escapeHtml(name)}</div>
+        <ul class="city-popup-meta">
+          <li><strong>Type:</strong> ${escapeHtml(properties.kind)}</li>
+          <li><strong>Name:</strong> ${escapeHtml(properties.name || "(empty)")}</li>
+          <li><strong>Tip:</strong> ${escapeHtml(EDITOR_IS_LOCAL ? "Double-click to edit metadata" : "Read-only on public map")}</li>
+        </ul>
+      `);
+      refreshGeographyLabels();
+    }
+
+    function latLngsToGameCoordinates(latlngs) {
+      if (!Array.isArray(latlngs)) return [];
+      if (!latlngs.length) return [];
+      if (Array.isArray(latlngs[0])) {
+        return latlngs.map(latLngsToGameCoordinates);
+      }
+      return latlngs.map((latlng) => {
+        const point = latLngToGame(latlng);
+        return [point.x, point.y];
+      });
+    }
+
+    function featureGeometryFromLayer(layer) {
+      if (layer instanceof L.Marker) {
+        const point = latLngToGame(layer.getLatLng());
+        return {
+          type: "Point",
+          coordinates: [point.x, point.y]
+        };
+      }
+
+      if (layer instanceof L.Polygon) {
+        return {
+          type: "Polygon",
+          coordinates: latLngsToGameCoordinates(layer.getLatLngs())
+        };
+      }
+
+      if (layer instanceof L.Polyline) {
+        return {
+          type: "LineString",
+          coordinates: latLngsToGameCoordinates(layer.getLatLngs())
+        };
+      }
+
+      return null;
+    }
+
+    function serializeGeographyObject() {
+      const features = [];
+      layers.geography.eachLayer(function(layer) {
+        const geometry = featureGeometryFromLayer(layer);
+        if (!geometry) return;
+
+        features.push({
+          type: "Feature",
+          properties: { ...ensureFeatureMetadata(layer) },
+          geometry
+        });
+      });
+
+      return {
+        type: "FeatureCollection",
+        features
+      };
+    }
+
+    function serializeGeography() {
+      const featureCollection = serializeGeographyObject();
+      const json = JSON.stringify(featureCollection, null, 2);
+      document.getElementById("geography-json").value = json;
+      return json;
+    }
+
+    function syncGeographyEditor() {
+      serializeGeography();
+      refreshGeographyLabels();
+    }
+
+    function attachGeographyLayer(layer, skipPrompt = false) {
+      if (!layer) return;
+      ensureFeatureMetadata(layer);
+      if (!skipPrompt && EDITOR_IS_LOCAL) {
+        promptForFeatureMetadata(layer);
+      }
+      layers.geography.addLayer(layer);
+      refreshGeographyLayer(layer);
+      syncGeographyEditor();
+    }
+
+    function geometryToLayer(geometry) {
+      if (!geometry?.type) return null;
+
+      if (geometry.type === "Point") {
+        const [x, y] = geometry.coordinates ?? [];
+        if (!Number.isFinite(x) || !Number.isFinite(y)) return null;
+        return L.marker(gameToLatLng(x, y));
+      }
+
+      if (geometry.type === "LineString") {
+        const latlngs = (geometry.coordinates ?? []).map(([x, y]) => gameToLatLng(x, y));
+        return L.polyline(latlngs);
+      }
+
+      if (geometry.type === "Polygon") {
+        const rings = (geometry.coordinates ?? []).map((ring) =>
+          ring.map(([x, y]) => gameToLatLng(x, y))
+        );
+        return L.polygon(rings);
+      }
+
+      return null;
+    }
+
+    async function loadGeography() {
+      try {
+        const geojson = await fetchJson("data/geography.json");
+        layers.geography.clearLayers();
+        layers.geographyLabels.clearLayers();
+
+        for (const feature of geojson?.features ?? []) {
+          const layer = geometryToLayer(feature.geometry);
+          if (!layer) continue;
+          layer.feature = {
+            type: "Feature",
+            properties: { ...(feature.properties ?? {}) }
+          };
+          attachGeographyLayer(layer, true);
+        }
+      } catch (error) {
+        if (String(error.message).includes("404")) {
+          syncGeographyEditor();
+          return;
+        }
+        throw error;
+      }
+    }
+
+    function downloadTextFile(filename, content) {
+      const blob = new Blob([content], { type: "application/geo+json;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    async function saveGeographyToFile() {
+      if (!EDITOR_IS_LOCAL) return;
+
+      const json = serializeGeography();
+      if (!window.showSaveFilePicker) {
+        downloadTextFile("geography.json", json);
+        return;
+      }
+
+      try {
+        if (!runtime.geographyFileHandle) {
+          runtime.geographyFileHandle = await window.showSaveFilePicker({
+            suggestedName: "geography.json",
+            types: [
+              {
+                description: "GeoJSON",
+                accept: {
+                  "application/json": [".json"],
+                  "application/geo+json": [".geojson", ".json"]
+                }
+              }
+            ]
+          });
+        }
+
+        const writable = await runtime.geographyFileHandle.createWritable();
+        await writable.write(json);
+        await writable.close();
+        renderStatus();
+        statusControl.setText("Geography saved");
+      } catch (error) {
+        if (error?.name === "AbortError") return;
+        throw error;
+      }
+    }
+
+    async function configureGeoman() {
+      if (!EDITOR_IS_LOCAL) return;
+      if (!map.pm) {
+        throw new Error("Leaflet-Geoman did not initialize");
+      }
+
+      map.pm.setGlobalOptions({
+        layerGroup: layers.geography,
+        continueDrawing: false,
+        snapSegment: true,
+        snapVertex: true,
+        snappable: true
+      });
+
+      map.pm.addControls({
+        position: "topleft",
+        drawMarker: true,
+        drawPolyline: true,
+        drawRectangle: true,
+        drawPolygon: true,
+        editMode: true,
+        dragMode: true,
+        removalMode: true,
+        drawCircle: false,
+        drawCircleMarker: false,
+        cutPolygon: false
+      });
+
+      map.on("pm:create", function(event) {
+        if (!event.layer) return;
+        attachGeographyLayer(event.layer);
+      });
+
+      map.on("pm:edit", function() {
+        syncGeographyEditor();
+      });
+
+      map.on("pm:remove", function() {
+        syncGeographyEditor();
+      });
     }
 
     function showOnly(groupToShow) {
@@ -731,6 +1333,7 @@
       map.fitBounds(mapBounds);
       updateZoomLayers();
       await loadCities();
+      await loadGeography();
     }
 
     document.getElementById("toggle-ruins").addEventListener("change", function(event) {
@@ -757,13 +1360,47 @@
       setActiveDateByIndex(Number(event.target.value));
     });
 
+    if (EDITOR_IS_LOCAL) {
+      document.getElementById("save-geography").addEventListener("click", function() {
+        saveGeographyToFile().catch((error) => {
+          console.error(error);
+          statusControl.setText(`Error: ${error.message}`);
+        });
+      });
+
+      document.getElementById("export-geography").addEventListener("click", function() {
+        downloadTextFile("geography.json", serializeGeography());
+      });
+
+      document.getElementById("copy-geography").addEventListener("click", async function() {
+        const json = serializeGeography();
+        try {
+          await navigator.clipboard.writeText(json);
+        } catch (error) {
+          console.warn("Clipboard write failed", error);
+        }
+      });
+
+      document.getElementById("reload-geography").addEventListener("click", function() {
+        loadGeography().catch((error) => {
+          console.error(error);
+          statusControl.setText(`Error: ${error.message}`);
+        });
+      });
+    }
+
     map.on("zoomend", updateZoomLayers);
 
-    loadMap().catch((error) => {
-      console.error(error);
-      statusControl.setText(`Error: ${error.message}`);
-      alert(error.message);
-    });
+    (async function bootstrap() {
+      try {
+        await loadMap();
+        await configureGeoman();
+      } catch (error) {
+        console.error(error);
+        statusControl.setText(`Error: ${error.message}`);
+        alert(error.message);
+      }
+    })();
   </script>
 </body>
 </html>
