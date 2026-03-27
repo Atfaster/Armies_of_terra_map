@@ -96,6 +96,24 @@
       color: var(--muted-text);
     }
 
+    .checkbox-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .nation-filters {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      max-height: 220px;
+      overflow: auto;
+    }
+
+    .nation-filters .panel-title {
+      margin-bottom: 10px;
+    }
+
     .checkbox-row input {
       margin: 0;
     }
@@ -161,6 +179,19 @@
       background-size: 6px 6px;
     }
 
+    .city-marker.is-capital:not(.is-ruins) .city-pin {
+      width: 20px;
+      height: 20px;
+      border: 0;
+      border-radius: 0;
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 92%, 50% 71%, 21% 92%, 32% 57%, 2% 35%, 39% 35%);
+      box-shadow: none;
+      filter:
+        drop-shadow(0 0 0 rgba(0, 0, 0, 0.01))
+        drop-shadow(0 0 0 2px rgba(12, 16, 22, 0.95))
+        drop-shadow(0 0 0 4px rgba(255, 255, 255, 0.18));
+    }
+
     .city-label {
       display: inline-block;
       padding: 3px 8px;
@@ -215,10 +246,28 @@
 
   <div class="map-panel filter-panel">
     <div class="panel-title">City Filters</div>
-    <label class="checkbox-row">
-      <input id="toggle-ruins" type="checkbox" checked />
-      <span>Show ruins</span>
-    </label>
+    <div class="checkbox-list">
+      <label class="checkbox-row">
+        <input id="toggle-capitals" type="checkbox" checked />
+        <span>Show capitals</span>
+      </label>
+      <label class="checkbox-row">
+        <input id="toggle-national" type="checkbox" checked />
+        <span>Show national cities</span>
+      </label>
+      <label class="checkbox-row">
+        <input id="toggle-free" type="checkbox" checked />
+        <span>Show free cities</span>
+      </label>
+      <label class="checkbox-row">
+        <input id="toggle-ruins" type="checkbox" checked />
+        <span>Show ruins</span>
+      </label>
+    </div>
+    <div class="nation-filters">
+      <div class="panel-title">Nations</div>
+      <div id="nation-filters" class="checkbox-list"></div>
+    </div>
   </div>
 
   <div class="map-panel timeline-panel">
@@ -267,9 +316,13 @@
     const runtime = {
       cityDataset: null,
       nationById: new Map(),
+      nationVisibility: new Map(),
       activeDate: null,
       timelineDates: [],
       showRuins: true,
+      showCapitals: true,
+      showNationalCities: true,
+      showFreeCities: true,
       visibleCities: 0,
       totalCities: 0,
       tileCount: 0,
@@ -308,6 +361,7 @@
     function formatDate(isoDate) {
       if (!isoDate) return "No date";
       const date = new Date(`${isoDate}T00:00:00Z`);
+      if (Number.isNaN(date.getTime())) return isoDate;
       return new Intl.DateTimeFormat("ru-RU", {
         year: "numeric",
         month: "short",
@@ -458,6 +512,7 @@
       const color = getCityColor(state);
       const classes = ["city-marker"];
       if (state.status === "ruins") classes.push("is-ruins");
+      if (state.is_capital) classes.push("is-capital");
 
       return L.divIcon({
         className: "city-icon",
@@ -478,6 +533,7 @@
         <div class="city-popup-title">${escapeHtml(state.label || city.name)}</div>
         <ul class="city-popup-meta">
           <li><strong>Status:</strong> ${escapeHtml(describeStatus(state.status))}</li>
+          <li><strong>Capital:</strong> ${state.is_capital ? "Yes" : "No"}</li>
           <li><strong>Nation:</strong> ${escapeHtml(nation?.name ?? "Free city")}</li>
           <li><strong>Coordinates:</strong> X ${city.x}, Y ${city.y}</li>
           <li><strong>Active from:</strong> ${escapeHtml(formatDate(state.from))}</li>
@@ -504,6 +560,10 @@
         const state = resolveCityState(city, runtime.activeDate);
         if (!state) continue;
         if (state.status === "ruins" && !runtime.showRuins) continue;
+        if (state.status !== "ruins" && state.is_capital && !runtime.showCapitals) continue;
+        if (state.status !== "ruins" && !state.is_capital && state.nation_id && !runtime.showNationalCities) continue;
+        if (state.status !== "ruins" && !state.nation_id && !runtime.showFreeCities) continue;
+        if (state.nation_id && runtime.nationVisibility.get(state.nation_id) === false) continue;
 
         const marker = L.marker(gameToLatLng(city.x, city.y), {
           icon: buildCityIcon(city, state),
@@ -552,6 +612,32 @@
       renderCities();
     }
 
+    function renderNationFilters() {
+      const container = document.getElementById("nation-filters");
+      container.innerHTML = "";
+
+      for (const nation of runtime.cityDataset?.nations ?? []) {
+        if (!runtime.nationVisibility.has(nation.id)) {
+          runtime.nationVisibility.set(nation.id, true);
+        }
+
+        const label = document.createElement("label");
+        label.className = "checkbox-row";
+        label.innerHTML = `
+          <input type="checkbox" data-nation-id="${escapeHtml(nation.id)}" ${runtime.nationVisibility.get(nation.id) ? "checked" : ""} />
+          <span>${escapeHtml(nation.name)}</span>
+        `;
+
+        const input = label.querySelector("input");
+        input.addEventListener("change", function(event) {
+          runtime.nationVisibility.set(nation.id, event.target.checked);
+          renderCities();
+        });
+
+        container.appendChild(label);
+      }
+    }
+
     async function loadCities() {
       const dataset = await fetchJson("data/cities.json");
       const validated = validateCityDataset(dataset);
@@ -561,9 +647,11 @@
         cities: validated.cities
       };
       runtime.nationById = new Map(validated.nations.map((nation) => [nation.id, nation]));
+      runtime.nationVisibility = new Map(validated.nations.map((nation) => [nation.id, true]));
       runtime.timelineDates = validated.timelineDates;
       runtime.activeDate = dataset?.timeline?.default_date ?? validated.timelineDates[validated.timelineDates.length - 1] ?? null;
 
+      renderNationFilters();
       syncTimelineUi();
       renderCities();
     }
@@ -595,6 +683,21 @@
 
     document.getElementById("toggle-ruins").addEventListener("change", function(event) {
       runtime.showRuins = event.target.checked;
+      renderCities();
+    });
+
+    document.getElementById("toggle-capitals").addEventListener("change", function(event) {
+      runtime.showCapitals = event.target.checked;
+      renderCities();
+    });
+
+    document.getElementById("toggle-national").addEventListener("change", function(event) {
+      runtime.showNationalCities = event.target.checked;
+      renderCities();
+    });
+
+    document.getElementById("toggle-free").addEventListener("change", function(event) {
+      runtime.showFreeCities = event.target.checked;
       renderCities();
     });
 
