@@ -163,6 +163,7 @@
     .city-pin {
       width: 14px;
       height: 14px;
+      position: relative;
       border-radius: 999px;
       border: 2px solid rgba(12, 16, 22, 0.95);
       background: var(--marker-color);
@@ -184,12 +185,25 @@
       height: 20px;
       border: 0;
       border-radius: 0;
-      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 92%, 50% 71%, 21% 92%, 32% 57%, 2% 35%, 39% 35%);
+      background: transparent;
       box-shadow: none;
-      filter:
-        drop-shadow(0 0 0 rgba(0, 0, 0, 0.01))
-        drop-shadow(0 0 0 2px rgba(12, 16, 22, 0.95))
-        drop-shadow(0 0 0 4px rgba(255, 255, 255, 0.18));
+    }
+
+    .city-marker.is-capital:not(.is-ruins) .city-pin::before,
+    .city-marker.is-capital:not(.is-ruins) .city-pin::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 92%, 50% 71%, 21% 92%, 32% 57%, 2% 35%, 39% 35%);
+    }
+
+    .city-marker.is-capital:not(.is-ruins) .city-pin::before {
+      background: rgba(12, 16, 22, 0.95);
+    }
+
+    .city-marker.is-capital:not(.is-ruins) .city-pin::after {
+      inset: 3px;
+      background: var(--marker-color);
     }
 
     .city-label {
