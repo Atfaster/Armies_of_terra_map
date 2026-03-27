@@ -205,6 +205,27 @@
       color: var(--panel-text);
     }
 
+    .leaflet-geo-kind-section {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .leaflet-geo-kind-title {
+      margin: 0 0 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-color);
+    }
+
+    .leaflet-geo-kind-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
     .city-icon {
       background: transparent;
       border: 0;
@@ -280,18 +301,35 @@
       margin-bottom: 6px;
       font-size: 15px;
       font-weight: 700;
+      color: #f8fafc;
     }
 
     .city-popup-meta {
       margin: 0;
       padding: 0;
       list-style: none;
-      color: #e5e7eb;
+      color: #dbe4ee;
       font-size: 13px;
     }
 
     .city-popup-meta li + li {
       margin-top: 4px;
+    }
+
+    .city-popup-meta strong {
+      color: #f8fafc;
+    }
+
+    .leaflet-popup-content-wrapper,
+    .leaflet-popup-tip {
+      background: rgba(15, 23, 42, 0.96);
+      color: #e5edf7;
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.38);
+    }
+
+    .leaflet-popup-content {
+      margin: 12px 14px;
+      color: #e5edf7;
     }
 
     .geo-label {
@@ -502,7 +540,10 @@
       visibleCities: 0,
       totalCities: 0,
       geographyCount: 0,
+      geographyEntries: [],
+      geographyKindVisibility: new Map(),
       geographyFileHandle: null,
+      geographyDirty: false,
       tileCount: 0,
       tileModeLabel: "Loading"
     };
@@ -622,14 +663,19 @@
     coordControl.addTo(map);
     statusControl.addTo(map);
 
-    L.control.layers(null, {
-      "World border": layers.worldBorder,
-      "Cities": layers.cities,
-      "Geography": layers.geography,
-      "Geography labels": layers.geographyLabels
+    const layerControl = L.control.layers(null, {
+      "World border": layers.worldBorder
     }, {
       collapsed: false
     }).addTo(map);
+
+    const geographyKindSection = document.createElement("div");
+    geographyKindSection.className = "leaflet-geo-kind-section";
+    geographyKindSection.innerHTML = `
+      <div class="leaflet-geo-kind-title">Geography</div>
+      <div id="geography-filters" class="leaflet-geo-kind-list"></div>
+    `;
+    layerControl.getContainer().querySelector(".leaflet-control-layers-list").appendChild(geographyKindSection);
 
     map.on("mousemove", function(event) {
       coordControl.update(event.latlng);
@@ -660,6 +706,11 @@
 
     function getFeatureProperties(layer) {
       return layer.feature?.properties ?? {};
+    }
+
+    function normalizeKind(kind) {
+      const value = String(kind ?? "").trim().toLowerCase();
+      return value || "feature";
     }
 
     function ensureFeatureMetadata(layer) {
@@ -696,6 +747,35 @@
 
     function getLabelClass(kind) {
       return `geo-label is-${kind || "feature"}`;
+    }
+
+    function markGeographyDirty() {
+      if (!EDITOR_IS_LOCAL) return;
+      runtime.geographyDirty = true;
+    }
+
+    function markGeographySaved() {
+      runtime.geographyDirty = false;
+    }
+
+    function isGeographyKindVisible(kind) {
+      return runtime.geographyKindVisibility.get(normalizeKind(kind)) !== false;
+    }
+
+    function collectGeographyKinds() {
+      const kinds = new Set();
+      for (const entry of runtime.geographyEntries) {
+        kinds.add(normalizeKind(getFeatureProperties(entry.layer).kind ?? getLayerKind(entry.layer)));
+      }
+      return Array.from(kinds).sort();
+    }
+
+    function formatKindLabel(kind) {
+      return kind
+        .split(/[_\-\s]+/)
+        .filter(Boolean)
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+        .join(" ");
     }
 
     function flattenLatLngs(latlngs) {
@@ -811,6 +891,7 @@
       layer.on("dblclick", function(event) {
         L.DomEvent.stop(event);
         if (!promptForFeatureMetadata(layer)) return;
+        markGeographyDirty();
         refreshGeographyLayer(layer);
         syncGeographyEditor();
       });
@@ -820,15 +901,17 @@
       layers.geographyLabels.clearLayers();
       let count = 0;
 
-      layers.geography.eachLayer(function(layer) {
+      for (const entry of runtime.geographyEntries) {
+        const layer = entry.layer;
         count += 1;
         const kind = getFeatureProperties(layer).kind ?? getLayerKind(layer);
+        if (!isGeographyKindVisible(kind)) continue;
         const name = getLayerName(layer);
-        if (!name) return;
+        if (!name) continue;
         const latlng = kind === "river" && layer instanceof L.Polyline
           ? getPolylineLabelLatLng(layer)
           : getLayerLabelLatLng(layer);
-        if (!latlng) return;
+        if (!latlng) continue;
 
         L.marker(latlng, {
           interactive: false,
@@ -838,11 +921,50 @@
             html: `<span class="${getLabelClass(kind)}">${escapeHtml(name)}</span>`
           })
         }).addTo(layers.geographyLabels);
-      });
+      }
 
       runtime.geographyCount = count;
       document.getElementById("geography-count").textContent = String(count);
       renderStatus();
+    }
+
+    function renderGeographyKindFilters() {
+      const container = document.getElementById("geography-filters");
+      container.innerHTML = "";
+
+      for (const kind of collectGeographyKinds()) {
+        if (!runtime.geographyKindVisibility.has(kind)) {
+          runtime.geographyKindVisibility.set(kind, true);
+        }
+
+        const label = document.createElement("label");
+        label.className = "checkbox-row";
+        label.innerHTML = `
+          <input type="checkbox" data-geo-kind="${escapeHtml(kind)}" ${runtime.geographyKindVisibility.get(kind) ? "checked" : ""} />
+          <span>${escapeHtml(formatKindLabel(kind))}</span>
+        `;
+
+        label.querySelector("input").addEventListener("change", function(event) {
+          runtime.geographyKindVisibility.set(kind, event.target.checked);
+          renderGeography();
+        });
+
+        container.appendChild(label);
+      }
+    }
+
+    function renderGeography() {
+      layers.geography.clearLayers();
+      layers.geographyLabels.clearLayers();
+
+      for (const entry of runtime.geographyEntries) {
+        const layer = entry.layer;
+        const kind = getFeatureProperties(layer).kind ?? getLayerKind(layer);
+        if (!isGeographyKindVisible(kind)) continue;
+        layers.geography.addLayer(layer);
+      }
+
+      refreshGeographyLabels();
     }
 
     function refreshGeographyLayer(layer) {
@@ -864,7 +986,8 @@
           <li><strong>Tip:</strong> ${escapeHtml(EDITOR_IS_LOCAL ? "Double-click to edit metadata" : "Read-only on public map")}</li>
         </ul>
       `);
-      refreshGeographyLabels();
+      renderGeographyKindFilters();
+      renderGeography();
     }
 
     function latLngsToGameCoordinates(latlngs) {
@@ -907,16 +1030,17 @@
 
     function serializeGeographyObject() {
       const features = [];
-      layers.geography.eachLayer(function(layer) {
+      for (const entry of runtime.geographyEntries) {
+        const layer = entry.layer;
         const geometry = featureGeometryFromLayer(layer);
-        if (!geometry) return;
+        if (!geometry) continue;
 
         features.push({
           type: "Feature",
           properties: { ...ensureFeatureMetadata(layer) },
           geometry
         });
-      });
+      }
 
       return {
         type: "FeatureCollection",
@@ -942,7 +1066,9 @@
       if (!skipPrompt && EDITOR_IS_LOCAL) {
         promptForFeatureMetadata(layer);
       }
-      layers.geography.addLayer(layer);
+      if (!runtime.geographyEntries.some((entry) => entry.layer === layer)) {
+        runtime.geographyEntries.push({ layer });
+      }
       refreshGeographyLayer(layer);
       syncGeographyEditor();
     }
@@ -974,6 +1100,7 @@
     async function loadGeography() {
       try {
         const geojson = await fetchJson("data/geography.json");
+        runtime.geographyEntries = [];
         layers.geography.clearLayers();
         layers.geographyLabels.clearLayers();
 
@@ -986,9 +1113,11 @@
           };
           attachGeographyLayer(layer, true);
         }
+        markGeographySaved();
       } catch (error) {
         if (String(error.message).includes("404")) {
           syncGeographyEditor();
+          markGeographySaved();
           return;
         }
         throw error;
@@ -1035,6 +1164,7 @@
         const writable = await runtime.geographyFileHandle.createWritable();
         await writable.write(json);
         await writable.close();
+        markGeographySaved();
         renderStatus();
         statusControl.setText("Geography saved");
       } catch (error) {
@@ -1073,14 +1203,20 @@
 
       map.on("pm:create", function(event) {
         if (!event.layer) return;
+        markGeographyDirty();
         attachGeographyLayer(event.layer);
       });
 
       map.on("pm:edit", function() {
+        markGeographyDirty();
         syncGeographyEditor();
       });
 
-      map.on("pm:remove", function() {
+      map.on("pm:remove", function(event) {
+        if (event.layer) {
+          runtime.geographyEntries = runtime.geographyEntries.filter((entry) => entry.layer !== event.layer);
+        }
+        markGeographyDirty();
         syncGeographyEditor();
       });
     }
@@ -1390,6 +1526,14 @@
     }
 
     map.on("zoomend", updateZoomLayers);
+
+    window.addEventListener("beforeunload", function(event) {
+      if (!EDITOR_IS_LOCAL || !runtime.geographyDirty) return;
+      const message = "You have unsaved geography changes. Leaving this page may discard them.";
+      event.preventDefault();
+      event.returnValue = message;
+      return message;
+    });
 
     (async function bootstrap() {
       try {
