@@ -7496,6 +7496,74 @@
           ]
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "West NovyGrad Road",
+        "kind": "сoncrete road"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            3251,
+            1942
+          ],
+          [
+            2981,
+            1942
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "NovyGrad - Kyiv road",
+        "kind": "concrete road"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            3396,
+            1941
+          ],
+          [
+            3412,
+            1941
+          ],
+          [
+            3426,
+            1954
+          ],
+          [
+            3426,
+            2045
+          ],
+          [
+            3434,
+            2056
+          ],
+          [
+            3435,
+            2129
+          ],
+          [
+            3426,
+            2146
+          ],
+          [
+            3422,
+            2158
+          ],
+          [
+            3423,
+            2319
+          ]
+        ]
+      }
     }
   ]
 }

@@ -848,6 +848,21 @@
         .join(" ");
     }
 
+    function getKindSortOrder(kind) {
+      const normalizedKind = normalizeKind(kind);
+      const orderMap = new Map([
+        ["continent", 10],
+        ["island", 20],
+        ["sea", 30],
+        ["region", 40],
+        ["lake", 50],
+        ["river", 60],
+        ["mountain", 70],
+        ["feature", 80]
+      ]);
+      return orderMap.get(normalizedKind) ?? 80;
+    }
+
     function flattenLatLngs(latlngs) {
       if (!Array.isArray(latlngs)) return [];
       if (!latlngs.length) return [];
@@ -912,6 +927,20 @@
         river: {
           color: "#76b8ff",
           weight: 4,
+          opacity: 0.95,
+          lineCap: "round",
+          lineJoin: "round"
+        },
+        channel: {
+          color: "#76b8ff",
+          weight: 4,
+          opacity: 0.95,
+          lineCap: "round",
+          lineJoin: "round"
+        },
+        "concrete road": {
+          color: "#4b5563",
+          weight: 3,
           opacity: 0.95,
           lineCap: "round",
           lineJoin: "round"
@@ -1005,7 +1034,13 @@
       const container = document.getElementById("geography-filters");
       container.innerHTML = "";
 
-      for (const kind of collectGeographyKinds()) {
+      const sortedKinds = collectGeographyKinds().sort((left, right) => {
+        const orderDiff = getKindSortOrder(left) - getKindSortOrder(right);
+        if (orderDiff !== 0) return orderDiff;
+        return left.localeCompare(right);
+      });
+
+      for (const kind of sortedKinds) {
         if (!runtime.geographyKindVisibility.has(kind)) {
           runtime.geographyKindVisibility.set(kind, true);
         }
