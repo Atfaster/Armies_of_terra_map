@@ -238,6 +238,12 @@
       border-top: 1px solid rgba(255, 255, 255, 0.12);
     }
 
+    .leaflet-geo-kind-section.is-inline-first {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: 0;
+    }
+
     .leaflet-geo-kind-title {
       margin: 0 0 8px;
       font-size: 11px;
@@ -287,8 +293,8 @@
     }
 
     .city-marker.is-capital:not(.is-ruins) .city-pin {
-      width: 20px;
-      height: 20px;
+      width: 30px;
+      height: 30px;
       border: 0;
       border-radius: 0;
       background: transparent;
@@ -308,7 +314,7 @@
     }
 
     .city-marker.is-capital:not(.is-ruins) .city-pin::after {
-      inset: 3px;
+      inset: 5px;
       background: var(--marker-color);
     }
 
@@ -711,7 +717,7 @@
     }).addTo(map);
 
     const geographyKindSection = document.createElement("div");
-    geographyKindSection.className = "leaflet-geo-kind-section";
+    geographyKindSection.className = "leaflet-geo-kind-section is-inline-first";
     geographyKindSection.innerHTML = `
       <label class="checkbox-row">
         <input id="toggle-raster-map" type="checkbox" checked />
