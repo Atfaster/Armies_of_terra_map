@@ -1,17 +1,22 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-03-26T23:31:35+00:00",
+  "generated_at": "2026-03-27T01:08:07+00:00",
   "timeline": {
     "dates": [
-      "2026-03-25"
+      "2026-03-27"
     ],
-    "default_date": "2026-03-25"
+    "default_date": "2026-03-27"
   },
   "nations": [
     {
       "id": "avernia",
       "name": "Avernia",
       "color": "#d46f35"
+    },
+    {
+      "id": "avernia-capital",
+      "name": "Avernia capital",
+      "color": "#9cd435"
     },
     {
       "id": "eleftheria",
@@ -22,6 +27,21 @@
       "id": "fryjarl",
       "name": "Fryjarl",
       "color": "#d4a435"
+    },
+    {
+      "id": "visigoth",
+      "name": "Visigoth",
+      "color": "#35d497"
+    },
+    {
+      "id": "warbound",
+      "name": "Warbound",
+      "color": "#35d479"
+    },
+    {
+      "id": "warbound-capital",
+      "name": "Warbound capital",
+      "color": "#3591d4"
     }
   ],
   "cities": [
@@ -33,17 +53,17 @@
       "y": 200,
       "states": [
         {
-          "from": "2026-03-25",
+          "from": "2026-03-27",
           "to": null,
           "status": "active",
-          "nation_id": null,
+          "nation_id": "eleftheria",
           "label": "Aachen",
           "tags": [],
           "source": {
             "type": "journeymap-waypoint",
-            "file": "town-Aachen_670-88-200.json",
-            "waypoint_id": "town-Aachen_670-88-200",
-            "waypoint_name": "town Aachen"
+            "file": "town-Aachen-nation-Eleftheria_670-88-200.json",
+            "waypoint_id": "town-Aachen-nation-Eleftheria_670-88-200",
+            "waypoint_name": "town Aachen nation Eleftheria"
           }
         }
       ]
@@ -56,7 +76,7 @@
       "y": -3830,
       "states": [
         {
-          "from": "2026-03-25",
+          "from": "2026-03-27",
           "to": null,
           "status": "active",
           "nation_id": null,
@@ -72,29 +92,6 @@
       ]
     },
     {
-      "id": "ckeezy",
-      "name": "Ckeezy",
-      "kind": "city",
-      "x": 5400,
-      "y": -800,
-      "states": [
-        {
-          "from": "2026-03-25",
-          "to": null,
-          "status": "active",
-          "nation_id": null,
-          "label": "Ckeezy",
-          "tags": [],
-          "source": {
-            "type": "journeymap-waypoint",
-            "file": "town-Ckeezy_5400-62-800.json",
-            "waypoint_id": "town-Ckeezy_5400-62-800",
-            "waypoint_name": "town Ckeezy"
-          }
-        }
-      ]
-    },
-    {
       "id": "cornbreadvil",
       "name": "Cornbreadvil",
       "kind": "city",
@@ -102,7 +99,7 @@
       "y": 5200,
       "states": [
         {
-          "from": "2026-03-25",
+          "from": "2026-03-27",
           "to": null,
           "status": "active",
           "nation_id": null,
@@ -118,6 +115,52 @@
       ]
     },
     {
+      "id": "corvinburg",
+      "name": "Corvinburg",
+      "kind": "city",
+      "x": 5424,
+      "y": -890,
+      "states": [
+        {
+          "from": "2026-03-27",
+          "to": null,
+          "status": "active",
+          "nation_id": "avernia-capital",
+          "label": "Corvinburg",
+          "tags": [],
+          "source": {
+            "type": "journeymap-waypoint",
+            "file": "town-Corvinburg-nation-Avernia-capital_5424-86-890.json",
+            "waypoint_id": "town-Corvinburg-nation-Avernia-capital_5424-86-890",
+            "waypoint_name": "town Corvinburg nation Avernia capital"
+          }
+        }
+      ]
+    },
+    {
+      "id": "crimea",
+      "name": "Crimea",
+      "kind": "city",
+      "x": 2894,
+      "y": 3761,
+      "states": [
+        {
+          "from": "2026-03-27",
+          "to": null,
+          "status": "active",
+          "nation_id": "warbound",
+          "label": "Crimea",
+          "tags": [],
+          "source": {
+            "type": "journeymap-waypoint",
+            "file": "town-Crimea-nation-Warbound_2894-82-3761.json",
+            "waypoint_id": "town-Crimea-nation-Warbound_2894-82-3761",
+            "waypoint_name": "town Crimea nation Warbound"
+          }
+        }
+      ]
+    },
+    {
       "id": "driftmark",
       "name": "Driftmark",
       "kind": "city",
@@ -125,7 +168,7 @@
       "y": 8400,
       "states": [
         {
-          "from": "2026-03-25",
+          "from": "2026-03-27",
           "to": null,
           "status": "active",
           "nation_id": null,
@@ -148,7 +191,7 @@
       "y": 2787,
       "states": [
         {
-          "from": "2026-03-25",
+          "from": "2026-03-27",
           "to": null,
           "status": "active",
           "nation_id": null,
@@ -171,7 +214,7 @@
       "y": 5753,
       "states": [
         {
-          "from": "2026-03-25",
+          "from": "2026-03-27",
           "to": null,
           "status": "active",
           "nation_id": null,
@@ -194,7 +237,7 @@
       "y": -504,
       "states": [
         {
-          "from": "2026-03-25",
+          "from": "2026-03-27",
           "to": null,
           "status": "ruins",
           "nation_id": null,
@@ -204,32 +247,32 @@
           ],
           "source": {
             "type": "journeymap-waypoint",
-            "file": "town-bankrupt-FortCreed_2682-74-504.json",
-            "waypoint_id": "town-bankrupt-FortCreed_2682-74-504",
-            "waypoint_name": "town bankrupt FortCreed"
+            "file": "town-FortCreed-bankrupt_2682-74-504.json",
+            "waypoint_id": "town-FortCreed-bankrupt_2682-74-504",
+            "waypoint_name": "town FortCreed bankrupt"
           }
         }
       ]
     },
     {
-      "id": "fortvon-home-chank",
-      "name": "FortVon home chank",
+      "id": "fortvon",
+      "name": "FortVon",
       "kind": "city",
       "x": -2585,
       "y": 5385,
       "states": [
         {
-          "from": "2026-03-25",
+          "from": "2026-03-27",
           "to": null,
           "status": "active",
-          "nation_id": null,
-          "label": "FortVon home chank",
+          "nation_id": "warbound",
+          "label": "FortVon",
           "tags": [],
           "source": {
             "type": "journeymap-waypoint",
-            "file": "town-FortVon-home-chank_-2585-89-5385.json",
-            "waypoint_id": "town-FortVon-home-chank_-2585-89-5385",
-            "waypoint_name": "town FortVon home chank"
+            "file": "town-FortVon-nation-Warbound_-2585-89-5385.json",
+            "waypoint_id": "town-FortVon-nation-Warbound_-2585-89-5385",
+            "waypoint_name": "town FortVon nation Warbound"
           }
         }
       ]
@@ -242,17 +285,17 @@
       "y": 2288,
       "states": [
         {
-          "from": "2026-03-25",
+          "from": "2026-03-27",
           "to": null,
           "status": "active",
-          "nation_id": null,
+          "nation_id": "fryjarl",
           "label": "Fryjard",
           "tags": [],
           "source": {
             "type": "journeymap-waypoint",
-            "file": "town-Fryjard_7682-73-2288.json",
-            "waypoint_id": "town-Fryjard_7682-73-2288",
-            "waypoint_name": "town Fryjard"
+            "file": "town-Fryjard-nation-Fryjarl_7682-73-2288.json",
+            "waypoint_id": "town-Fryjard-nation-Fryjarl_7682-73-2288",
+            "waypoint_name": "town Fryjard nation Fryjarl"
           }
         }
       ]
@@ -265,7 +308,7 @@
       "y": 2808,
       "states": [
         {
-          "from": "2026-03-25",
+          "from": "2026-03-27",
           "to": null,
           "status": "active",
           "nation_id": "fryjarl",
@@ -288,7 +331,7 @@
       "y": 2035,
       "states": [
         {
-          "from": "2026-03-25",
+          "from": "2026-03-27",
           "to": null,
           "status": "ruins",
           "nation_id": null,
@@ -298,9 +341,9 @@
           ],
           "source": {
             "type": "journeymap-waypoint",
-            "file": "town-ruin-Grievys_2015-82-2035.json",
-            "waypoint_id": "town-ruin-Grievys_2015-82-2035",
-            "waypoint_name": "town ruin Grievys"
+            "file": "town-Grievys-ruin_2015-82-2035.json",
+            "waypoint_id": "town-Grievys-ruin_2015-82-2035",
+            "waypoint_name": "town Grievys ruin"
           }
         }
       ]
@@ -313,17 +356,17 @@
       "y": -4642,
       "states": [
         {
-          "from": "2026-03-25",
+          "from": "2026-03-27",
           "to": null,
           "status": "active",
-          "nation_id": null,
+          "nation_id": "warbound",
           "label": "Havenport",
           "tags": [],
           "source": {
             "type": "journeymap-waypoint",
-            "file": "town-Havenport_-9848-74-4642.json",
-            "waypoint_id": "town-Havenport_-9848-74-4642",
-            "waypoint_name": "town Havenport"
+            "file": "town-Havenport-nation-Warbound_-9848-74-4642.json",
+            "waypoint_id": "town-Havenport-nation-Warbound_-9848-74-4642",
+            "waypoint_name": "town Havenport nation Warbound"
           }
         }
       ]
@@ -336,17 +379,17 @@
       "y": 3300,
       "states": [
         {
-          "from": "2026-03-25",
+          "from": "2026-03-27",
           "to": null,
           "status": "active",
-          "nation_id": null,
+          "nation_id": "warbound",
           "label": "Kiyv",
           "tags": [],
           "source": {
             "type": "journeymap-waypoint",
-            "file": "town-Kiyv_4700-67-3300.json",
-            "waypoint_id": "town-Kiyv_4700-67-3300",
-            "waypoint_name": "town Kiyv"
+            "file": "town-Kiyv-nation-Warbound_4700-67-3300.json",
+            "waypoint_id": "town-Kiyv-nation-Warbound_4700-67-3300",
+            "waypoint_name": "town Kiyv nation Warbound"
           }
         }
       ]
@@ -359,7 +402,7 @@
       "y": -5761,
       "states": [
         {
-          "from": "2026-03-25",
+          "from": "2026-03-27",
           "to": null,
           "status": "active",
           "nation_id": null,
@@ -382,7 +425,7 @@
       "y": 1316,
       "states": [
         {
-          "from": "2026-03-25",
+          "from": "2026-03-27",
           "to": null,
           "status": "active",
           "nation_id": "eleftheria",
@@ -405,7 +448,7 @@
       "y": -103,
       "states": [
         {
-          "from": "2026-03-25",
+          "from": "2026-03-27",
           "to": null,
           "status": "active",
           "nation_id": "avernia",
@@ -421,6 +464,29 @@
       ]
     },
     {
+      "id": "novygrad",
+      "name": "NovyGrad",
+      "kind": "city",
+      "x": 3323,
+      "y": 1941,
+      "states": [
+        {
+          "from": "2026-03-27",
+          "to": null,
+          "status": "active",
+          "nation_id": "warbound-capital",
+          "label": "NovyGrad",
+          "tags": [],
+          "source": {
+            "type": "journeymap-waypoint",
+            "file": "town-NovyGrad-nation-Warbound-capital_3323-85-1941.json",
+            "waypoint_id": "town-NovyGrad-nation-Warbound-capital_3323-85-1941",
+            "waypoint_name": "town NovyGrad nation Warbound capital"
+          }
+        }
+      ]
+    },
+    {
       "id": "portfenn",
       "name": "PortFenn",
       "kind": "city",
@@ -428,7 +494,7 @@
       "y": 87,
       "states": [
         {
-          "from": "2026-03-25",
+          "from": "2026-03-27",
           "to": null,
           "status": "active",
           "nation_id": "avernia",
@@ -444,6 +510,29 @@
       ]
     },
     {
+      "id": "raystown",
+      "name": "RaysTown",
+      "kind": "city",
+      "x": -1997,
+      "y": -3799,
+      "states": [
+        {
+          "from": "2026-03-27",
+          "to": null,
+          "status": "active",
+          "nation_id": "warbound",
+          "label": "RaysTown",
+          "tags": [],
+          "source": {
+            "type": "journeymap-waypoint",
+            "file": "town-RaysTown-nation-Warbound_-1997-79-3799.json",
+            "waypoint_id": "town-RaysTown-nation-Warbound_-1997-79-3799",
+            "waypoint_name": "town RaysTown nation Warbound"
+          }
+        }
+      ]
+    },
+    {
       "id": "slutsk",
       "name": "Slutsk",
       "kind": "city",
@@ -451,136 +540,88 @@
       "y": 2968,
       "states": [
         {
-          "from": "2026-03-25",
+          "from": "2026-03-27",
           "to": null,
           "status": "active",
-          "nation_id": null,
+          "nation_id": "warbound",
           "label": "Slutsk",
           "tags": [],
           "source": {
             "type": "journeymap-waypoint",
-            "file": "town-Slutsk_3558-71-2968.json",
-            "waypoint_id": "town-Slutsk_3558-71-2968",
-            "waypoint_name": "town Slutsk"
+            "file": "town-Slutsk-nation-Warbound_3558-71-2968.json",
+            "waypoint_id": "town-Slutsk-nation-Warbound_3558-71-2968",
+            "waypoint_name": "town Slutsk nation Warbound"
           }
         }
       ]
     },
     {
-      "id": "yawoza",
-      "name": "Yawoza",
-      "kind": "city",
-      "x": -4300,
-      "y": 3600,
-      "states": [
-        {
-          "from": "2026-03-25",
-          "to": null,
-          "status": "active",
-          "nation_id": null,
-          "label": "Yawoza",
-          "tags": [
-            "shop"
-          ],
-          "source": {
-            "type": "journeymap-waypoint",
-            "file": "town-Yawoza-shop_-4300-77-3600.json",
-            "waypoint_id": "town-Yawoza-shop_-4300-77-3600",
-            "waypoint_name": "town Yawoza shop"
-          }
-        }
-      ]
-    },
-    {
-      "id": "za-arab",
-      "name": "Za arab",
-      "kind": "city",
-      "x": 2874,
-      "y": 1690,
-      "states": [
-        {
-          "from": "2026-03-25",
-          "to": null,
-          "status": "active",
-          "nation_id": null,
-          "label": "Za arab",
-          "tags": [],
-          "source": {
-            "type": "journeymap-waypoint",
-            "file": "town-Za-arab_2874-110-1690.json",
-            "waypoint_id": "town-Za-arab_2874-110-1690",
-            "waypoint_name": "town Za-arab"
-          }
-        }
-      ]
-    },
-    {
-      "id": "крым",
-      "name": "Крым",
-      "kind": "city",
-      "x": 2894,
-      "y": 3761,
-      "states": [
-        {
-          "from": "2026-03-25",
-          "to": null,
-          "status": "active",
-          "nation_id": null,
-          "label": "Крым",
-          "tags": [],
-          "source": {
-            "type": "journeymap-waypoint",
-            "file": "town-Крым_2894-82-3761.json",
-            "waypoint_id": "town-Крым_2894-82-3761",
-            "waypoint_name": "town Крым"
-          }
-        }
-      ]
-    },
-    {
-      "id": "новгород",
-      "name": "Новгород",
-      "kind": "city",
-      "x": 3323,
-      "y": 1941,
-      "states": [
-        {
-          "from": "2026-03-25",
-          "to": null,
-          "status": "active",
-          "nation_id": null,
-          "label": "Новгород",
-          "tags": [],
-          "source": {
-            "type": "journeymap-waypoint",
-            "file": "town-Новгород_3323-85-1941.json",
-            "waypoint_id": "town-Новгород_3323-85-1941",
-            "waypoint_name": "town Новгород"
-          }
-        }
-      ]
-    },
-    {
-      "id": "расприваченный-город",
-      "name": "Расприваченный город",
+      "id": "unknown",
+      "name": "Unknown",
       "kind": "city",
       "x": 633,
       "y": 4466,
       "states": [
         {
-          "from": "2026-03-25",
+          "from": "2026-03-27",
           "to": null,
           "status": "ruins",
           "nation_id": null,
-          "label": "Расприваченный город",
+          "label": "Unknown",
           "tags": [
-            "unclaimed"
+            "ruin"
           ],
           "source": {
             "type": "journeymap-waypoint",
-            "file": "town-Расприваченный-город_633-70-4466.json",
-            "waypoint_id": "town-Расприваченный-город_633-70-4466",
-            "waypoint_name": "town Расприваченный город"
+            "file": "town-Unknown-ruin_633-70-4466.json",
+            "waypoint_id": "town-Unknown-ruin_633-70-4466",
+            "waypoint_name": "town Unknown ruin"
+          }
+        }
+      ]
+    },
+    {
+      "id": "yawozaburg",
+      "name": "Yawozaburg",
+      "kind": "city",
+      "x": -4300,
+      "y": 3600,
+      "states": [
+        {
+          "from": "2026-03-27",
+          "to": null,
+          "status": "active",
+          "nation_id": "visigoth",
+          "label": "Yawozaburg",
+          "tags": [],
+          "source": {
+            "type": "journeymap-waypoint",
+            "file": "town-Yawozaburg-nation-Visigoth_-4300-77-3600.json",
+            "waypoint_id": "town-Yawozaburg-nation-Visigoth_-4300-77-3600",
+            "waypoint_name": "town Yawozaburg nation Visigoth"
+          }
+        }
+      ]
+    },
+    {
+      "id": "za-grab",
+      "name": "Za Grab",
+      "kind": "city",
+      "x": 2874,
+      "y": 1690,
+      "states": [
+        {
+          "from": "2026-03-27",
+          "to": null,
+          "status": "active",
+          "nation_id": "warbound",
+          "label": "Za Grab",
+          "tags": [],
+          "source": {
+            "type": "journeymap-waypoint",
+            "file": "town-Za-Grab-nation-Warbound_2874-110-1690.json",
+            "waypoint_id": "town-Za-Grab-nation-Warbound_2874-110-1690",
+            "waypoint_name": "town Za-Grab nation Warbound"
           }
         }
       ]
