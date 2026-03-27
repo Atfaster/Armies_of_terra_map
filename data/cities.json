@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-03-26T23:16:02+00:00",
+  "generated_at": "2026-03-26T23:31:35+00:00",
   "timeline": {
     "dates": [
       "2026-03-25"
@@ -42,7 +42,8 @@
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Aachen_670-88-200.json",
-            "waypoint_id": "town-Aachen_670-88-200"
+            "waypoint_id": "town-Aachen_670-88-200",
+            "waypoint_name": "town Aachen"
           }
         }
       ]
@@ -64,7 +65,8 @@
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Ashfang_Bay_-6355-63-3830.json",
-            "waypoint_id": "town-Ashfang_Bay_-6355-63-3830"
+            "waypoint_id": "town-Ashfang_Bay_-6355-63-3830",
+            "waypoint_name": "town Ashfang_Bay"
           }
         }
       ]
@@ -86,7 +88,8 @@
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Ckeezy_5400-62-800.json",
-            "waypoint_id": "town-Ckeezy_5400-62-800"
+            "waypoint_id": "town-Ckeezy_5400-62-800",
+            "waypoint_name": "town Ckeezy"
           }
         }
       ]
@@ -108,7 +111,8 @@
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Cornbreadvil_-300-77-5200.json",
-            "waypoint_id": "town-Cornbreadvil_-300-77-5200"
+            "waypoint_id": "town-Cornbreadvil_-300-77-5200",
+            "waypoint_name": "town Cornbreadvil"
           }
         }
       ]
@@ -130,7 +134,8 @@
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Driftmark_-7800-85-8400.json",
-            "waypoint_id": "town-Driftmark_-7800-85-8400"
+            "waypoint_id": "town-Driftmark_-7800-85-8400",
+            "waypoint_name": "town Driftmark"
           }
         }
       ]
@@ -152,7 +157,8 @@
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Dusseldorf_-443-89-2787.json",
-            "waypoint_id": "town-Dusseldorf_-443-89-2787"
+            "waypoint_id": "town-Dusseldorf_-443-89-2787",
+            "waypoint_name": "town Dusseldorf"
           }
         }
       ]
@@ -174,7 +180,8 @@
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Eskad_1193-66-5753.json",
-            "waypoint_id": "town-Eskad_1193-66-5753"
+            "waypoint_id": "town-Eskad_1193-66-5753",
+            "waypoint_name": "town Eskad"
           }
         }
       ]
@@ -198,7 +205,8 @@
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-bankrupt-FortCreed_2682-74-504.json",
-            "waypoint_id": "town-bankrupt-FortCreed_2682-74-504"
+            "waypoint_id": "town-bankrupt-FortCreed_2682-74-504",
+            "waypoint_name": "town bankrupt FortCreed"
           }
         }
       ]
@@ -220,7 +228,8 @@
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-FortVon-home-chank_-2585-89-5385.json",
-            "waypoint_id": "town-FortVon-home-chank_-2585-89-5385"
+            "waypoint_id": "town-FortVon-home-chank_-2585-89-5385",
+            "waypoint_name": "town FortVon home chank"
           }
         }
       ]
@@ -242,7 +251,8 @@
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Fryjard_7682-73-2288.json",
-            "waypoint_id": "town-Fryjard_7682-73-2288"
+            "waypoint_id": "town-Fryjard_7682-73-2288",
+            "waypoint_name": "town Fryjard"
           }
         }
       ]
@@ -264,7 +274,8 @@
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Glasfen-nation-Fryjarl_8259-69-2808.json",
-            "waypoint_id": "town-Glasfen-nation-Fryjarl_8259-69-2808"
+            "waypoint_id": "town-Glasfen-nation-Fryjarl_8259-69-2808",
+            "waypoint_name": "town Glasfen nation Fryjarl"
           }
         }
       ]
@@ -288,7 +299,8 @@
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-ruin-Grievys_2015-82-2035.json",
-            "waypoint_id": "town-ruin-Grievys_2015-82-2035"
+            "waypoint_id": "town-ruin-Grievys_2015-82-2035",
+            "waypoint_name": "town ruin Grievys"
           }
         }
       ]
@@ -310,7 +322,8 @@
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Havenport_-9848-74-4642.json",
-            "waypoint_id": "town-Havenport_-9848-74-4642"
+            "waypoint_id": "town-Havenport_-9848-74-4642",
+            "waypoint_name": "town Havenport"
           }
         }
       ]
@@ -332,7 +345,8 @@
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Kiyv_4700-67-3300.json",
-            "waypoint_id": "town-Kiyv_4700-67-3300"
+            "waypoint_id": "town-Kiyv_4700-67-3300",
+            "waypoint_name": "town Kiyv"
           }
         }
       ]
@@ -354,7 +368,8 @@
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Levengyard_-7377-72-5761.json",
-            "waypoint_id": "town-Levengyard_-7377-72-5761"
+            "waypoint_id": "town-Levengyard_-7377-72-5761",
+            "waypoint_name": "town Levengyard"
           }
         }
       ]
@@ -376,7 +391,8 @@
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Limnion-nation-Eleftheria_1455-83-1316.json",
-            "waypoint_id": "town-Limnion-nation-Eleftheria_1455-83-1316"
+            "waypoint_id": "town-Limnion-nation-Eleftheria_1455-83-1316",
+            "waypoint_name": "town Limnion nation Eleftheria"
           }
         }
       ]
@@ -398,7 +414,8 @@
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Nova_Roma-nation-Avernia_6064-78-103.json",
-            "waypoint_id": "town-Nova_Roma-nation-Avernia_6064-78-103"
+            "waypoint_id": "town-Nova_Roma-nation-Avernia_6064-78-103",
+            "waypoint_name": "town Nova_Roma nation Avernia"
           }
         }
       ]
@@ -420,7 +437,8 @@
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-PortFenn-nation-Avernia_5111-95-87.json",
-            "waypoint_id": "town-PortFenn-nation-Avernia_5111-95-87"
+            "waypoint_id": "town-PortFenn-nation-Avernia_5111-95-87",
+            "waypoint_name": "town PortFenn nation Avernia"
           }
         }
       ]
@@ -442,7 +460,8 @@
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Slutsk_3558-71-2968.json",
-            "waypoint_id": "town-Slutsk_3558-71-2968"
+            "waypoint_id": "town-Slutsk_3558-71-2968",
+            "waypoint_name": "town Slutsk"
           }
         }
       ]
@@ -466,7 +485,8 @@
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Yawoza-shop_-4300-77-3600.json",
-            "waypoint_id": "town-Yawoza-shop_-4300-77-3600"
+            "waypoint_id": "town-Yawoza-shop_-4300-77-3600",
+            "waypoint_name": "town Yawoza shop"
           }
         }
       ]
@@ -488,7 +508,8 @@
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Za-arab_2874-110-1690.json",
-            "waypoint_id": "town-Za-arab_2874-110-1690"
+            "waypoint_id": "town-Za-arab_2874-110-1690",
+            "waypoint_name": "town Za-arab"
           }
         }
       ]
@@ -510,7 +531,8 @@
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Крым_2894-82-3761.json",
-            "waypoint_id": "town-Крым_2894-82-3761"
+            "waypoint_id": "town-Крым_2894-82-3761",
+            "waypoint_name": "town Крым"
           }
         }
       ]
@@ -532,7 +554,8 @@
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Новгород_3323-85-1941.json",
-            "waypoint_id": "town-Новгород_3323-85-1941"
+            "waypoint_id": "town-Новгород_3323-85-1941",
+            "waypoint_name": "town Новгород"
           }
         }
       ]
@@ -556,7 +579,8 @@
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Расприваченный-город_633-70-4466.json",
-            "waypoint_id": "town-Расприваченный-город_633-70-4466"
+            "waypoint_id": "town-Расприваченный-город_633-70-4466",
+            "waypoint_name": "town Расприваченный город"
           }
         }
       ]

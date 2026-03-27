@@ -11,6 +11,7 @@ from pathlib import Path
 
 
 WAYPOINT_PATTERN = re.compile(r"^(?P<slug>.+)_(?P<x>-?\d+)-(?P<y>-?\d+)-(?P<z>-?\d+)$")
+RESERVED_TOKENS = {"nation", "ruin", "bankrupt", "shop"}
 
 
 @dataclass
@@ -32,11 +33,6 @@ def slugify(value: str) -> str:
     return slug.strip("-") or "city"
 
 
-def prettify(value: str) -> str:
-    text = value.replace("_", " ").replace("-", " ").strip()
-    return re.sub(r"\s+", " ", text)
-
-
 def maybe_fix_mojibake(value: str) -> str:
     if "Ð" not in value and "Ñ" not in value:
         return value
@@ -52,38 +48,55 @@ def nation_color(nation_id: str) -> str:
     return "#{:02x}{:02x}{:02x}".format(int(red * 255), int(green * 255), int(blue * 255))
 
 
-def parse_waypoint_name(name: str) -> ParsedName:
-    name = maybe_fix_mojibake(name)
-    tokens = name.split("-")
-    body = tokens[1:]
+def tokenize_name(value: str) -> list[str]:
+    normalized = maybe_fix_mojibake(value).replace("_", " ").replace("-", " ").strip()
+    normalized = re.sub(r"\s+", " ", normalized)
+    return [token for token in normalized.split(" ") if token]
+
+
+def parse_waypoint_text(value: str) -> ParsedName:
+    tokens = tokenize_name(value)
+    if tokens and tokens[0].lower() == "town":
+        tokens = tokens[1:]
+
     status = "active"
     tags: list[str] = []
-    nation_name = None
-    nation_id = None
+    city_tokens: list[str] = []
+    nation_tokens: list[str] = []
 
-    filtered: list[str] = []
     index = 0
-    while index < len(body):
-        token = body[index]
-        if token in {"ruin", "bankrupt"}:
+    while index < len(tokens):
+        token = tokens[index]
+        token_key = token.lower()
+
+        if token_key in {"ruin", "bankrupt"}:
             status = "ruins"
-            tags.append(token)
+            tags.append(token_key)
             index += 1
             continue
-        if token == "nation" and index + 1 < len(body):
-            nation_name = prettify(body[index + 1])
-            nation_id = slugify(body[index + 1])
-            index += 2
-            continue
-        if token == "shop":
+
+        if token_key == "shop":
             tags.append("shop")
             index += 1
             continue
-        filtered.append(token)
+
+        if token_key == "nation":
+            index += 1
+            while index < len(tokens):
+                candidate = tokens[index]
+                if candidate.lower() in RESERVED_TOKENS:
+                    break
+                nation_tokens.append(candidate)
+                index += 1
+            continue
+
+        city_tokens.append(token)
         index += 1
 
-    label = prettify("-".join(filtered))
+    label = " ".join(city_tokens).strip() or "Unnamed city"
+    nation_name = " ".join(nation_tokens).strip() or None
     city_id = slugify(label)
+    nation_id = slugify(nation_name) if nation_name else None
 
     if city_id in {"расприваченный-город", "unclaimed-city"}:
         status = "ruins"
@@ -97,6 +110,20 @@ def parse_waypoint_name(name: str) -> ParsedName:
         status=status,
         tags=sorted(set(tags)),
     )
+
+
+def parse_waypoint_name(file_slug: str, payload_name: str | None) -> ParsedName:
+    sources = []
+    if payload_name:
+        sources.append(payload_name)
+    sources.append(file_slug)
+
+    for source in sources:
+        parsed = parse_waypoint_text(source)
+        if parsed.label != "Unnamed city":
+            return parsed
+
+    return parse_waypoint_text(file_slug)
 
 
 def import_waypoints(source_dir: Path) -> dict:
@@ -114,7 +141,7 @@ def import_waypoints(source_dir: Path) -> dict:
         if not match:
             continue
 
-        parsed = parse_waypoint_name(match.group("slug"))
+        parsed = parse_waypoint_name(match.group("slug"), payload.get("name"))
         state_date = datetime.fromtimestamp(
             waypoint_file.stat().st_mtime, tz=timezone.utc
         ).date().isoformat()
@@ -146,6 +173,7 @@ def import_waypoints(source_dir: Path) -> dict:
                             "type": "journeymap-waypoint",
                             "file": waypoint_file.name,
                             "waypoint_id": payload.get("id"),
+                            "waypoint_name": payload.get("name"),
                         },
                     }
                 ],
@@ -160,7 +188,7 @@ def import_waypoints(source_dir: Path) -> dict:
             "dates": ordered_dates,
             "default_date": ordered_dates[-1],
         },
-        "nations": sorted(nations.values(), key=lambda item: item["name"]),
+        "nations": sorted(nations.values(), key=lambda item: item["name"] or item["id"]),
         "cities": sorted(cities, key=lambda item: item["name"].lower()),
     }
 

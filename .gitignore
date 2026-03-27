@@ -1,1 +1,5 @@
 desktop.ini
+scripts/__pycache__/
+imports/journeymap_inbox/
+data/journeymap_import_work/
+tmp_inbox_test*/
