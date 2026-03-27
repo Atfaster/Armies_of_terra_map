@@ -557,6 +557,7 @@
       geographyKindVisibility: new Map(),
       geographyFileHandle: null,
       geographyDirty: false,
+      showRaster: true,
       tileCount: 0,
       tileModeLabel: "Loading"
     };
@@ -685,10 +686,20 @@
     const geographyKindSection = document.createElement("div");
     geographyKindSection.className = "leaflet-geo-kind-section";
     geographyKindSection.innerHTML = `
+      <label class="checkbox-row">
+        <input id="toggle-raster-map" type="checkbox" checked />
+        <span>Raster map</span>
+      </label>
+    `;
+    layerControl.getContainer().querySelector(".leaflet-control-layers-list").appendChild(geographyKindSection);
+
+    const geographyKindFiltersSection = document.createElement("div");
+    geographyKindFiltersSection.className = "leaflet-geo-kind-section";
+    geographyKindFiltersSection.innerHTML = `
       <div class="leaflet-geo-kind-title">Geography</div>
       <div id="geography-filters" class="leaflet-geo-kind-list"></div>
     `;
-    layerControl.getContainer().querySelector(".leaflet-control-layers-list").appendChild(geographyKindSection);
+    layerControl.getContainer().querySelector(".leaflet-control-layers-list").appendChild(geographyKindFiltersSection);
 
     map.on("mousemove", function(event) {
       coordControl.update(event.latlng);
@@ -1256,6 +1267,17 @@
         tileLayers.details
       ];
 
+      if (!runtime.showRaster) {
+        for (const group of groups) {
+          if (map.hasLayer(group)) {
+            map.removeLayer(group);
+          }
+        }
+        runtime.tileModeLabel = "Raster hidden";
+        renderStatus();
+        return;
+      }
+
       for (const group of groups) {
         if (group === groupToShow) {
           if (!map.hasLayer(group)) group.addTo(map);
@@ -1522,6 +1544,11 @@
 
     document.getElementById("timeline-range").addEventListener("input", function(event) {
       setActiveDateByIndex(Number(event.target.value));
+    });
+
+    document.getElementById("toggle-raster-map").addEventListener("change", function(event) {
+      runtime.showRaster = event.target.checked;
+      updateZoomLayers();
     });
 
     if (EDITOR_IS_LOCAL) {
