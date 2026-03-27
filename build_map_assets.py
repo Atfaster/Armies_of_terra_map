@@ -1,3 +1,4 @@
+import argparse
 import json
 import re
 from pathlib import Path
@@ -16,6 +17,22 @@ PREVIEWS_DIR.mkdir(parents=True, exist_ok=True)
 
 pattern = re.compile(r"^(-?\d+),(-?\d+)\.png$", re.IGNORECASE)
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Build preview assets from merged map tiles. "
+            "The full-resolution PNG is optional because it exceeds GitHub's size limit."
+        )
+    )
+    parser.add_argument(
+        "--full-png",
+        action="store_true",
+        help="Also save previews/overview_full.png for local use.",
+    )
+    return parser.parse_args()
+
+
+args = parse_args()
 tiles = []
 
 print("Scanning tiles...")
@@ -83,9 +100,12 @@ for i, tile in enumerate(tiles, start=1):
         print(f"Processed {i}/{len(tiles)}")
 
 # --- Полный PNG (опционально) ---
-full_png = PREVIEWS_DIR / "overview_full.png"
-canvas.save(full_png)
-print(f"Saved {full_png}")
+if args.full_png:
+    full_png = PREVIEWS_DIR / "overview_full.png"
+    canvas.save(full_png)
+    print(f"Saved {full_png}")
+else:
+    print("Skipped previews/overview_full.png (use --full-png for local export)")
 
 # --- Preview уровни ---
 for factor in PREVIEW_FACTORS:
