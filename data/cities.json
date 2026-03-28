@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-03-27T17:40:54+00:00",
+  "generated_at": "2026-03-28T19:33:31+00:00",
   "timeline": {
     "dates": [
       "1408"
@@ -19,9 +19,19 @@
       "color": "#d43587"
     },
     {
+      "id": "emerald-isles",
+      "name": "Emerald Isles",
+      "color": "#3537d4"
+    },
+    {
       "id": "fryjarl",
       "name": "Fryjarl",
       "color": "#d4a435"
+    },
+    {
+      "id": "germania",
+      "name": "Germania",
+      "color": "#3fd435"
     },
     {
       "id": "lusitania",
@@ -89,6 +99,30 @@
             "file": "town-Aetheris-nation-Lusitania_3300-77-8650.json",
             "waypoint_id": "town-Aetheris-nation-Lusitania_3300-77-8650",
             "waypoint_name": "town Aetheris nation Lusitania"
+          }
+        }
+      ]
+    },
+    {
+      "id": "anathema",
+      "name": "Anathema",
+      "kind": "city",
+      "x": -4012,
+      "y": 3858,
+      "states": [
+        {
+          "from": "1408",
+          "to": null,
+          "status": "active",
+          "nation_id": "visigoth",
+          "label": "Anathema",
+          "tags": [],
+          "is_capital": false,
+          "source": {
+            "type": "journeymap-waypoint",
+            "file": "town-Anathema-nation-Visigoth_-4012-72-3858.json",
+            "waypoint_id": "town-Anathema-nation-Visigoth_-4012-72-3858",
+            "waypoint_name": "town Anathema nation Visigoth"
           }
         }
       ]
@@ -240,25 +274,49 @@
       ]
     },
     {
-      "id": "driftmark",
-      "name": "Driftmark",
+      "id": "dijkersloot",
+      "name": "Dijkersloot",
       "kind": "city",
-      "x": -7800,
-      "y": 8400,
+      "x": -4360,
+      "y": 3913,
       "states": [
         {
           "from": "1408",
           "to": null,
           "status": "active",
-          "nation_id": null,
+          "nation_id": "visigoth",
+          "label": "Dijkersloot",
+          "tags": [],
+          "is_capital": false,
+          "source": {
+            "type": "journeymap-waypoint",
+            "file": "town-Dijkersloot-nation-Visigoth_-4360-69-3913.json",
+            "waypoint_id": "town-Dijkersloot-nation-Visigoth_-4360-69-3913",
+            "waypoint_name": "town Dijkersloot nation Visigoth"
+          }
+        }
+      ]
+    },
+    {
+      "id": "driftmark",
+      "name": "Driftmark",
+      "kind": "city",
+      "x": -7800,
+      "y": 8429,
+      "states": [
+        {
+          "from": "1408",
+          "to": null,
+          "status": "active",
+          "nation_id": "emerald-isles",
           "label": "Driftmark",
           "tags": [],
           "is_capital": false,
           "source": {
             "type": "journeymap-waypoint",
-            "file": "town-Driftmark_-7800-85-8400.json",
-            "waypoint_id": "town-Driftmark_-7800-85-8400",
-            "waypoint_name": "town Driftmark"
+            "file": "town-Driftmark-nation-Emerald_Isles_-7800-85-8429.json",
+            "waypoint_id": "town-Driftmark-nation-Emerald_Isles_-7800-85-8429",
+            "waypoint_name": "town Driftmark nation Emerald_Isles"
           }
         }
       ]
@@ -283,6 +341,54 @@
             "file": "town-Eskad_1193-66-5753.json",
             "waypoint_id": "town-Eskad_1193-66-5753",
             "waypoint_name": "town Eskad"
+          }
+        }
+      ]
+    },
+    {
+      "id": "facility-thirteen",
+      "name": "Facility Thirteen",
+      "kind": "city",
+      "x": -7555,
+      "y": 8521,
+      "states": [
+        {
+          "from": "1408",
+          "to": null,
+          "status": "active",
+          "nation_id": "emerald-isles",
+          "label": "Facility Thirteen",
+          "tags": [],
+          "is_capital": true,
+          "source": {
+            "type": "journeymap-waypoint",
+            "file": "town-Facility_Thirteen-nation-Emerald_Isles-capital_-7555-70-8521.json",
+            "waypoint_id": "town-Facility_Thirteen-nation-Emerald_Isles-capital_-7555-70-8521",
+            "waypoint_name": "town Facility_Thirteen nation Emerald_Isles capital"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ferdderdam",
+      "name": "Ferdderdam",
+      "kind": "city",
+      "x": -4732,
+      "y": 3463,
+      "states": [
+        {
+          "from": "1408",
+          "to": null,
+          "status": "active",
+          "nation_id": "visigoth",
+          "label": "Ferdderdam",
+          "tags": [],
+          "is_capital": false,
+          "source": {
+            "type": "journeymap-waypoint",
+            "file": "town-Ferdderdam-nation-Visigoth_-4732-70-3463.json",
+            "waypoint_id": "town-Ferdderdam-nation-Visigoth_-4732-70-3463",
+            "waypoint_name": "town Ferdderdam nation Visigoth"
           }
         }
       ]
@@ -412,6 +518,30 @@
       ]
     },
     {
+      "id": "hamburg",
+      "name": "Hamburg",
+      "kind": "city",
+      "x": 586,
+      "y": -6995,
+      "states": [
+        {
+          "from": "1408",
+          "to": null,
+          "status": "active",
+          "nation_id": "germania",
+          "label": "Hamburg",
+          "tags": [],
+          "is_capital": false,
+          "source": {
+            "type": "journeymap-waypoint",
+            "file": "town-Hamburg-nation-Germania_586-79-6995.json",
+            "waypoint_id": "town-Hamburg-nation-Germania_586-79-6995",
+            "waypoint_name": "town Hamburg nation Germania"
+          }
+        }
+      ]
+    },
+    {
       "id": "havenport",
       "name": "Havenport",
       "kind": "city",
@@ -431,6 +561,30 @@
             "file": "town-Havenport-nation-Warbound_-9848-74-4642.json",
             "waypoint_id": "town-Havenport-nation-Warbound_-9848-74-4642",
             "waypoint_name": "town Havenport nation Warbound"
+          }
+        }
+      ]
+    },
+    {
+      "id": "hoffersmeer",
+      "name": "HoffersMeer",
+      "kind": "city",
+      "x": -3922,
+      "y": 3410,
+      "states": [
+        {
+          "from": "1408",
+          "to": null,
+          "status": "active",
+          "nation_id": "visigoth",
+          "label": "HoffersMeer",
+          "tags": [],
+          "is_capital": false,
+          "source": {
+            "type": "journeymap-waypoint",
+            "file": "town-HoffersMeer-nation-Visigoth_-3922-72-3410.json",
+            "waypoint_id": "town-HoffersMeer-nation-Visigoth_-3922-72-3410",
+            "waypoint_name": "town HoffersMeer nation Visigoth"
           }
         }
       ]
@@ -778,8 +932,8 @@
       "id": "yawozaburg",
       "name": "Yawozaburg",
       "kind": "city",
-      "x": -4300,
-      "y": 3600,
+      "x": -4270,
+      "y": 3450,
       "states": [
         {
           "from": "1408",
@@ -791,9 +945,33 @@
           "is_capital": true,
           "source": {
             "type": "journeymap-waypoint",
-            "file": "town-Yawozaburg-nation-Visigoth-capital_-4300-77-3600.json",
-            "waypoint_id": "town-Yawozaburg-nation-Visigoth-capital_-4300-77-3600",
+            "file": "town-Yawozaburg-nation-Visigoth-capital_-4270-77-3450.json",
+            "waypoint_id": "town-Yawozaburg-nation-Visigoth-capital_-4270-77-3450",
             "waypoint_name": "town Yawozaburg nation Visigoth capital"
+          }
+        }
+      ]
+    },
+    {
+      "id": "yksekteki-ovo",
+      "name": "Yüksekteki Ovo",
+      "kind": "city",
+      "x": 1512,
+      "y": 6677,
+      "states": [
+        {
+          "from": "1408",
+          "to": null,
+          "status": "active",
+          "nation_id": null,
+          "label": "Yüksekteki Ovo",
+          "tags": [],
+          "is_capital": false,
+          "source": {
+            "type": "journeymap-waypoint",
+            "file": "town-Yüksekteki_Ovo_1512-76-6677.json",
+            "waypoint_id": "town-Yüksekteki_Ovo_1512-76-6677",
+            "waypoint_name": "town Yüksekteki_Ovo"
           }
         }
       ]
