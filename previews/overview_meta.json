@@ -1,13 +1,13 @@
 {
   "tile_size": 512,
   "min_tx": -20,
-  "min_ty": -17,
+  "min_ty": -20,
   "max_tx": 19,
   "max_ty": 19,
   "min_x": -10240,
-  "min_y": -8704,
+  "min_y": -10240,
   "max_x": 10240,
   "max_y": 10240,
   "full_width": 20480,
-  "full_height": 18944
+  "full_height": 20480
 }
