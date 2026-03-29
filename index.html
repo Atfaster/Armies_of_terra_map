@@ -1578,23 +1578,47 @@
       const safeIndex = Math.max(0, Math.min(index, dates.length - 1));
       runtime.activeDate = dates[safeIndex];
       syncTimelineUi();
+      renderNationFilters();
       renderCities();
+    }
+
+    function getNationCityCounts() {
+      const counts = new Map();
+
+      for (const nation of runtime.cityDataset?.nations ?? []) {
+        counts.set(nation.id, 0);
+      }
+
+      for (const city of runtime.cityDataset?.cities ?? []) {
+        const state = resolveCityState(city, runtime.activeDate);
+        if (!state || state.status === "ruins" || !state.nation_id) continue;
+        counts.set(state.nation_id, (counts.get(state.nation_id) ?? 0) + 1);
+      }
+
+      return counts;
     }
 
     function renderNationFilters() {
       const container = document.getElementById("nation-filters");
       container.innerHTML = "";
+      const nationCounts = getNationCityCounts();
+      const sortedNations = [...(runtime.cityDataset?.nations ?? [])].sort((left, right) => {
+        const countDiff = (nationCounts.get(right.id) ?? 0) - (nationCounts.get(left.id) ?? 0);
+        if (countDiff !== 0) return countDiff;
+        return left.name.localeCompare(right.name);
+      });
 
-      for (const nation of runtime.cityDataset?.nations ?? []) {
+      for (const nation of sortedNations) {
         if (!runtime.nationVisibility.has(nation.id)) {
           runtime.nationVisibility.set(nation.id, true);
         }
 
+        const cityCount = nationCounts.get(nation.id) ?? 0;
         const label = document.createElement("label");
         label.className = "checkbox-row";
         label.innerHTML = `
           <input type="checkbox" data-nation-id="${escapeHtml(nation.id)}" ${runtime.nationVisibility.get(nation.id) ? "checked" : ""} />
-          <span>${escapeHtml(nation.name)}</span>
+          <span>${escapeHtml(nation.name)} (${cityCount})</span>
         `;
 
         const input = label.querySelector("input");
