@@ -821,6 +821,8 @@
     map.createPane("capitalPane");
     map.getPane("capitalPane").style.zIndex = 650;
 
+    const GEOGRAPHY_EDIT_MARKER_LIMIT = 64;
+
     const tileLayers = {
       overview16: L.layerGroup(),
       overview8: L.layerGroup(),
@@ -852,6 +854,8 @@
       geographyKindVisibility: new Map(),
       geographyFileHandle: null,
       geographyDirty: false,
+      geographyEditSelectionEnabled: false,
+      activeGeographyEditLayer: null,
       citiesFileHandle: null,
       cityDirty: false,
       selectedCityId: null,
@@ -1242,6 +1246,19 @@
       return `geo-label is-${kind || "feature"}`;
     }
 
+    function isTextGeographyLayer(layer) {
+      if (!(layer instanceof L.Marker)) return false;
+      const markerStyle = String(getFeatureProperties(layer).marker_style ?? "").trim().toLowerCase();
+      if (markerStyle === "text") return true;
+      if (layer.options?.textMarker === true) return true;
+      if (typeof layer.pm?.getShape === "function") {
+        const shape = String(layer.pm.getShape() ?? "").trim().toLowerCase();
+        if (shape === "text") return true;
+      }
+      if (typeof layer.pm?.getText === "function") return true;
+      return false;
+    }
+
     function getGeographyPaneName(layer, kind) {
       const normalizedKind = normalizeKind(kind);
       if (["continent", "island", "sea"].includes(normalizedKind)) {
@@ -1345,6 +1362,14 @@
       layer.options.pane = getGeographyPaneName(layer, kind);
 
       if (layer instanceof L.Marker) {
+        if (isTextGeographyLayer(layer)) {
+          layer.setIcon(L.divIcon({
+            className: "geo-label-icon",
+            html: `<span class="${getLabelClass(kind)}">${escapeHtml(getLayerName(layer) || kind)}</span>`
+          }));
+          return;
+        }
+
         layer.setIcon(L.divIcon({
           className: "geo-marker-icon",
           html: `
@@ -1423,6 +1448,15 @@
 
     function bindGeographyInteractions(layer) {
       if (!EDITOR_IS_LOCAL) return;
+      if (layer.__geographyInteractionsBound) return;
+      layer.__geographyInteractionsBound = true;
+
+      layer.on("click", function(event) {
+        if (!runtime.geographyEditSelectionEnabled) return;
+        L.DomEvent.stop(event);
+        activateGeographyEditLayer(layer);
+      });
+
       layer.on("dblclick", function(event) {
         L.DomEvent.stop(event);
         if (!promptForFeatureMetadata(layer)) return;
@@ -1441,6 +1475,7 @@
         count += 1;
         const kind = getFeatureProperties(layer).kind ?? getLayerKind(layer);
         if (!isGeographyKindVisible(kind)) continue;
+        if (isTextGeographyLayer(layer)) continue;
         const name = getLayerName(layer);
         if (!name) continue;
         const latlng = kind === "river" && layer instanceof L.Polyline
@@ -1602,9 +1637,65 @@
       refreshGeographyLabels();
     }
 
+    function getGeographyEditOptions() {
+      return {
+        snappable: true,
+        snapSegment: true,
+        snapVertex: true,
+        limitMarkersToCount: GEOGRAPHY_EDIT_MARKER_LIMIT
+      };
+    }
+
+    function syncGeographyLayerEditability(layer) {
+      if (!EDITOR_IS_LOCAL || !layer?.pm) return;
+
+      const editable = runtime.geographyEditSelectionEnabled && runtime.activeGeographyEditLayer === layer;
+      layer.pm.setOptions({
+        ...getGeographyEditOptions(),
+        allowEditing: editable
+      });
+
+      if (!editable && layer.pm.enabled()) {
+        layer.pm.disable();
+      }
+    }
+
+    function disableActiveGeographyEditLayer() {
+      const layer = runtime.activeGeographyEditLayer;
+      if (!layer) return;
+      if (layer.pm?.enabled()) {
+        layer.pm.disable();
+      }
+      runtime.activeGeographyEditLayer = null;
+      syncGeographyLayerEditability(layer);
+    }
+
+    function activateGeographyEditLayer(layer) {
+      if (!EDITOR_IS_LOCAL || !runtime.geographyEditSelectionEnabled || !layer?.pm) return;
+      if (runtime.activeGeographyEditLayer === layer && layer.pm.enabled()) return;
+
+      disableActiveGeographyEditLayer();
+      runtime.activeGeographyEditLayer = layer;
+      syncGeographyLayerEditability(layer);
+      layer.pm.enable(getGeographyEditOptions());
+      if (typeof layer.closePopup === "function") {
+        layer.closePopup();
+      }
+      statusControl.setText("Editing selected geography feature");
+    }
+
+    function syncAllGeographyLayerEditability() {
+      for (const entry of runtime.geographyEntries) {
+        syncGeographyLayerEditability(entry.layer);
+      }
+    }
+
     function attachGeographyLayer(layer, skipPrompt = false) {
       if (!layer) return;
-      ensureFeatureMetadata(layer);
+      const properties = ensureFeatureMetadata(layer);
+      if (isTextGeographyLayer(layer)) {
+        properties.marker_style = "text";
+      }
       if (!skipPrompt && EDITOR_IS_LOCAL) {
         promptForFeatureMetadata(layer);
       }
@@ -1612,6 +1703,7 @@
         runtime.geographyEntries.push({ layer });
       }
       refreshGeographyLayer(layer);
+      syncGeographyLayerEditability(layer);
       syncGeographyEditor();
     }
 
@@ -1746,10 +1838,10 @@
       map.pm.setGlobalOptions({
         layerGroup: layers.geography,
         continueDrawing: false,
-        snapSegment: true,
-        snapVertex: true,
-        snappable: true
+        ...getGeographyEditOptions()
       });
+
+      syncAllGeographyLayerEditability();
 
       map.pm.addControls({
         position: "topleft",
@@ -1765,10 +1857,26 @@
         cutPolygon: false
       });
 
+      map.on("pm:globaleditmodetoggled", function(event) {
+        runtime.geographyEditSelectionEnabled = Boolean(event.enabled);
+        if (!runtime.geographyEditSelectionEnabled) {
+          disableActiveGeographyEditLayer();
+          syncAllGeographyLayerEditability();
+          return;
+        }
+
+        disableActiveGeographyEditLayer();
+        syncAllGeographyLayerEditability();
+        statusControl.setText("Edit mode: click a geography feature to edit its vertices");
+      });
+
       map.on("pm:create", function(event) {
         if (!event.layer) return;
         markGeographyDirty();
         attachGeographyLayer(event.layer);
+        if (runtime.geographyEditSelectionEnabled) {
+          activateGeographyEditLayer(event.layer);
+        }
       });
 
       map.on("pm:edit", function() {
@@ -1778,6 +1886,9 @@
 
       map.on("pm:remove", function(event) {
         if (event.layer) {
+          if (runtime.activeGeographyEditLayer === event.layer) {
+            runtime.activeGeographyEditLayer = null;
+          }
           runtime.geographyEntries = runtime.geographyEntries.filter((entry) => entry.layer !== event.layer);
         }
         markGeographyDirty();
