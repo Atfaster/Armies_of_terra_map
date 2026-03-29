@@ -100,8 +100,73 @@
       padding: 12px 14px;
     }
 
+    .city-editor-panel {
+      display: none;
+      top: 12px;
+      left: calc(100vw - min(372px, calc(100vw - 24px)) - 12px);
+      width: min(360px, calc(100vw - 24px));
+      max-height: calc(100vh - 24px);
+      overflow: auto;
+      padding: 0;
+      z-index: 1300;
+    }
+
     body.local-edit-enabled .geography-panel {
       display: block;
+    }
+
+    body.local-edit-enabled .city-editor-panel {
+      display: block;
+    }
+
+    body.local-edit-enabled .city-editor-panel.is-hidden {
+      display: none;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .panel-header.is-draggable {
+      cursor: grab;
+      user-select: none;
+    }
+
+    .panel-header.is-draggable:active {
+      cursor: grabbing;
+    }
+
+    .panel-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 0 0 auto;
+    }
+
+    .panel-close-button {
+      appearance: none;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--panel-text);
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      font: inherit;
+      line-height: 1;
+    }
+
+    .panel-close-button:hover {
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    .city-editor-body {
+      padding: 12px 14px 14px;
     }
 
     .panel-title {
@@ -209,6 +274,54 @@
     .panel-note {
       margin-top: 8px;
       font-size: 12px;
+      color: var(--muted-text);
+    }
+
+    .panel-field {
+      margin-top: 10px;
+    }
+
+    .panel-field label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 12px;
+      color: var(--muted-text);
+    }
+
+    .panel-input,
+    .panel-select {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 8px;
+      background: rgba(12, 16, 22, 0.75);
+      color: var(--panel-text);
+      padding: 8px 10px;
+      font: inherit;
+    }
+
+    .panel-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .is-hidden {
+      display: none !important;
+    }
+
+    .panel-divider {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .panel-subtitle {
+      margin: 0 0 8px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
       color: var(--muted-text);
     }
 
@@ -510,8 +623,153 @@
       <button id="export-geography" class="panel-button" type="button">Export GeoJSON</button>
       <button id="copy-geography" class="panel-button" type="button">Copy JSON</button>
       <button id="reload-geography" class="panel-button" type="button">Reload file</button>
+      <button id="open-city-editor" class="panel-button" type="button">Open City Editor</button>
     </div>
     <textarea id="geography-json" class="panel-text" spellcheck="false" readonly></textarea>
+  </div>
+
+  <div class="map-panel city-editor-panel">
+    <div class="panel-header is-draggable" id="city-editor-header">
+      <div class="panel-row">
+        <div class="panel-title">City Editor</div>
+        <div id="city-editor-date" class="timeline-value">-</div>
+      </div>
+      <div class="panel-header-actions">
+        <button id="close-city-editor" class="panel-close-button" type="button" aria-label="Close City Editor">x</button>
+      </div>
+    </div>
+    <div class="city-editor-body">
+      <div class="panel-note">Local-only editor. Changes affect the selected city state for the active timeline year.</div>
+
+      <div class="panel-field">
+        <label for="city-new-year-input">Add year to timeline</label>
+        <div class="panel-actions">
+          <input id="city-new-year-input" class="panel-input" type="text" inputmode="numeric" placeholder="1409" />
+          <button id="city-add-year" class="panel-button" type="button">Add year</button>
+        </div>
+      </div>
+
+      <div class="panel-field">
+        <label for="city-select">City</label>
+        <select id="city-select" class="panel-select"></select>
+      </div>
+
+      <div class="panel-actions">
+        <button id="city-new" class="panel-button" type="button">New city</button>
+        <button id="city-delete" class="panel-button" type="button">Delete city</button>
+        <button id="city-use-center" class="panel-button" type="button">Use map center</button>
+      </div>
+
+      <div class="panel-divider">
+        <div class="panel-subtitle">City</div>
+        <div class="panel-field">
+          <label for="city-name-input">Name</label>
+          <input id="city-name-input" class="panel-input" type="text" />
+        </div>
+        <div class="panel-field">
+          <label for="city-founder-input">Founder</label>
+          <input id="city-founder-input" class="panel-input" type="text" />
+        </div>
+        <div class="panel-grid">
+          <div class="panel-field">
+            <label for="city-x-input">X</label>
+            <input id="city-x-input" class="panel-input" type="number" />
+          </div>
+          <div class="panel-field">
+            <label for="city-y-input">Y</label>
+            <input id="city-y-input" class="panel-input" type="number" />
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-divider">
+        <div class="panel-row">
+          <div class="panel-subtitle">State</div>
+          <div id="city-state-range" class="panel-note">-</div>
+        </div>
+        <div class="panel-actions">
+          <button id="city-add-state" class="panel-button" type="button">Split/Add state</button>
+          <button id="city-delete-state" class="panel-button" type="button">Delete state</button>
+        </div>
+        <div class="panel-field">
+          <label for="city-state-label-input">Label</label>
+          <input id="city-state-label-input" class="panel-input" type="text" />
+        </div>
+        <div class="panel-grid">
+          <div class="panel-field">
+            <label for="city-status-select">Status</label>
+            <select id="city-status-select" class="panel-select">
+              <option value="active">Active</option>
+              <option value="ruins">Ruins</option>
+            </select>
+          </div>
+          <div class="panel-field">
+            <label for="city-mayor-input">Mayor</label>
+            <input id="city-mayor-input" class="panel-input" type="text" />
+          </div>
+        </div>
+        <div class="panel-field">
+          <label for="city-nation-select">Nation</label>
+          <select id="city-nation-select" class="panel-select"></select>
+        </div>
+        <div id="city-new-nation-fields" class="panel-grid is-hidden">
+          <div class="panel-field">
+            <label for="city-new-nation-name">New nation name</label>
+            <input id="city-new-nation-name" class="panel-input" type="text" placeholder="Warbound" />
+          </div>
+          <div class="panel-field">
+            <label for="city-new-nation-founded">Founded</label>
+            <input id="city-new-nation-founded" class="panel-input" type="text" inputmode="numeric" placeholder="1408" />
+          </div>
+        </div>
+        <div class="panel-field">
+          <label for="city-tags-input">Tags</label>
+          <input id="city-tags-input" class="panel-input" type="text" />
+        </div>
+        <label class="checkbox-row panel-field">
+          <input id="city-capital-input" type="checkbox" />
+          <span>Capital</span>
+        </label>
+      </div>
+
+      <div class="panel-actions">
+        <button id="city-apply" class="panel-button" type="button">Apply form</button>
+        <button id="save-cities" class="panel-button" type="button">Save Cities</button>
+        <button id="reload-cities" class="panel-button" type="button">Reload file</button>
+      </div>
+
+      <div class="panel-divider">
+        <div class="panel-row">
+          <div class="panel-subtitle">Nation Editor</div>
+          <div id="nation-editor-status" class="panel-note">-</div>
+        </div>
+        <div class="panel-field">
+          <label for="nation-editor-select">Nation</label>
+          <select id="nation-editor-select" class="panel-select"></select>
+        </div>
+        <div class="panel-grid">
+          <div class="panel-field">
+            <label for="nation-editor-name">Name</label>
+            <input id="nation-editor-name" class="panel-input" type="text" />
+          </div>
+          <div class="panel-field">
+            <label for="nation-editor-founded">Founded</label>
+            <input id="nation-editor-founded" class="panel-input" type="text" inputmode="numeric" placeholder="1408" />
+          </div>
+        </div>
+        <div class="panel-field">
+          <label for="nation-editor-color">Color</label>
+          <input id="nation-editor-color" class="panel-input" type="color" />
+        </div>
+        <div class="panel-actions">
+          <button id="nation-editor-new" class="panel-button" type="button">New nation</button>
+          <button id="nation-editor-apply" class="panel-button" type="button">Apply nation</button>
+          <button id="nation-editor-delete" class="panel-button" type="button">Delete nation</button>
+        </div>
+      </div>
+
+      <textarea id="cities-json" class="panel-text" spellcheck="false" readonly></textarea>
+    </div>
   </div>
 
   <script
@@ -594,6 +852,12 @@
       geographyKindVisibility: new Map(),
       geographyFileHandle: null,
       geographyDirty: false,
+      citiesFileHandle: null,
+      cityDirty: false,
+      selectedCityId: null,
+      selectedNationId: null,
+      cityEditorVisible: true,
+      cityEditorDrag: null,
       showRaster: true,
       tileCount: 0,
       tileModeLabel: "Loading"
@@ -651,6 +915,135 @@
 
     function describeStatus(status) {
       return status === "ruins" ? "Ruins" : "Active";
+    }
+
+    function normalizeGameDate(value) {
+      const normalized = String(value ?? "").trim();
+      if (!/^\d{4}$/.test(normalized)) {
+        throw new Error("Game year must be exactly 4 digits");
+      }
+      return normalized;
+    }
+
+    function slugify(value) {
+      return String(value ?? "")
+        .trim()
+        .toLowerCase()
+        .replace(/_/g, "-")
+        .replace(/\s+/g, "-")
+        .replace(/[^0-9a-zа-яё-]/gi, "")
+        .replace(/-+/g, "-")
+        .replace(/^-|-$/g, "") || "city";
+    }
+
+    function getNationColorById(nationId) {
+      const hue = [...nationId].reduce((sum, char) => sum + char.charCodeAt(0), 0) % 360 / 360;
+      const saturation = 0.65;
+      const lightness = 0.52;
+
+      function hueToRgb(p, q, t) {
+        let value = t;
+        if (value < 0) value += 1;
+        if (value > 1) value -= 1;
+        if (value < 1 / 6) return p + (q - p) * 6 * value;
+        if (value < 1 / 2) return q;
+        if (value < 2 / 3) return p + (q - p) * (2 / 3 - value) * 6;
+        return p;
+      }
+
+      const q = lightness < 0.5 ? lightness * (1 + saturation) : lightness + saturation - lightness * saturation;
+      const p = 2 * lightness - q;
+      const r = Math.round(hueToRgb(p, q, hue + 1 / 3) * 255);
+      const g = Math.round(hueToRgb(p, q, hue) * 255);
+      const b = Math.round(hueToRgb(p, q, hue - 1 / 3) * 255);
+      return `#${[r, g, b].map((part) => part.toString(16).padStart(2, "0")).join("")}`;
+    }
+
+    function sortStates(states) {
+      states.sort((left, right) => String(left.from).localeCompare(String(right.from)));
+    }
+
+    function normalizeCityState(state, fallbackFrom) {
+      return {
+        from: normalizeGameDate(state?.from ?? fallbackFrom),
+        to: state?.to ? normalizeGameDate(state.to) : null,
+        status: state?.status === "ruins" ? "ruins" : "active",
+        nation_id: state?.nation_id ?? null,
+        label: String(state?.label ?? ""),
+        tags: Array.isArray(state?.tags) ? state.tags.filter(Boolean) : [],
+        is_capital: Boolean(state?.is_capital),
+        mayor: state?.mayor ? String(state.mayor) : null,
+        source: state?.source ?? null
+      };
+    }
+
+    function normalizeNation(nation) {
+      return {
+        id: String(nation?.id ?? ""),
+        name: String(nation?.name ?? nation?.id ?? ""),
+        color: String(nation?.color ?? getNationColorById(String(nation?.id ?? ""))),
+        founded: nation?.founded ? normalizeGameDate(nation.founded) : null
+      };
+    }
+
+    function normalizeCity(city) {
+      const normalizedStates = (city?.states ?? []).map((state) => normalizeCityState(state, runtime.activeDate || "1408"));
+      sortStates(normalizedStates);
+
+      return {
+        id: city?.id ?? slugify(city?.name ?? ""),
+        name: String(city?.name ?? city?.id ?? "Unnamed city"),
+        founder: city?.founder ? String(city.founder) : null,
+        kind: "city",
+        x: Number(city?.x ?? 0),
+        y: Number(city?.y ?? 0),
+        states: normalizedStates
+      };
+    }
+
+    function syncTimelineDatesFromCities() {
+      if (!runtime.cityDataset) return;
+      const dates = new Set(Array.isArray(runtime.cityDataset.timeline?.dates) ? runtime.cityDataset.timeline.dates : []);
+      for (const city of runtime.cityDataset.cities) {
+        for (const state of city.states ?? []) {
+          if (state.from) dates.add(state.from);
+          if (state.to) dates.add(state.to);
+        }
+      }
+      const timelineDates = Array.from(dates).sort();
+      runtime.timelineDates = timelineDates;
+      if (!timelineDates.length) {
+        runtime.activeDate = null;
+        runtime.cityDataset.timeline = { dates: [], default_date: null };
+        return;
+      }
+      if (!timelineDates.includes(runtime.activeDate)) {
+        runtime.activeDate = timelineDates[timelineDates.length - 1];
+      }
+      runtime.cityDataset.timeline = {
+        dates: timelineDates,
+        default_date: runtime.activeDate
+      };
+    }
+
+    function addTimelineYear(yearValue) {
+      if (!runtime.cityDataset) return;
+
+      const year = normalizeGameDate(yearValue);
+      const currentDates = new Set(Array.isArray(runtime.cityDataset.timeline?.dates) ? runtime.cityDataset.timeline.dates : []);
+      currentDates.add(year);
+      runtime.cityDataset.timeline = {
+        dates: Array.from(currentDates).sort(),
+        default_date: year
+      };
+      runtime.activeDate = year;
+      syncTimelineDatesFromCities();
+      markCitiesDirty();
+      syncTimelineUi();
+      renderNationFilters();
+      renderCities();
+      populateCityEditor();
+      statusControl.setText(`Timeline year ${year} added`);
     }
 
     function getTileBounds(tileX, tileY) {
@@ -1441,8 +1834,8 @@
     }
 
     function validateCityDataset(dataset) {
-      const nations = Array.isArray(dataset?.nations) ? dataset.nations : [];
-      const cities = Array.isArray(dataset?.cities) ? dataset.cities : [];
+      const nations = (Array.isArray(dataset?.nations) ? dataset.nations : []).map((nation) => normalizeNation(nation));
+      const cities = (Array.isArray(dataset?.cities) ? dataset.cities : []).map((city) => normalizeCity(city));
       return {
         nations,
         cities,
@@ -1503,6 +1896,8 @@
           <li><strong>Status:</strong> ${escapeHtml(describeStatus(state.status))}</li>
           <li><strong>Capital:</strong> ${state.is_capital ? "Yes" : "No"}</li>
           <li><strong>Nation:</strong> ${escapeHtml(nation?.name ?? "Free city")}</li>
+          <li><strong>Founder:</strong> ${escapeHtml(city.founder ?? "Unknown")}</li>
+          <li><strong>Mayor:</strong> ${escapeHtml(state.mayor ?? "Unknown")}</li>
           <li><strong>Coordinates:</strong> X ${city.x}, Y ${city.y}</li>
           <li><strong>Active from:</strong> ${escapeHtml(formatDate(state.from))}</li>
           <li><strong>Tags:</strong> ${escapeHtml(tags)}</li>
@@ -1538,6 +1933,11 @@
           pane: state.is_capital ? "capitalPane" : "cityPane",
           keyboard: false
         });
+        if (EDITOR_IS_LOCAL) {
+          marker.on("click", function() {
+            selectCity(city.id);
+          });
+        }
         marker.bindPopup(buildCityPopup(city, state));
         marker.addTo(layers.cities);
         visibleCities += 1;
@@ -1580,6 +1980,7 @@
       syncTimelineUi();
       renderNationFilters();
       renderCities();
+      populateCityEditor();
     }
 
     function getNationCityCounts() {
@@ -1598,15 +1999,22 @@
       return counts;
     }
 
+    function getVisibleNationsForActiveDate() {
+      const nationCounts = getNationCityCounts();
+      return [...(runtime.cityDataset?.nations ?? [])]
+        .filter((nation) => (nationCounts.get(nation.id) ?? 0) > 0)
+        .sort((left, right) => {
+          const countDiff = (nationCounts.get(right.id) ?? 0) - (nationCounts.get(left.id) ?? 0);
+          if (countDiff !== 0) return countDiff;
+          return left.name.localeCompare(right.name);
+        });
+    }
+
     function renderNationFilters() {
       const container = document.getElementById("nation-filters");
       container.innerHTML = "";
       const nationCounts = getNationCityCounts();
-      const sortedNations = [...(runtime.cityDataset?.nations ?? [])].sort((left, right) => {
-        const countDiff = (nationCounts.get(right.id) ?? 0) - (nationCounts.get(left.id) ?? 0);
-        if (countDiff !== 0) return countDiff;
-        return left.name.localeCompare(right.name);
-      });
+      const sortedNations = getVisibleNationsForActiveDate();
 
       for (const nation of sortedNations) {
         if (!runtime.nationVisibility.has(nation.id)) {
@@ -1631,22 +2039,670 @@
       }
     }
 
+    function serializeCitiesObject() {
+      if (!runtime.cityDataset) {
+        return {
+          schema_version: 1,
+          generated_at: new Date().toISOString(),
+          timeline: { dates: [], default_date: null },
+          nations: [],
+          cities: []
+        };
+      }
+
+      syncTimelineDatesFromCities();
+      return {
+        schema_version: runtime.cityDataset.schema_version ?? 1,
+        generated_at: new Date().toISOString(),
+        timeline: runtime.cityDataset.timeline,
+        nations: [...runtime.cityDataset.nations].sort((left, right) => left.name.localeCompare(right.name)),
+        cities: [...runtime.cityDataset.cities]
+          .map((city) => {
+            sortStates(city.states);
+            return city;
+          })
+          .sort((left, right) => left.name.localeCompare(right.name))
+      };
+    }
+
+    function serializeCities() {
+      const payload = serializeCitiesObject();
+      const json = JSON.stringify(payload, null, 2);
+      document.getElementById("cities-json").value = json;
+      return json;
+    }
+
+    function markCitiesDirty() {
+      runtime.cityDirty = true;
+    }
+
+    function markCitiesSaved() {
+      runtime.cityDirty = false;
+    }
+
+    function getCityById(cityId) {
+      return runtime.cityDataset?.cities.find((city) => city.id === cityId) ?? null;
+    }
+
+    function getActiveCityState(city) {
+      if (!city || !runtime.activeDate) return null;
+      return resolveCityState(city, runtime.activeDate);
+    }
+
+    function getCurrentStateIndex(city) {
+      if (!city || !runtime.activeDate) return -1;
+      return city.states.findIndex((state) => {
+        const startsBefore = !state.from || state.from <= runtime.activeDate;
+        const endsAfter = !state.to || runtime.activeDate < state.to;
+        return startsBefore && endsAfter;
+      });
+    }
+
+    function ensureNation(nationName, founded) {
+      const trimmed = String(nationName ?? "").trim();
+      if (!trimmed) return null;
+
+      const existing = runtime.cityDataset.nations.find((nation) => nation.name.toLowerCase() === trimmed.toLowerCase());
+      if (existing) {
+        if (!existing.founded && founded) {
+          existing.founded = normalizeGameDate(founded);
+        }
+        return existing.id;
+      }
+
+      const nationId = slugify(trimmed);
+      const created = normalizeNation({
+        id: nationId,
+        name: trimmed,
+        color: getNationColorById(nationId),
+        founded: founded ? normalizeGameDate(founded) : runtime.activeDate
+      });
+      runtime.cityDataset.nations.push(created);
+      runtime.nationById.set(created.id, created);
+      runtime.nationVisibility.set(created.id, true);
+      return created.id;
+    }
+
+    function refreshNationInputs() {
+      const select = document.getElementById("city-nation-select");
+      const nations = [...(runtime.cityDataset?.nations ?? [])].sort((left, right) => left.name.localeCompare(right.name));
+      select.innerHTML = `
+        <option value="">Free city</option>
+        <option value="__new__">+ New nation</option>
+      `;
+
+      for (const nation of nations) {
+        const option = document.createElement("option");
+        option.value = nation.id;
+        option.textContent = nation.founded ? `${nation.name} (${nation.founded})` : nation.name;
+        select.appendChild(option);
+      }
+    }
+
+    function renderNationEditorOptions() {
+      const select = document.getElementById("nation-editor-select");
+      const nations = [...(runtime.cityDataset?.nations ?? [])].sort((left, right) => left.name.localeCompare(right.name));
+      select.innerHTML = `<option value="">New nation</option>`;
+
+      for (const nation of nations) {
+        const option = document.createElement("option");
+        option.value = nation.id;
+        option.textContent = nation.founded ? `${nation.name} (${nation.founded})` : nation.name;
+        select.appendChild(option);
+      }
+
+      if (runtime.selectedNationId && nations.some((nation) => nation.id === runtime.selectedNationId)) {
+        select.value = runtime.selectedNationId;
+      } else {
+        runtime.selectedNationId = null;
+        select.value = "";
+      }
+    }
+
+    function populateNationEditor(preferredNationId = runtime.selectedNationId) {
+      renderNationEditorOptions();
+      const nation = preferredNationId
+        ? runtime.cityDataset?.nations.find((entry) => entry.id === preferredNationId) ?? null
+        : null;
+
+      runtime.selectedNationId = nation?.id ?? null;
+      document.getElementById("nation-editor-select").value = runtime.selectedNationId ?? "";
+      document.getElementById("nation-editor-name").value = nation?.name ?? "";
+      document.getElementById("nation-editor-founded").value = nation?.founded ?? (runtime.activeDate ?? "");
+      document.getElementById("nation-editor-color").value = nation?.color ?? "#999999";
+      document.getElementById("nation-editor-status").textContent = nation
+        ? `Editing ${nation.name}`
+        : "New nation";
+    }
+
+    function rebuildNationMaps() {
+      runtime.nationById = new Map((runtime.cityDataset?.nations ?? []).map((nation) => [nation.id, nation]));
+      const nextVisibility = new Map();
+      for (const nation of runtime.cityDataset?.nations ?? []) {
+        nextVisibility.set(nation.id, runtime.nationVisibility.get(nation.id) !== false);
+      }
+      runtime.nationVisibility = nextVisibility;
+    }
+
+    function applyNationEditorForm() {
+      const name = document.getElementById("nation-editor-name").value.trim();
+      const foundedRaw = document.getElementById("nation-editor-founded").value.trim();
+      const color = document.getElementById("nation-editor-color").value.trim();
+
+      if (!name) {
+        throw new Error("Nation name is required");
+      }
+
+      const founded = foundedRaw ? normalizeGameDate(foundedRaw) : null;
+      const nextId = slugify(name);
+      const nations = runtime.cityDataset.nations;
+      const existing = runtime.selectedNationId
+        ? nations.find((nation) => nation.id === runtime.selectedNationId) ?? null
+        : null;
+
+      if (!existing && nations.some((nation) => nation.id === nextId)) {
+        throw new Error("A nation with this name already exists");
+      }
+      if (existing && nextId !== existing.id && nations.some((nation) => nation.id === nextId)) {
+        throw new Error("Another nation already uses this name");
+      }
+
+      const nation = existing ?? { id: nextId, name, color, founded };
+      const previousId = nation.id;
+      nation.id = nextId;
+      nation.name = name;
+      nation.color = color || getNationColorById(nextId);
+      nation.founded = founded;
+
+      if (!existing) {
+        nations.push(nation);
+      }
+
+      if (previousId !== nextId) {
+        for (const city of runtime.cityDataset.cities) {
+          for (const state of city.states ?? []) {
+            if (state.nation_id === previousId) {
+              state.nation_id = nextId;
+            }
+          }
+        }
+      }
+
+      runtime.selectedNationId = nextId;
+      markCitiesDirty();
+      rebuildNationMaps();
+      renderNationFilters();
+      refreshNationInputs();
+      renderCities();
+      populateCityEditor();
+      populateNationEditor(nextId);
+    }
+
+    function deleteSelectedNation() {
+      const nation = runtime.cityDataset?.nations.find((entry) => entry.id === runtime.selectedNationId) ?? null;
+      if (!nation) return;
+      if (!window.confirm(`Delete nation "${nation.name}" and detach all linked city states?`)) return;
+
+      runtime.cityDataset.nations = runtime.cityDataset.nations.filter((entry) => entry.id !== nation.id);
+      for (const city of runtime.cityDataset.cities) {
+        for (const state of city.states ?? []) {
+          if (state.nation_id === nation.id) {
+            state.nation_id = null;
+          }
+        }
+      }
+
+      runtime.selectedNationId = null;
+      markCitiesDirty();
+      rebuildNationMaps();
+      renderNationFilters();
+      refreshNationInputs();
+      renderCities();
+      populateCityEditor();
+      populateNationEditor();
+    }
+
+    function renderCitySelectOptions() {
+      const select = document.getElementById("city-select");
+      const cities = [...(runtime.cityDataset?.cities ?? [])].sort((left, right) => left.name.localeCompare(right.name));
+      select.innerHTML = "";
+
+      for (const city of cities) {
+        const option = document.createElement("option");
+        option.value = city.id;
+        option.textContent = city.name;
+        select.appendChild(option);
+      }
+
+      if (!cities.length) {
+        const option = document.createElement("option");
+        option.value = "";
+        option.textContent = "No cities";
+        select.appendChild(option);
+      }
+
+      if (runtime.selectedCityId && cities.some((city) => city.id === runtime.selectedCityId)) {
+        select.value = runtime.selectedCityId;
+      } else if (cities.length) {
+        runtime.selectedCityId = cities[0].id;
+        select.value = runtime.selectedCityId;
+      } else {
+        runtime.selectedCityId = null;
+      }
+    }
+
+    function updateCityEditorHeader() {
+      document.getElementById("city-editor-date").textContent = formatDate(runtime.activeDate);
+    }
+
+    function syncNationEditorMode() {
+      const select = document.getElementById("city-nation-select");
+      const fields = document.getElementById("city-new-nation-fields");
+      fields.classList.toggle("is-hidden", select.value !== "__new__");
+    }
+
+    function syncCityEditorVisibility() {
+      const panel = document.querySelector(".city-editor-panel");
+      if (!panel) return;
+      panel.classList.toggle("is-hidden", !runtime.cityEditorVisible);
+    }
+
+    function openCityEditor() {
+      runtime.cityEditorVisible = true;
+      syncCityEditorVisibility();
+    }
+
+    function closeCityEditor() {
+      runtime.cityEditorVisible = false;
+      syncCityEditorVisibility();
+    }
+
+    function clampCityEditorPosition() {
+      const panel = document.querySelector(".city-editor-panel");
+      if (!panel) return;
+      const maxLeft = Math.max(12, window.innerWidth - panel.offsetWidth - 12);
+      const maxTop = Math.max(12, window.innerHeight - panel.offsetHeight - 12);
+      const currentLeft = Number.parseFloat(panel.style.left || "0");
+      const currentTop = Number.parseFloat(panel.style.top || "0");
+      panel.style.left = `${Math.min(Math.max(12, currentLeft || maxLeft), maxLeft)}px`;
+      panel.style.top = `${Math.min(Math.max(12, currentTop || 12), maxTop)}px`;
+    }
+
+    function configureCityEditorDrag() {
+      if (!EDITOR_IS_LOCAL) return;
+      const panel = document.querySelector(".city-editor-panel");
+      const header = document.getElementById("city-editor-header");
+      if (!panel || !header) return;
+
+      header.addEventListener("pointerdown", function(event) {
+        if (event.target.closest("button, input, select, textarea, label")) return;
+
+        const rect = panel.getBoundingClientRect();
+        runtime.cityEditorDrag = {
+          pointerId: event.pointerId,
+          offsetX: event.clientX - rect.left,
+          offsetY: event.clientY - rect.top
+        };
+        header.setPointerCapture(event.pointerId);
+      });
+
+      header.addEventListener("pointermove", function(event) {
+        if (!runtime.cityEditorDrag || runtime.cityEditorDrag.pointerId !== event.pointerId) return;
+
+        const nextLeft = event.clientX - runtime.cityEditorDrag.offsetX;
+        const nextTop = event.clientY - runtime.cityEditorDrag.offsetY;
+        const maxLeft = Math.max(12, window.innerWidth - panel.offsetWidth - 12);
+        const maxTop = Math.max(12, window.innerHeight - panel.offsetHeight - 12);
+
+        panel.style.left = `${Math.min(Math.max(12, nextLeft), maxLeft)}px`;
+        panel.style.top = `${Math.min(Math.max(12, nextTop), maxTop)}px`;
+      });
+
+      function releaseDrag(event) {
+        if (!runtime.cityEditorDrag || runtime.cityEditorDrag.pointerId !== event.pointerId) return;
+        runtime.cityEditorDrag = null;
+        try {
+          header.releasePointerCapture(event.pointerId);
+        } catch (error) {
+          console.warn("City editor pointer release failed", error);
+        }
+      }
+
+      header.addEventListener("pointerup", releaseDrag);
+      header.addEventListener("pointercancel", releaseDrag);
+      window.addEventListener("resize", clampCityEditorPosition);
+
+      syncCityEditorVisibility();
+      clampCityEditorPosition();
+    }
+
+    function populateCityEditor() {
+      updateCityEditorHeader();
+      renderCitySelectOptions();
+      refreshNationInputs();
+      serializeCities();
+      const nextYearInput = document.getElementById("city-new-year-input");
+      if (runtime.activeDate && /^\d{4}$/.test(runtime.activeDate)) {
+        nextYearInput.value = String(Number(runtime.activeDate) + 1).padStart(4, "0");
+      }
+
+      const city = getCityById(runtime.selectedCityId);
+      const state = getActiveCityState(city);
+      const stateRange = document.getElementById("city-state-range");
+
+      document.getElementById("city-name-input").value = city?.name ?? "";
+      document.getElementById("city-founder-input").value = city?.founder ?? "";
+      document.getElementById("city-x-input").value = city?.x ?? "";
+      document.getElementById("city-y-input").value = city?.y ?? "";
+
+      document.getElementById("city-state-label-input").value = state?.label ?? city?.name ?? "";
+      document.getElementById("city-status-select").value = state?.status ?? "active";
+      document.getElementById("city-mayor-input").value = state?.mayor ?? "";
+      document.getElementById("city-nation-select").value = state?.nation_id ?? "";
+      document.getElementById("city-new-nation-name").value = "";
+      document.getElementById("city-new-nation-founded").value = runtime.activeDate && /^\d{4}$/.test(runtime.activeDate)
+        ? runtime.activeDate
+        : "";
+      syncNationEditorMode();
+      document.getElementById("city-tags-input").value = Array.isArray(state?.tags) ? state.tags.join(", ") : "";
+      document.getElementById("city-capital-input").checked = Boolean(state?.is_capital);
+      populateNationEditor(state?.nation_id ?? runtime.selectedNationId);
+
+      if (state) {
+        stateRange.textContent = `${formatDate(state.from)} -> ${formatDate(state.to ?? "Now")}`;
+      } else {
+        stateRange.textContent = `No state at ${formatDate(runtime.activeDate)}`;
+      }
+    }
+
+    function selectCity(cityId) {
+      runtime.selectedCityId = cityId;
+      populateCityEditor();
+    }
+
+    function createStateTemplate(city) {
+      const currentState = getActiveCityState(city);
+      if (currentState) {
+        return {
+          from: runtime.activeDate,
+          to: currentState.to ?? null,
+          status: currentState.status,
+          nation_id: currentState.nation_id,
+          label: currentState.label,
+          tags: [...(currentState.tags ?? [])],
+          is_capital: Boolean(currentState.is_capital),
+          mayor: currentState.mayor ?? null,
+          source: currentState.source ?? null
+        };
+      }
+
+      return {
+        from: runtime.activeDate,
+        to: null,
+        status: "active",
+        nation_id: null,
+        label: city.name,
+        tags: [],
+        is_capital: false,
+        mayor: null,
+        source: null
+      };
+    }
+
+    function ensureEditableState(city) {
+      if (!city || !runtime.activeDate) return null;
+      const stateIndex = getCurrentStateIndex(city);
+      if (stateIndex !== -1) {
+        const currentState = city.states[stateIndex];
+        if (currentState.from === runtime.activeDate) {
+          return currentState;
+        }
+
+        const nextState = {
+          ...currentState,
+          tags: [...(currentState.tags ?? [])],
+          from: runtime.activeDate
+        };
+        currentState.to = runtime.activeDate;
+        city.states.splice(stateIndex + 1, 0, nextState);
+        sortStates(city.states);
+        markCitiesDirty();
+        return nextState;
+      }
+
+      const template = createStateTemplate(city);
+      city.states.push(template);
+      sortStates(city.states);
+      markCitiesDirty();
+      return template;
+    }
+
+    function applyCityEditorForm() {
+      const city = getCityById(runtime.selectedCityId);
+      if (!city) return;
+
+      const name = document.getElementById("city-name-input").value.trim();
+      const founder = document.getElementById("city-founder-input").value.trim() || null;
+      const x = Number(document.getElementById("city-x-input").value);
+      const y = Number(document.getElementById("city-y-input").value);
+
+      if (!name) {
+        throw new Error("City name is required");
+      }
+      if (!Number.isFinite(x) || !Number.isFinite(y)) {
+        throw new Error("City coordinates must be valid numbers");
+      }
+
+      const state = ensureEditableState(city);
+      if (!state) {
+        throw new Error("Could not create an editable city state");
+      }
+
+      const selectedNationId = document.getElementById("city-nation-select").value;
+      let nationId = null;
+      if (selectedNationId === "__new__") {
+        nationId = ensureNation(
+          document.getElementById("city-new-nation-name").value.trim(),
+          document.getElementById("city-new-nation-founded").value.trim() || runtime.activeDate
+        );
+      } else if (selectedNationId) {
+        nationId = selectedNationId;
+      }
+      const nextCityId = slugify(name);
+      if (nextCityId !== city.id && runtime.cityDataset.cities.some((entry) => entry.id === nextCityId)) {
+        throw new Error("Another city already uses this name");
+      }
+
+      city.name = name;
+      city.founder = founder;
+      city.id = nextCityId;
+      city.x = Math.round(x);
+      city.y = Math.round(y);
+
+      state.label = document.getElementById("city-state-label-input").value.trim() || name;
+      state.status = document.getElementById("city-status-select").value === "ruins" ? "ruins" : "active";
+      state.mayor = document.getElementById("city-mayor-input").value.trim() || null;
+      state.nation_id = nationId;
+      state.tags = document.getElementById("city-tags-input").value
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter(Boolean);
+      state.is_capital = document.getElementById("city-capital-input").checked;
+
+      runtime.selectedCityId = city.id;
+      syncTimelineDatesFromCities();
+      markCitiesDirty();
+      rebuildNationMaps();
+      renderNationFilters();
+      renderCities();
+      populateCityEditor();
+    }
+
+    function createCityAtActiveDate() {
+      if (!runtime.cityDataset || !runtime.activeDate) return;
+
+      const center = latLngToGame(map.getCenter());
+      let baseName = "New City";
+      let attempt = 1;
+      while (runtime.cityDataset.cities.some((city) => city.name === baseName)) {
+        attempt += 1;
+        baseName = `New City ${attempt}`;
+      }
+
+      const city = normalizeCity({
+        id: slugify(baseName),
+        name: baseName,
+        founder: null,
+        x: center.x,
+        y: center.y,
+        states: [
+          {
+            from: runtime.activeDate,
+            to: null,
+            status: "active",
+            nation_id: null,
+            label: baseName,
+            tags: [],
+            is_capital: false,
+            mayor: null
+          }
+        ]
+      });
+
+      runtime.cityDataset.cities.push(city);
+      runtime.selectedCityId = city.id;
+      syncTimelineDatesFromCities();
+      markCitiesDirty();
+      renderNationFilters();
+      renderCities();
+      populateCityEditor();
+    }
+
+    function deleteSelectedCity() {
+      const city = getCityById(runtime.selectedCityId);
+      if (!city) return;
+      if (!window.confirm(`Delete city "${city.name}"?`)) return;
+
+      runtime.cityDataset.cities = runtime.cityDataset.cities.filter((entry) => entry.id !== city.id);
+      runtime.selectedCityId = runtime.cityDataset.cities[0]?.id ?? null;
+      syncTimelineDatesFromCities();
+      markCitiesDirty();
+      renderNationFilters();
+      renderCities();
+      populateCityEditor();
+    }
+
+    function deleteActiveState() {
+      const city = getCityById(runtime.selectedCityId);
+      if (!city) return;
+
+      const stateIndex = getCurrentStateIndex(city);
+      if (stateIndex === -1) return;
+      if (city.states.length === 1) {
+        throw new Error("Cannot delete the only state. Delete the city instead.");
+      }
+
+      const removed = city.states[stateIndex];
+      const previous = city.states[stateIndex - 1] ?? null;
+      city.states.splice(stateIndex, 1);
+
+      if (previous && previous.to === removed.from) {
+        previous.to = removed.to ?? null;
+      }
+
+      sortStates(city.states);
+      syncTimelineDatesFromCities();
+      markCitiesDirty();
+      renderNationFilters();
+      renderCities();
+      populateCityEditor();
+    }
+
+    function useMapCenterForCity() {
+      const center = latLngToGame(map.getCenter());
+      document.getElementById("city-x-input").value = center.x;
+      document.getElementById("city-y-input").value = center.y;
+    }
+
+    async function saveCitiesToFile() {
+      if (!EDITOR_IS_LOCAL) return;
+
+      const payload = serializeCitiesObject();
+      const json = JSON.stringify(payload, null, 2);
+      document.getElementById("cities-json").value = json;
+
+      try {
+        const response = await fetch("/api/save-cities", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: json
+        });
+
+        if (response.ok) {
+          markCitiesSaved();
+          renderStatus();
+          statusControl.setText("Cities saved");
+          return;
+        }
+      } catch (error) {
+        console.warn("Direct city save endpoint unavailable, falling back to browser file save", error);
+      }
+
+      if (!window.showSaveFilePicker) {
+        downloadTextFile("cities.json", json);
+        return;
+      }
+
+      try {
+        if (!runtime.citiesFileHandle) {
+          runtime.citiesFileHandle = await window.showSaveFilePicker({
+            suggestedName: "cities.json",
+            types: [
+              {
+                description: "JSON",
+                accept: {
+                  "application/json": [".json"]
+                }
+              }
+            ]
+          });
+        }
+
+        const writable = await runtime.citiesFileHandle.createWritable();
+        await writable.write(json);
+        await writable.close();
+        markCitiesSaved();
+        renderStatus();
+        statusControl.setText("Cities saved");
+      } catch (error) {
+        if (error?.name === "AbortError") return;
+        throw error;
+      }
+    }
+
     async function loadCities() {
       const dataset = await fetchJson("data/cities.json");
       const validated = validateCityDataset(dataset);
 
       runtime.cityDataset = {
+        schema_version: dataset?.schema_version ?? 1,
+        timeline: dataset?.timeline ?? { dates: [], default_date: null },
         nations: validated.nations,
         cities: validated.cities
       };
-      runtime.nationById = new Map(validated.nations.map((nation) => [nation.id, nation]));
-      runtime.nationVisibility = new Map(validated.nations.map((nation) => [nation.id, true]));
+      rebuildNationMaps();
       runtime.timelineDates = validated.timelineDates;
       runtime.activeDate = dataset?.timeline?.default_date ?? validated.timelineDates[validated.timelineDates.length - 1] ?? null;
+      runtime.selectedCityId = validated.cities[0]?.id ?? null;
+      runtime.selectedNationId = null;
 
       renderNationFilters();
       syncTimelineUi();
       renderCities();
+      populateCityEditor();
+      markCitiesSaved();
     }
 
     async function loadMap() {
@@ -1708,7 +2764,115 @@
       updateZoomLayers();
     });
 
+    document.getElementById("city-select").addEventListener("change", function(event) {
+      selectCity(event.target.value);
+    });
+
+    document.getElementById("city-nation-select").addEventListener("change", function() {
+      syncNationEditorMode();
+    });
+
+    document.getElementById("nation-editor-select").addEventListener("change", function(event) {
+      runtime.selectedNationId = event.target.value || null;
+      populateNationEditor(runtime.selectedNationId);
+    });
+
+    document.getElementById("open-city-editor").addEventListener("click", function() {
+      openCityEditor();
+    });
+
+    document.getElementById("close-city-editor").addEventListener("click", function() {
+      closeCityEditor();
+    });
+
     if (EDITOR_IS_LOCAL) {
+      document.getElementById("city-new").addEventListener("click", function() {
+        createCityAtActiveDate();
+      });
+
+      document.getElementById("city-delete").addEventListener("click", function() {
+        deleteSelectedCity();
+      });
+
+      document.getElementById("city-add-year").addEventListener("click", function() {
+        try {
+          addTimelineYear(document.getElementById("city-new-year-input").value);
+        } catch (error) {
+          console.error(error);
+          statusControl.setText(`Error: ${error.message}`);
+        }
+      });
+
+      document.getElementById("city-use-center").addEventListener("click", function() {
+        useMapCenterForCity();
+      });
+
+      document.getElementById("nation-editor-new").addEventListener("click", function() {
+        runtime.selectedNationId = null;
+        populateNationEditor();
+      });
+
+      document.getElementById("nation-editor-apply").addEventListener("click", function() {
+        try {
+          applyNationEditorForm();
+        } catch (error) {
+          console.error(error);
+          statusControl.setText(`Error: ${error.message}`);
+        }
+      });
+
+      document.getElementById("nation-editor-delete").addEventListener("click", function() {
+        try {
+          deleteSelectedNation();
+        } catch (error) {
+          console.error(error);
+          statusControl.setText(`Error: ${error.message}`);
+        }
+      });
+
+      document.getElementById("city-add-state").addEventListener("click", function() {
+        const city = getCityById(runtime.selectedCityId);
+        if (!city) return;
+        ensureEditableState(city);
+        syncTimelineDatesFromCities();
+        markCitiesDirty();
+        renderNationFilters();
+        renderCities();
+        populateCityEditor();
+      });
+
+      document.getElementById("city-delete-state").addEventListener("click", function() {
+        try {
+          deleteActiveState();
+        } catch (error) {
+          console.error(error);
+          statusControl.setText(`Error: ${error.message}`);
+        }
+      });
+
+      document.getElementById("city-apply").addEventListener("click", function() {
+        try {
+          applyCityEditorForm();
+        } catch (error) {
+          console.error(error);
+          statusControl.setText(`Error: ${error.message}`);
+        }
+      });
+
+      document.getElementById("save-cities").addEventListener("click", function() {
+        saveCitiesToFile().catch((error) => {
+          console.error(error);
+          statusControl.setText(`Error: ${error.message}`);
+        });
+      });
+
+      document.getElementById("reload-cities").addEventListener("click", function() {
+        loadCities().catch((error) => {
+          console.error(error);
+          statusControl.setText(`Error: ${error.message}`);
+        });
+      });
+
       document.getElementById("save-geography").addEventListener("click", function() {
         saveGeographyToFile().catch((error) => {
           console.error(error);
@@ -1740,8 +2904,8 @@
     map.on("zoomend", updateZoomLayers);
 
     window.addEventListener("beforeunload", function(event) {
-      if (!EDITOR_IS_LOCAL || !runtime.geographyDirty) return;
-      const message = "You have unsaved geography changes. Leaving this page may discard them.";
+      if (!EDITOR_IS_LOCAL || (!runtime.geographyDirty && !runtime.cityDirty)) return;
+      const message = "You have unsaved local editor changes. Leaving this page may discard them.";
       event.preventDefault();
       event.returnValue = message;
       return message;
@@ -1751,6 +2915,7 @@
       try {
         await loadMap();
         await configureGeoman();
+        configureCityEditorDrag();
       } catch (error) {
         console.error(error);
         statusControl.setText(`Error: ${error.message}`);

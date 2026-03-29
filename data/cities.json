@@ -1,63 +1,74 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-03-28T19:33:31+00:00",
+  "generated_at": "2026-03-29T01:20:41.487Z",
   "timeline": {
     "dates": [
-      "1408"
+      "1408",
+      "1409"
     ],
-    "default_date": "1408"
+    "default_date": "1409"
   },
   "nations": [
     {
       "id": "avernia",
       "name": "Avernia",
-      "color": "#d46f35"
+      "color": "#d46f35",
+      "founded": null
     },
     {
       "id": "eleftheria",
       "name": "Eleftheria",
-      "color": "#d43587"
+      "color": "#d43587",
+      "founded": null
     },
     {
       "id": "emerald-isles",
       "name": "Emerald Isles",
-      "color": "#3537d4"
+      "color": "#3537d4",
+      "founded": null
     },
     {
       "id": "fryjarl",
       "name": "Fryjarl",
-      "color": "#d4a435"
+      "color": "#d4a435",
+      "founded": null
     },
     {
       "id": "germania",
       "name": "Germania",
-      "color": "#3fd435"
+      "color": "#ffff00",
+      "founded": "1408"
     },
     {
       "id": "lusitania",
       "name": "Lusitania",
-      "color": "#4f35d4"
+      "color": "#00ff00",
+      "founded": "1409"
     },
     {
       "id": "visigoth",
       "name": "Visigoth",
-      "color": "#35d497"
+      "color": "#35d497",
+      "founded": null
     },
     {
       "id": "warbound",
       "name": "Warbound",
-      "color": "#35d479"
+      "color": "#ff0000",
+      "founded": "1400"
     },
     {
       "id": "zaistan",
       "name": "Zaistan",
-      "color": "#d4a435"
+      "color": "#d4a435",
+      "founded": null
     }
   ],
   "cities": [
     {
       "id": "aachen",
       "name": "Aachen",
+      "founder": null,
       "kind": "city",
       "x": 644,
       "y": 184,
@@ -70,6 +81,7 @@
           "label": "Aachen",
           "tags": [],
           "is_capital": false,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Aachen-nation-Eleftheria_644-67-184.json",
@@ -82,6 +94,7 @@
     {
       "id": "aetheris",
       "name": "Aetheris",
+      "founder": null,
       "kind": "city",
       "x": 3300,
       "y": 8650,
@@ -94,6 +107,7 @@
           "label": "Aetheris",
           "tags": [],
           "is_capital": false,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Aetheris-nation-Lusitania_3300-77-8650.json",
@@ -106,6 +120,7 @@
     {
       "id": "anathema",
       "name": "Anathema",
+      "founder": null,
       "kind": "city",
       "x": -4012,
       "y": 3858,
@@ -118,6 +133,7 @@
           "label": "Anathema",
           "tags": [],
           "is_capital": false,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Anathema-nation-Visigoth_-4012-72-3858.json",
@@ -130,6 +146,7 @@
     {
       "id": "ashfang-bay",
       "name": "Ashfang Bay",
+      "founder": null,
       "kind": "city",
       "x": -6355,
       "y": -3830,
@@ -142,6 +159,7 @@
           "label": "Ashfang Bay",
           "tags": [],
           "is_capital": false,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Ashfang_Bay_-6355-63-3830.json",
@@ -154,6 +172,7 @@
     {
       "id": "aurelia",
       "name": "Aurelia",
+      "founder": null,
       "kind": "city",
       "x": 1196,
       "y": 1355,
@@ -166,6 +185,7 @@
           "label": "Aurelia",
           "tags": [],
           "is_capital": false,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Aurelia-nation-Eleftheria_1196-70-1355.json",
@@ -178,6 +198,7 @@
     {
       "id": "camalot",
       "name": "Camalot",
+      "founder": null,
       "kind": "city",
       "x": 4490,
       "y": 8310,
@@ -190,6 +211,7 @@
           "label": "Camalot",
           "tags": [],
           "is_capital": true,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Camalot-nation-Lusitania-capital_4490-77-8310.json",
@@ -202,6 +224,7 @@
     {
       "id": "cornbreadvil",
       "name": "Cornbreadvil",
+      "founder": null,
       "kind": "city",
       "x": -300,
       "y": 5200,
@@ -216,6 +239,7 @@
             "bankrupt"
           ],
           "is_capital": false,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Cornbreadvil-bankrupt_-300-77-5200.json",
@@ -228,6 +252,7 @@
     {
       "id": "corvinburg",
       "name": "Corvinburg",
+      "founder": null,
       "kind": "city",
       "x": 5424,
       "y": -890,
@@ -240,6 +265,7 @@
           "label": "Corvinburg",
           "tags": [],
           "is_capital": true,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Corvinburg-nation-Avernia-capital_5424-86-890.json",
@@ -252,6 +278,7 @@
     {
       "id": "crimea",
       "name": "Crimea",
+      "founder": null,
       "kind": "city",
       "x": 2894,
       "y": 3761,
@@ -264,6 +291,7 @@
           "label": "Crimea",
           "tags": [],
           "is_capital": false,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Crimea-nation-Warbound_2894-82-3761.json",
@@ -276,6 +304,7 @@
     {
       "id": "dijkersloot",
       "name": "Dijkersloot",
+      "founder": null,
       "kind": "city",
       "x": -4360,
       "y": 3913,
@@ -288,6 +317,7 @@
           "label": "Dijkersloot",
           "tags": [],
           "is_capital": false,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Dijkersloot-nation-Visigoth_-4360-69-3913.json",
@@ -300,6 +330,7 @@
     {
       "id": "driftmark",
       "name": "Driftmark",
+      "founder": null,
       "kind": "city",
       "x": -7800,
       "y": 8429,
@@ -312,6 +343,7 @@
           "label": "Driftmark",
           "tags": [],
           "is_capital": false,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Driftmark-nation-Emerald_Isles_-7800-85-8429.json",
@@ -324,6 +356,7 @@
     {
       "id": "eskad",
       "name": "Eskad",
+      "founder": null,
       "kind": "city",
       "x": 1193,
       "y": 5753,
@@ -336,6 +369,7 @@
           "label": "Eskad",
           "tags": [],
           "is_capital": false,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Eskad_1193-66-5753.json",
@@ -348,6 +382,7 @@
     {
       "id": "facility-thirteen",
       "name": "Facility Thirteen",
+      "founder": null,
       "kind": "city",
       "x": -7555,
       "y": 8521,
@@ -360,6 +395,7 @@
           "label": "Facility Thirteen",
           "tags": [],
           "is_capital": true,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Facility_Thirteen-nation-Emerald_Isles-capital_-7555-70-8521.json",
@@ -372,6 +408,7 @@
     {
       "id": "ferdderdam",
       "name": "Ferdderdam",
+      "founder": null,
       "kind": "city",
       "x": -4732,
       "y": 3463,
@@ -384,6 +421,7 @@
           "label": "Ferdderdam",
           "tags": [],
           "is_capital": false,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Ferdderdam-nation-Visigoth_-4732-70-3463.json",
@@ -396,6 +434,7 @@
     {
       "id": "fort-vann",
       "name": "Fort Vann",
+      "founder": null,
       "kind": "city",
       "x": -2585,
       "y": 5385,
@@ -408,6 +447,7 @@
           "label": "Fort Vann",
           "tags": [],
           "is_capital": false,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Fort_Vann-nation-Warbound_-2585-89-5385.json",
@@ -420,6 +460,7 @@
     {
       "id": "fortcreed",
       "name": "FortCreed",
+      "founder": null,
       "kind": "city",
       "x": 2682,
       "y": -504,
@@ -434,6 +475,7 @@
             "bankrupt"
           ],
           "is_capital": false,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-FortCreed-bankrupt_2682-74-504.json",
@@ -446,18 +488,36 @@
     {
       "id": "fryjard",
       "name": "Fryjard",
+      "founder": null,
       "kind": "city",
       "x": 7682,
       "y": 2288,
       "states": [
         {
           "from": "1408",
-          "to": null,
+          "to": "1409",
           "status": "active",
           "nation_id": "fryjarl",
           "label": "Fryjard",
           "tags": [],
+          "is_capital": true,
+          "mayor": null,
+          "source": {
+            "type": "journeymap-waypoint",
+            "file": "town-Fryjard-nation-Fryjarl_7682-73-2288.json",
+            "waypoint_id": "town-Fryjard-nation-Fryjarl_7682-73-2288",
+            "waypoint_name": "town Fryjard nation Fryjarl"
+          }
+        },
+        {
+          "from": "1409",
+          "to": null,
+          "status": "active",
+          "nation_id": "warbound",
+          "label": "Fryjard",
+          "tags": [],
           "is_capital": false,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Fryjard-nation-Fryjarl_7682-73-2288.json",
@@ -470,18 +530,36 @@
     {
       "id": "glasfen",
       "name": "Glasfen",
+      "founder": null,
       "kind": "city",
       "x": 8259,
       "y": 2808,
       "states": [
         {
           "from": "1408",
-          "to": null,
+          "to": "1409",
           "status": "active",
           "nation_id": "fryjarl",
           "label": "Glasfen",
           "tags": [],
           "is_capital": false,
+          "mayor": null,
+          "source": {
+            "type": "journeymap-waypoint",
+            "file": "town-Glasfen-nation-Fryjarl_8259-69-2808.json",
+            "waypoint_id": "town-Glasfen-nation-Fryjarl_8259-69-2808",
+            "waypoint_name": "town Glasfen nation Fryjarl"
+          }
+        },
+        {
+          "from": "1409",
+          "to": null,
+          "status": "active",
+          "nation_id": "warbound",
+          "label": "Glasfen",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Glasfen-nation-Fryjarl_8259-69-2808.json",
@@ -494,6 +572,7 @@
     {
       "id": "grievys",
       "name": "Grievys",
+      "founder": null,
       "kind": "city",
       "x": 2015,
       "y": 2035,
@@ -508,6 +587,7 @@
             "ruin"
           ],
           "is_capital": false,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Grievys-ruin_2015-82-2035.json",
@@ -520,6 +600,7 @@
     {
       "id": "hamburg",
       "name": "Hamburg",
+      "founder": null,
       "kind": "city",
       "x": 586,
       "y": -6995,
@@ -532,6 +613,7 @@
           "label": "Hamburg",
           "tags": [],
           "is_capital": false,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Hamburg-nation-Germania_586-79-6995.json",
@@ -544,6 +626,7 @@
     {
       "id": "havenport",
       "name": "Havenport",
+      "founder": null,
       "kind": "city",
       "x": -9848,
       "y": -4642,
@@ -556,6 +639,7 @@
           "label": "Havenport",
           "tags": [],
           "is_capital": false,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Havenport-nation-Warbound_-9848-74-4642.json",
@@ -568,6 +652,7 @@
     {
       "id": "hoffersmeer",
       "name": "HoffersMeer",
+      "founder": null,
       "kind": "city",
       "x": -3922,
       "y": 3410,
@@ -580,6 +665,7 @@
           "label": "HoffersMeer",
           "tags": [],
           "is_capital": false,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-HoffersMeer-nation-Visigoth_-3922-72-3410.json",
@@ -592,6 +678,7 @@
     {
       "id": "kiyv",
       "name": "Kiyv",
+      "founder": null,
       "kind": "city",
       "x": 4700,
       "y": 3300,
@@ -604,6 +691,7 @@
           "label": "Kiyv",
           "tags": [],
           "is_capital": false,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Kiyv-nation-Warbound_4700-67-3300.json",
@@ -616,6 +704,7 @@
     {
       "id": "leesburg",
       "name": "Leesburg",
+      "founder": null,
       "kind": "city",
       "x": -6500,
       "y": 400,
@@ -628,6 +717,7 @@
           "label": "Leesburg",
           "tags": [],
           "is_capital": false,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Leesburg_-6500-77-400.json",
@@ -640,6 +730,7 @@
     {
       "id": "levengyard",
       "name": "Levengyard",
+      "founder": null,
       "kind": "city",
       "x": -7377,
       "y": -5761,
@@ -652,6 +743,7 @@
           "label": "Levengyard",
           "tags": [],
           "is_capital": false,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Levengyard_-7377-72-5761.json",
@@ -664,6 +756,7 @@
     {
       "id": "limnion",
       "name": "Limnion",
+      "founder": null,
       "kind": "city",
       "x": 1455,
       "y": 1316,
@@ -676,6 +769,7 @@
           "label": "Limnion",
           "tags": [],
           "is_capital": true,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Limnion-nation-Eleftheria-capital_1455-83-1316.json",
@@ -688,6 +782,7 @@
     {
       "id": "neoheim",
       "name": "Neoheim",
+      "founder": null,
       "kind": "city",
       "x": 3500,
       "y": -8000,
@@ -700,6 +795,7 @@
           "label": "Neoheim",
           "tags": [],
           "is_capital": false,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Neoheim-nation-Warbound_3500-77-8000.json",
@@ -712,6 +808,7 @@
     {
       "id": "nova-roma",
       "name": "Nova Roma",
+      "founder": null,
       "kind": "city",
       "x": 6064,
       "y": -103,
@@ -724,6 +821,7 @@
           "label": "Nova Roma",
           "tags": [],
           "is_capital": false,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Nova_Roma-nation-Avernia_6064-78-103.json",
@@ -736,6 +834,7 @@
     {
       "id": "novygrad",
       "name": "NovyGrad",
+      "founder": null,
       "kind": "city",
       "x": 3323,
       "y": 1941,
@@ -748,6 +847,7 @@
           "label": "NovyGrad",
           "tags": [],
           "is_capital": true,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-NovyGrad-nation-Warbound-capital_3323-85-1941.json",
@@ -760,6 +860,7 @@
     {
       "id": "portfenn",
       "name": "PortFenn",
+      "founder": null,
       "kind": "city",
       "x": 5111,
       "y": 87,
@@ -772,6 +873,7 @@
           "label": "PortFenn",
           "tags": [],
           "is_capital": false,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-PortFenn-nation-Avernia_5111-95-87.json",
@@ -784,6 +886,7 @@
     {
       "id": "rapture",
       "name": "Rapture",
+      "founder": null,
       "kind": "city",
       "x": 7627,
       "y": 1699,
@@ -796,6 +899,7 @@
           "label": "Rapture",
           "tags": [],
           "is_capital": false,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Rapture-nation-Avernia_7627-64-1699.json",
@@ -808,6 +912,7 @@
     {
       "id": "raystown",
       "name": "RaysTown",
+      "founder": null,
       "kind": "city",
       "x": -1997,
       "y": -3799,
@@ -820,6 +925,7 @@
           "label": "RaysTown",
           "tags": [],
           "is_capital": false,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-RaysTown-nation-Warbound_-1997-79-3799.json",
@@ -832,6 +938,7 @@
     {
       "id": "rebelion",
       "name": "Rebelion",
+      "founder": null,
       "kind": "city",
       "x": 2800,
       "y": 9300,
@@ -844,6 +951,7 @@
           "label": "Rebelion",
           "tags": [],
           "is_capital": false,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Rebelion_2800-77-9300.json",
@@ -856,6 +964,7 @@
     {
       "id": "roguespia",
       "name": "Roguespia",
+      "founder": null,
       "kind": "city",
       "x": 2150,
       "y": 1420,
@@ -868,6 +977,7 @@
           "label": "Roguespia",
           "tags": [],
           "is_capital": true,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Roguespia-nation-Zaistan-capital_2150-77-1420.json",
@@ -880,6 +990,7 @@
     {
       "id": "slutsk",
       "name": "Slutsk",
+      "founder": null,
       "kind": "city",
       "x": 3558,
       "y": 2968,
@@ -892,6 +1003,7 @@
           "label": "Slutsk",
           "tags": [],
           "is_capital": false,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Slutsk-nation-Warbound_3558-71-2968.json",
@@ -904,6 +1016,7 @@
     {
       "id": "unknown",
       "name": "Unknown",
+      "founder": null,
       "kind": "city",
       "x": 633,
       "y": 4466,
@@ -919,6 +1032,7 @@
             "unclaimed"
           ],
           "is_capital": false,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Unknown-ruin_633-70-4466.json",
@@ -931,6 +1045,7 @@
     {
       "id": "yawozaburg",
       "name": "Yawozaburg",
+      "founder": null,
       "kind": "city",
       "x": -4270,
       "y": 3450,
@@ -943,6 +1058,7 @@
           "label": "Yawozaburg",
           "tags": [],
           "is_capital": true,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Yawozaburg-nation-Visigoth-capital_-4270-77-3450.json",
@@ -955,6 +1071,7 @@
     {
       "id": "yksekteki-ovo",
       "name": "Yüksekteki Ovo",
+      "founder": null,
       "kind": "city",
       "x": 1512,
       "y": 6677,
@@ -967,6 +1084,7 @@
           "label": "Yüksekteki Ovo",
           "tags": [],
           "is_capital": false,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Yüksekteki_Ovo_1512-76-6677.json",
@@ -979,6 +1097,7 @@
     {
       "id": "za-grab",
       "name": "Za Grab",
+      "founder": null,
       "kind": "city",
       "x": 2874,
       "y": 1690,
@@ -991,6 +1110,7 @@
           "label": "Za Grab",
           "tags": [],
           "is_capital": false,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Za-Grab-nation-Warbound_2874-110-1690.json",

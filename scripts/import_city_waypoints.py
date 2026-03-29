@@ -163,12 +163,14 @@ def build_current_dataset(source_dir: Path, snapshot_date: str | None) -> dict:
                 "id": parsed.nation_id,
                 "name": parsed.nation_name,
                 "color": nation_color(parsed.nation_id),
+                "founded": None,
             }
 
         cities.append(
             {
                 "id": parsed.city_id,
                 "name": parsed.label,
+                "founder": None,
                 "kind": "city",
                 "x": int(payload["x"]),
                 "y": int(payload["z"]),
@@ -181,6 +183,7 @@ def build_current_dataset(source_dir: Path, snapshot_date: str | None) -> dict:
                         "label": parsed.label,
                         "tags": parsed.tags,
                         "is_capital": parsed.is_capital,
+                        "mayor": None,
                         "source": {
                             "type": "journeymap-waypoint",
                             "file": waypoint_file.name,
@@ -265,6 +268,7 @@ def merge_history(existing: dict, current: dict, game_date: str) -> dict:
                 else:
                     city["states"].append(new_city["states"][0])
             city["name"] = new_city["name"]
+            city["founder"] = old_city.get("founder")
             city["kind"] = new_city["kind"]
             city["x"] = new_city["x"]
             city["y"] = new_city["y"]
@@ -285,7 +289,11 @@ def merge_history(existing: dict, current: dict, game_date: str) -> dict:
     for nation in existing.get("nations", []):
         nations[nation["id"]] = nation
     for nation in current.get("nations", []):
-        nations[nation["id"]] = nation
+        existing_nation = nations.get(nation["id"], {})
+        nations[nation["id"]] = {
+            **nation,
+            "founded": existing_nation.get("founded", nation.get("founded")),
+        }
 
     timeline_dates = sorted(set(existing.get("timeline", {}).get("dates", [])) | {game_date})
     return {
@@ -298,6 +306,35 @@ def merge_history(existing: dict, current: dict, game_date: str) -> dict:
         "nations": sorted(nations.values(), key=lambda item: item["name"] or item["id"]),
         "cities": sorted(merged_cities, key=lambda item: item["name"].lower()),
     }
+
+
+def overlay_existing_metadata(existing: dict, current: dict) -> dict:
+    existing_by_id = {city["id"]: city for city in existing.get("cities", [])}
+    existing_nations_by_id = {nation["id"]: nation for nation in existing.get("nations", [])}
+
+    for nation in current.get("nations", []):
+        old_nation = existing_nations_by_id.get(nation["id"])
+        if old_nation and old_nation.get("founded"):
+            nation["founded"] = old_nation.get("founded")
+
+    for city in current.get("cities", []):
+        old_city = existing_by_id.get(city["id"])
+        if not old_city:
+            continue
+
+        if old_city.get("founder"):
+            city["founder"] = old_city.get("founder")
+
+        incoming_state = city["states"][0]
+        for old_state in old_city.get("states", []):
+            if (
+                old_state.get("from") == incoming_state.get("from")
+                and state_payload(old_state) == state_payload(incoming_state)
+            ):
+                incoming_state["mayor"] = old_state.get("mayor")
+                break
+
+    return current
 
 
 def normalize_game_date(game_date: str | None) -> str:
@@ -323,9 +360,12 @@ def main() -> None:
     current = build_current_dataset(args.source, effective_game_date)
     dataset = current
 
+    existing = load_existing_history(args.output)
+
     if args.history:
-        existing = load_existing_history(args.output)
         dataset = merge_history(existing, current, effective_game_date)
+    else:
+        dataset = overlay_existing_metadata(existing, current)
 
     args.output.write_text(
         json.dumps(dataset, ensure_ascii=False, indent=2) + "\n",
