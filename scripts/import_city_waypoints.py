@@ -13,8 +13,8 @@ from pathlib import Path
 WAYPOINT_PATTERN = re.compile(r"^(?P<slug>.+)_(?P<x>-?\d+)-(?P<y>-?\d+)-(?P<z>-?\d+)$")
 RESERVED_TOKENS = {"nation", "ruin", "bankrupt", "shop", "capital"}
 SNAPSHOT_KEYS = ("status", "nation_id", "label", "tags", "is_capital")
-GAME_DATE_PATTERN = re.compile(r"^\d{4}$")
-DEFAULT_GAME_DATE = "1408"
+TIMELINE_DATE_PATTERN = re.compile(r"^\d{2}\.\d{2}\.\d{4}$")
+DEFAULT_TIMELINE_DATE = "27.03.2026"
 
 
 @dataclass
@@ -52,6 +52,15 @@ def nation_color(nation_id: str) -> str:
     return "#{:02x}{:02x}{:02x}".format(int(red * 255), int(green * 255), int(blue * 255))
 
 
+def parse_timeline_date(value: str) -> datetime:
+    return datetime.strptime(value, "%d.%m.%Y")
+
+
+def timeline_sort_key(value: str) -> tuple[int, int, int]:
+    parsed = parse_timeline_date(value)
+    return (parsed.year, parsed.month, parsed.day)
+
+
 def tokenize_name(value: str) -> list[str]:
     normalized = maybe_fix_mojibake(value).replace("_", " ").replace("-", " ").strip()
     normalized = re.sub(r"\s+", " ", normalized)
@@ -74,9 +83,15 @@ def parse_waypoint_text(value: str) -> ParsedName:
         token = tokens[index]
         token_key = token.lower()
 
-        if token_key in {"ruin", "bankrupt"}:
+        if token_key == "ruin":
             status = "ruins"
-            tags.append(token_key)
+            tags.append("ruin")
+            index += 1
+            continue
+
+        if token_key == "bankrupt":
+            status = "bankrupt"
+            tags.append("bankrupt")
             index += 1
             continue
 
@@ -155,7 +170,7 @@ def build_current_dataset(source_dir: Path, snapshot_date: str | None) -> dict:
         parsed = parse_waypoint_name(match.group("slug"), payload.get("name"))
         state_date = snapshot_date or datetime.fromtimestamp(
             waypoint_file.stat().st_mtime, tz=timezone.utc
-        ).date().isoformat()
+        ).strftime("%d.%m.%Y")
         dates.add(state_date)
 
         if parsed.nation_id and parsed.nation_id not in nations:
@@ -195,7 +210,7 @@ def build_current_dataset(source_dir: Path, snapshot_date: str | None) -> dict:
             }
         )
 
-    ordered_dates = sorted(dates)
+    ordered_dates = sorted(dates, key=timeline_sort_key)
     return {
         "schema_version": 1,
         "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
@@ -295,7 +310,7 @@ def merge_history(existing: dict, current: dict, game_date: str) -> dict:
             "founded": existing_nation.get("founded", nation.get("founded")),
         }
 
-    timeline_dates = sorted(set(existing.get("timeline", {}).get("dates", [])) | {game_date})
+    timeline_dates = sorted(set(existing.get("timeline", {}).get("dates", [])) | {game_date}, key=timeline_sort_key)
     return {
         "schema_version": 1,
         "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
@@ -337,10 +352,14 @@ def overlay_existing_metadata(existing: dict, current: dict) -> dict:
     return current
 
 
-def normalize_game_date(game_date: str | None) -> str:
-    value = (game_date or DEFAULT_GAME_DATE).strip()
-    if not GAME_DATE_PATTERN.fullmatch(value):
-        raise SystemExit("Game date must be exactly 4 digits, for example 1408")
+def normalize_timeline_date(game_date: str | None) -> str:
+    value = (game_date or DEFAULT_TIMELINE_DATE).strip()
+    if not TIMELINE_DATE_PATTERN.fullmatch(value):
+        raise SystemExit("Timeline date must use dd.mm.yyyy, for example 27.03.2026")
+    try:
+        parse_timeline_date(value)
+    except ValueError as error:
+        raise SystemExit(f"Invalid timeline date: {value}") from error
     return value
 
 
@@ -356,7 +375,7 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    effective_game_date = normalize_game_date(args.game_date)
+    effective_game_date = normalize_timeline_date(args.game_date)
     current = build_current_dataset(args.source, effective_game_date)
     dataset = current
 
