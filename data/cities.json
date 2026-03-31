@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-03-30T16:42:22.432Z",
+  "generated_at": "2026-03-31T02:19:45.087Z",
   "timeline": {
     "dates": [
       "10.01.2026",
@@ -11,22 +11,32 @@
       "20.01.2026",
       "23.01.2026",
       "27.01.2026",
+      "28.01.2026",
       "30.01.2026",
       "02.02.2026",
       "04.02.2026",
       "07.02.2026",
+      "09.02.2026",
       "11.02.2026",
+      "14.02.2026",
+      "18.02.2026",
+      "19.02.2026",
+      "21.02.2026",
+      "23.02.2026",
       "24.02.2026",
       "27.02.2026",
+      "06.03.2026",
+      "08.03.2026",
       "10.03.2026",
       "11.03.2026",
       "18.03.2026",
       "20.03.2026",
+      "21.03.2026",
       "22.03.2026",
       "27.03.2026",
       "28.03.2026"
     ],
-    "default_date": "11.01.2026"
+    "default_date": "21.03.2026"
   },
   "nations": [
     {
@@ -58,6 +68,12 @@
       "name": "Germania",
       "color": "#ffff00",
       "founded": "24.03.2026"
+    },
+    {
+      "id": "ide",
+      "name": "IDE",
+      "color": "#0d45c9",
+      "founded": "21.03.2026"
     },
     {
       "id": "lusitania",
@@ -95,7 +111,7 @@
       "states": [
         {
           "from": "27.02.2026",
-          "to": null,
+          "to": "28.03.2026",
           "status": "active",
           "nation_id": null,
           "label": "Aachen",
@@ -119,6 +135,17 @@
             "waypoint_id": "town-Aachen-nation-Eleftheria_644-67-184",
             "waypoint_name": "town Aachen nation Eleftheria"
           }
+        },
+        {
+          "from": "28.03.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": "eleftheria",
+          "label": "Aachen",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": null
         }
       ]
     },
@@ -210,7 +237,7 @@
       "states": [
         {
           "from": "11.03.2026",
-          "to": null,
+          "to": "28.03.2026",
           "status": "active",
           "nation_id": null,
           "label": "Aurelia",
@@ -234,6 +261,17 @@
             "waypoint_id": "town-Aurelia-nation-Eleftheria_1196-70-1355",
             "waypoint_name": "town Aurelia nation Eleftheria"
           }
+        },
+        {
+          "from": "28.03.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": "eleftheria",
+          "label": "Aurelia",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": null
         }
       ]
     },
@@ -312,12 +350,23 @@
       "states": [
         {
           "from": "12.01.2026",
-          "to": null,
+          "to": "06.03.2026",
           "status": "active",
           "nation_id": null,
           "label": "Corvinburg",
           "tags": [],
           "is_capital": false,
+          "mayor": null,
+          "source": null
+        },
+        {
+          "from": "06.03.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": "avernia",
+          "label": "Corvinburg",
+          "tags": [],
+          "is_capital": true,
           "mayor": null,
           "source": null
         },
@@ -348,7 +397,23 @@
       "y": 3761,
       "states": [
         {
-          "from": "27.03.2026",
+          "from": "09.02.2026",
+          "to": "28.03.2026",
+          "status": "active",
+          "nation_id": "warbound",
+          "label": "Crimea",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": {
+            "type": "journeymap-waypoint",
+            "file": "town-Crimea-nation-Warbound_2894-82-3761.json",
+            "waypoint_id": "town-Crimea-nation-Warbound_2894-82-3761",
+            "waypoint_name": "town Crimea nation Warbound"
+          }
+        },
+        {
+          "from": "28.03.2026",
           "to": null,
           "status": "active",
           "nation_id": "warbound",
@@ -436,6 +501,28 @@
       "x": 1193,
       "y": 5753,
       "states": [
+        {
+          "from": "08.03.2026",
+          "to": "21.03.2026",
+          "status": "active",
+          "nation_id": null,
+          "label": "Eskad",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": null
+        },
+        {
+          "from": "21.03.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": "ide",
+          "label": "Eskad",
+          "tags": [],
+          "is_capital": true,
+          "mayor": null,
+          "source": null
+        },
         {
           "from": "27.03.2026",
           "to": null,
@@ -580,7 +667,7 @@
       "states": [
         {
           "from": "30.01.2026",
-          "to": null,
+          "to": "28.03.2026",
           "status": "active",
           "nation_id": null,
           "label": "FortCreed",
@@ -606,6 +693,17 @@
             "waypoint_id": "town-FortCreed-bankrupt_2682-74-504",
             "waypoint_name": "town FortCreed bankrupt"
           }
+        },
+        {
+          "from": "28.03.2026",
+          "to": null,
+          "status": "bankrupt",
+          "nation_id": null,
+          "label": "FortCreed",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": null
         }
       ]
     },
@@ -619,12 +717,23 @@
       "states": [
         {
           "from": "24.02.2026",
-          "to": null,
+          "to": "21.03.2026",
           "status": "active",
           "nation_id": null,
           "label": "Fryjarl",
           "tags": [],
           "is_capital": false,
+          "mayor": null,
+          "source": null
+        },
+        {
+          "from": "21.03.2026",
+          "to": "28.03.2026",
+          "status": "active",
+          "nation_id": "fryjarl",
+          "label": "Fryjarl",
+          "tags": [],
+          "is_capital": true,
           "mayor": null,
           "source": null
         },
@@ -643,6 +752,17 @@
             "waypoint_id": "town-Fryjard-nation-Fryjarl_7682-73-2288",
             "waypoint_name": "town Fryjard nation Fryjarl"
           }
+        },
+        {
+          "from": "28.03.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": "warbound",
+          "label": "Fryjarl",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": null
         },
         {
           "from": "28.03.2026",
@@ -672,9 +792,20 @@
       "states": [
         {
           "from": "10.03.2026",
-          "to": null,
+          "to": "21.03.2026",
           "status": "active",
           "nation_id": null,
+          "label": "Glasfen",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": null
+        },
+        {
+          "from": "21.03.2026",
+          "to": "28.03.2026",
+          "status": "active",
+          "nation_id": "fryjarl",
           "label": "Glasfen",
           "tags": [],
           "is_capital": false,
@@ -706,6 +837,17 @@
           "tags": [],
           "is_capital": false,
           "mayor": null,
+          "source": null
+        },
+        {
+          "from": "28.03.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": "warbound",
+          "label": "Glasfen",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
             "file": "town-Glasfen-nation-Fryjarl_8259-69-2808.json",
@@ -723,6 +865,50 @@
       "x": 2015,
       "y": 2035,
       "states": [
+        {
+          "from": "18.01.2026",
+          "to": "30.01.2026",
+          "status": "active",
+          "nation_id": null,
+          "label": "Grievys",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": null
+        },
+        {
+          "from": "30.01.2026",
+          "to": "19.02.2026",
+          "status": "active",
+          "nation_id": "zaistan",
+          "label": "Grievys",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": null
+        },
+        {
+          "from": "19.02.2026",
+          "to": "27.02.2026",
+          "status": "active",
+          "nation_id": "warbound",
+          "label": "Grievys",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": null
+        },
+        {
+          "from": "27.02.2026",
+          "to": null,
+          "status": "ruins",
+          "nation_id": "warbound",
+          "label": "Grievys",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": null
+        },
         {
           "from": "27.03.2026",
           "to": null,
@@ -779,9 +965,20 @@
       "states": [
         {
           "from": "27.01.2026",
-          "to": null,
+          "to": "20.03.2026",
           "status": "active",
           "nation_id": null,
+          "label": "Havenport",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": null
+        },
+        {
+          "from": "20.03.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": "warbound",
           "label": "Havenport",
           "tags": [],
           "is_capital": false,
@@ -842,9 +1039,31 @@
       "states": [
         {
           "from": "13.01.2026",
-          "to": "27.03.2026",
+          "to": "02.02.2026",
           "status": "active",
           "nation_id": null,
+          "label": "Kiyv",
+          "tags": [],
+          "is_capital": false,
+          "mayor": "Romagek",
+          "source": null
+        },
+        {
+          "from": "02.02.2026",
+          "to": "19.02.2026",
+          "status": "active",
+          "nation_id": "warbound",
+          "label": "Kiyv",
+          "tags": [],
+          "is_capital": true,
+          "mayor": "Romagek",
+          "source": null
+        },
+        {
+          "from": "19.02.2026",
+          "to": "27.03.2026",
+          "status": "active",
+          "nation_id": "warbound",
           "label": "Kiyv",
           "tags": [],
           "is_capital": false,
@@ -958,12 +1177,23 @@
       "states": [
         {
           "from": "18.01.2026",
-          "to": null,
+          "to": "18.02.2026",
           "status": "active",
           "nation_id": null,
           "label": "Limnion",
           "tags": [],
           "is_capital": false,
+          "mayor": null,
+          "source": null
+        },
+        {
+          "from": "18.02.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": "eleftheria",
+          "label": "Limnion",
+          "tags": [],
+          "is_capital": true,
           "mayor": null,
           "source": null
         },
@@ -995,9 +1225,20 @@
       "states": [
         {
           "from": "11.02.2026",
-          "to": null,
+          "to": "20.03.2026",
           "status": "active",
           "nation_id": null,
+          "label": "Neoheim",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": null
+        },
+        {
+          "from": "20.03.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": "warbound",
           "label": "Neoheim",
           "tags": [],
           "is_capital": false,
@@ -1031,6 +1272,28 @@
       "y": -103,
       "states": [
         {
+          "from": "28.01.2026",
+          "to": "06.03.2026",
+          "status": "active",
+          "nation_id": null,
+          "label": "Nova Roma",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": null
+        },
+        {
+          "from": "06.03.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": "avernia",
+          "label": "Nova Roma",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": null
+        },
+        {
           "from": "27.03.2026",
           "to": null,
           "status": "active",
@@ -1058,12 +1321,23 @@
       "states": [
         {
           "from": "02.02.2026",
-          "to": null,
+          "to": "19.02.2026",
           "status": "active",
-          "nation_id": null,
+          "nation_id": "warbound",
           "label": "NovyGrad",
           "tags": [],
           "is_capital": false,
+          "mayor": null,
+          "source": null
+        },
+        {
+          "from": "19.02.2026",
+          "to": "28.03.2026",
+          "status": "active",
+          "nation_id": "warbound",
+          "label": "NovyGrad",
+          "tags": [],
+          "is_capital": true,
           "mayor": null,
           "source": null
         },
@@ -1082,6 +1356,17 @@
             "waypoint_id": "town-NovyGrad-nation-Warbound-capital_3323-85-1941",
             "waypoint_name": "town NovyGrad nation Warbound capital"
           }
+        },
+        {
+          "from": "28.03.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": "warbound",
+          "label": "NovyGrad",
+          "tags": [],
+          "is_capital": true,
+          "mayor": null,
+          "source": null
         }
       ]
     },
@@ -1093,6 +1378,28 @@
       "x": 5111,
       "y": 87,
       "states": [
+        {
+          "from": "21.02.2026",
+          "to": "06.03.2026",
+          "status": "active",
+          "nation_id": null,
+          "label": "PortFenn",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": null
+        },
+        {
+          "from": "06.03.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": "avernia",
+          "label": "PortFenn",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": null
+        },
         {
           "from": "27.03.2026",
           "to": null,
@@ -1123,7 +1430,7 @@
           "from": "22.03.2026",
           "to": null,
           "status": "active",
-          "nation_id": null,
+          "nation_id": "avernia",
           "label": "Rapture",
           "tags": [],
           "is_capital": false,
@@ -1158,9 +1465,20 @@
       "states": [
         {
           "from": "11.01.2026",
-          "to": null,
+          "to": "20.03.2026",
           "status": "active",
           "nation_id": null,
+          "label": "RaysTown",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": null
+        },
+        {
+          "from": "20.03.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": "warbound",
           "label": "RaysTown",
           "tags": [],
           "is_capital": false,
@@ -1220,13 +1538,29 @@
       "y": 1420,
       "states": [
         {
+          "from": "23.01.2026",
+          "to": "27.03.2026",
+          "status": "active",
+          "nation_id": null,
+          "label": "Roguespia",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": {
+            "type": "journeymap-waypoint",
+            "file": "town-Roguespia-nation-Zaistan-capital_2150-77-1420.json",
+            "waypoint_id": "town-Roguespia-nation-Zaistan-capital_2150-77-1420",
+            "waypoint_name": "town Roguespia nation Zaistan capital"
+          }
+        },
+        {
           "from": "27.03.2026",
           "to": null,
           "status": "active",
-          "nation_id": "zaistan",
+          "nation_id": null,
           "label": "Roguespia",
           "tags": [],
-          "is_capital": true,
+          "is_capital": false,
           "mayor": null,
           "source": {
             "type": "journeymap-waypoint",
@@ -1245,6 +1579,17 @@
       "x": 3558,
       "y": 2968,
       "states": [
+        {
+          "from": "14.02.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": "warbound",
+          "label": "Slutsk",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": null
+        },
         {
           "from": "27.03.2026",
           "to": null,
@@ -1354,7 +1699,7 @@
       "states": [
         {
           "from": "11.01.2026",
-          "to": null,
+          "to": "18.01.2026",
           "status": "active",
           "nation_id": null,
           "label": "ZA-GRAB",
@@ -1364,8 +1709,30 @@
           "source": null
         },
         {
+          "from": "18.01.2026",
+          "to": "23.02.2026",
+          "status": "active",
+          "nation_id": "zaistan",
+          "label": "ZA-GRAB",
+          "tags": [],
+          "is_capital": true,
+          "mayor": null,
+          "source": null
+        },
+        {
+          "from": "23.02.2026",
+          "to": "28.03.2026",
+          "status": "active",
+          "nation_id": "warbound",
+          "label": "ZA-GRAB",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": null
+        },
+        {
           "from": "27.03.2026",
-          "to": null,
+          "to": "28.03.2026",
           "status": "active",
           "nation_id": "warbound",
           "label": "Za Grab",
@@ -1378,6 +1745,33 @@
             "waypoint_id": "town-Za-Grab-nation-Warbound_2874-110-1690",
             "waypoint_name": "town Za-Grab nation Warbound"
           }
+        },
+        {
+          "from": "28.03.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": "warbound",
+          "label": "ZA-GRAB",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": {
+            "type": "journeymap-waypoint",
+            "file": "town-Za-Grab-nation-Warbound_2874-110-1690.json",
+            "waypoint_id": "town-Za-Grab-nation-Warbound_2874-110-1690",
+            "waypoint_name": "town Za-Grab nation Warbound"
+          }
+        },
+        {
+          "from": "28.03.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": "warbound",
+          "label": "ZA-GRAB",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": null
         }
       ]
     }
