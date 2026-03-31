@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-03-31T02:19:45.087Z",
+  "generated_at": "2026-03-31T06:50:43.410Z",
   "timeline": {
     "dates": [
       "10.01.2026",
@@ -10,6 +10,7 @@
       "18.01.2026",
       "20.01.2026",
       "23.01.2026",
+      "25.01.2026",
       "27.01.2026",
       "28.01.2026",
       "30.01.2026",
@@ -36,7 +37,7 @@
       "27.03.2026",
       "28.03.2026"
     ],
-    "default_date": "21.03.2026"
+    "default_date": "25.01.2026"
   },
   "nations": [
     {
@@ -184,6 +185,17 @@
       "y": 3858,
       "states": [
         {
+          "from": "11.03.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": "visigoth",
+          "label": "Anathema",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": null
+        },
+        {
           "from": "27.03.2026",
           "to": null,
           "status": "active",
@@ -285,12 +297,23 @@
       "states": [
         {
           "from": "07.02.2026",
-          "to": null,
+          "to": "11.02.2026",
           "status": "active",
           "nation_id": null,
           "label": "Camalot",
           "tags": [],
           "is_capital": false,
+          "mayor": null,
+          "source": null
+        },
+        {
+          "from": "11.02.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": "lusitania",
+          "label": "Camalot",
+          "tags": [],
+          "is_capital": true,
           "mayor": null,
           "source": null
         },
@@ -440,9 +463,20 @@
       "states": [
         {
           "from": "23.01.2026",
-          "to": null,
+          "to": "27.01.2026",
           "status": "active",
           "nation_id": null,
+          "label": "Dijkersloot",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": null
+        },
+        {
+          "from": "27.01.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": "visigoth",
           "label": "Dijkersloot",
           "tags": [],
           "is_capital": false,
@@ -551,12 +585,23 @@
       "states": [
         {
           "from": "18.03.2026",
-          "to": null,
+          "to": "20.03.2026",
           "status": "active",
           "nation_id": null,
           "label": "Facility Thirteen",
           "tags": [],
           "is_capital": false,
+          "mayor": null,
+          "source": null
+        },
+        {
+          "from": "20.03.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": "emerald-isles",
+          "label": "Facility Thirteen",
+          "tags": [],
+          "is_capital": true,
           "mayor": null,
           "source": null
         },
@@ -587,6 +632,17 @@
       "y": 3463,
       "states": [
         {
+          "from": "11.01.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": "visigoth",
+          "label": "Ferdderdam",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": null
+        },
+        {
           "from": "27.03.2026",
           "to": null,
           "status": "active",
@@ -614,9 +670,20 @@
       "states": [
         {
           "from": "04.02.2026",
-          "to": null,
+          "to": "20.03.2026",
           "status": "active",
           "nation_id": null,
+          "label": "Fort Vann",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": null
+        },
+        {
+          "from": "20.03.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": "warbound",
           "label": "Fort Vann",
           "tags": [],
           "is_capital": false,
@@ -1011,6 +1078,17 @@
       "x": -3922,
       "y": 3410,
       "states": [
+        {
+          "from": "25.01.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": "visigoth",
+          "label": "HoffersMeer",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": null
+        },
         {
           "from": "27.03.2026",
           "to": null,
@@ -1645,6 +1723,17 @@
       "x": -4270,
       "y": 3450,
       "states": [
+        {
+          "from": "11.01.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": "visigoth",
+          "label": "Yawozaburg",
+          "tags": [],
+          "is_capital": true,
+          "mayor": null,
+          "source": null
+        },
         {
           "from": "27.03.2026",
           "to": null,
