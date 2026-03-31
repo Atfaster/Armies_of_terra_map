@@ -872,6 +872,7 @@
     const ZOOM_OVERVIEW_8 = -4;
     const ZOOM_OVERVIEW_4 = -2;
     const ZOOM_DETAILS = 0;
+    const DETAIL_TILE_BUFFER = 1;
     const EDITOR_IS_LOCAL = isLocalEnvironment();
 
     const map = L.map("map", {
@@ -941,7 +942,9 @@
       nationEditorDrag: null,
       showRaster: true,
       tileCount: 0,
-      tileModeLabel: "Loading"
+      tileModeLabel: "Loading",
+      detailTilesByKey: new Map(),
+      detailTileOverlays: new Map()
     };
 
     if (EDITOR_IS_LOCAL) {
@@ -1234,6 +1237,60 @@
         gameToLatLng(x1, y2),
         gameToLatLng(x2, y1)
       );
+    }
+
+    function getTileKey(tileX, tileY) {
+      return `${tileX},${tileY}`;
+    }
+
+    function getVisibleDetailTileKeys() {
+      const bounds = map.getBounds();
+      const northWest = latLngToGame(bounds.getNorthWest());
+      const southEast = latLngToGame(bounds.getSouthEast());
+      const minX = Math.min(northWest.x, southEast.x);
+      const maxX = Math.max(northWest.x, southEast.x);
+      const minY = Math.min(northWest.y, southEast.y);
+      const maxY = Math.max(northWest.y, southEast.y);
+
+      const minTileX = Math.floor(minX / TILE_SIZE) - DETAIL_TILE_BUFFER;
+      const maxTileX = Math.floor(maxX / TILE_SIZE) + DETAIL_TILE_BUFFER;
+      const minTileY = Math.floor(minY / TILE_SIZE) - DETAIL_TILE_BUFFER;
+      const maxTileY = Math.floor(maxY / TILE_SIZE) + DETAIL_TILE_BUFFER;
+      const visibleKeys = new Set();
+
+      for (let tileX = minTileX; tileX <= maxTileX; tileX += 1) {
+        for (let tileY = minTileY; tileY <= maxTileY; tileY += 1) {
+          const key = getTileKey(tileX, tileY);
+          if (runtime.detailTilesByKey.has(key)) {
+            visibleKeys.add(key);
+          }
+        }
+      }
+
+      return visibleKeys;
+    }
+
+    function syncVisibleDetailTiles() {
+      if (!runtime.showRaster || !map.hasLayer(tileLayers.details)) return;
+
+      const visibleKeys = getVisibleDetailTileKeys();
+
+      for (const [key, overlay] of runtime.detailTileOverlays) {
+        if (visibleKeys.has(key)) continue;
+        tileLayers.details.removeLayer(overlay);
+        runtime.detailTileOverlays.delete(key);
+      }
+
+      for (const key of visibleKeys) {
+        if (runtime.detailTileOverlays.has(key)) continue;
+        const tile = runtime.detailTilesByKey.get(key);
+        if (!tile) continue;
+        const overlay = L.imageOverlay(tile.file, getTileBounds(tile.x, tile.y), {
+          pane: "overlayPane"
+        });
+        runtime.detailTileOverlays.set(key, overlay);
+        overlay.addTo(tileLayers.details);
+      }
     }
 
     function getWorldBorderBounds() {
@@ -1718,7 +1775,7 @@
       refreshGeographyLabels();
     }
 
-    function refreshGeographyLayer(layer) {
+    function configureGeographyLayer(layer) {
       styleGeographyLayer(layer);
       bindGeographyInteractions(layer);
       const properties = ensureFeatureMetadata(layer);
@@ -1737,6 +1794,10 @@
           <li><strong>Tip:</strong> ${escapeHtml(EDITOR_IS_LOCAL ? "Double-click to edit metadata" : "Read-only on public map")}</li>
         </ul>
       `);
+    }
+
+    function refreshGeographyLayer(layer) {
+      configureGeographyLayer(layer);
       renderGeographyKindFilters();
       renderGeography();
     }
@@ -1864,8 +1925,13 @@
       }
     }
 
-    function attachGeographyLayer(layer, skipPrompt = false) {
+    function attachGeographyLayer(layer, options = {}) {
       if (!layer) return;
+      const {
+        skipPrompt = false,
+        deferRender = false,
+        deferEditorSync = false
+      } = options;
       const properties = ensureFeatureMetadata(layer);
       if (isTextGeographyLayer(layer)) {
         properties.marker_style = "text";
@@ -1876,9 +1942,15 @@
       if (!runtime.geographyEntries.some((entry) => entry.layer === layer)) {
         runtime.geographyEntries.push({ layer });
       }
-      refreshGeographyLayer(layer);
+      configureGeographyLayer(layer);
       syncGeographyLayerEditability(layer);
-      syncGeographyEditor();
+      if (!deferRender) {
+        renderGeographyKindFilters();
+        renderGeography();
+      }
+      if (!deferEditorSync) {
+        syncGeographyEditor();
+      }
     }
 
     function geometryToLayer(geometry) {
@@ -1919,8 +1991,15 @@
             type: "Feature",
             properties: { ...(feature.properties ?? {}) }
           };
-          attachGeographyLayer(layer, true);
+          attachGeographyLayer(layer, {
+            skipPrompt: true,
+            deferRender: true,
+            deferEditorSync: true
+          });
         }
+        renderGeographyKindFilters();
+        renderGeography();
+        serializeGeography();
         markGeographySaved();
       } catch (error) {
         if (String(error.message).includes("404")) {
@@ -2095,6 +2174,10 @@
         } else if (map.hasLayer(group)) {
           map.removeLayer(group);
         }
+      }
+
+      if (groupToShow === tileLayers.details && map.hasLayer(tileLayers.details)) {
+        syncVisibleDetailTiles();
       }
     }
 
@@ -3118,7 +3201,7 @@
       L.imageOverlay("previews/overview_4x.jpg", fullBounds).addTo(tileLayers.overview4);
 
       for (const tile of tiles) {
-        L.imageOverlay(tile.file, getTileBounds(tile.x, tile.y)).addTo(tileLayers.details);
+        runtime.detailTilesByKey.set(getTileKey(tile.x, tile.y), tile);
       }
 
       renderWorldBorder();
@@ -3310,7 +3393,11 @@
       });
     }
 
-    map.on("zoomend", updateZoomLayers);
+    map.on("zoomend", function() {
+      updateZoomLayers();
+      syncVisibleDetailTiles();
+    });
+    map.on("moveend", syncVisibleDetailTiles);
 
     window.addEventListener("beforeunload", function(event) {
       if (!EDITOR_IS_LOCAL || (!runtime.geographyDirty && !runtime.cityDirty)) return;
