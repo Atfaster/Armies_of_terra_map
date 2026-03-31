@@ -28,6 +28,9 @@ DEFAULT_TILES_JSON = ROOT / "tiles.json"
 DEFAULT_STATE_DB = ROOT / "data" / "tile_merge_state.sqlite3"
 DEFAULT_BUILD_SCRIPT = ROOT / "build_map_assets.py"
 DEFAULT_INBOX_DIR = ROOT / "imports" / "journeymap_inbox"
+DEFAULT_EXPORT_DIR = Path(
+    r"C:\Users\atfas\Drive\Games\Minecraft\Armies of Terra\Journeymap saves"
+)
 
 TILE_NAME_PATTERN = re.compile(r"^(-?\d+),(-?\d+)\.png$", re.IGNORECASE)
 PNG_SUFFIX = ".png"
@@ -62,6 +65,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--tiles-json", type=Path, default=DEFAULT_TILES_JSON)
     parser.add_argument("--state-db", type=Path, default=DEFAULT_STATE_DB)
     parser.add_argument("--inbox-dir", type=Path, default=DEFAULT_INBOX_DIR)
+    parser.add_argument(
+        "--export-dir",
+        type=Path,
+        default=DEFAULT_EXPORT_DIR,
+        help="Directory where merged tile PNGs are copied for teammate distribution.",
+    )
     parser.add_argument(
         "--keep-inbox",
         action="store_true",
@@ -182,8 +191,12 @@ def collect_all_sources(
     source_dir: Path,
     inbox_dir: Path,
 ) -> tuple[list[TileFile], list[InboxItem]]:
-    tiles = list(iter_tile_files(source_dir))
     inbox_items = collect_inbox_items(inbox_dir)
+    use_inbox_only = bool(inbox_items)
+    tiles: list[TileFile] = []
+
+    if not use_inbox_only:
+        tiles.extend(iter_tile_files(source_dir))
 
     for item in inbox_items:
         if item.kind == "directory":
@@ -210,6 +223,21 @@ def collect_all_sources(
 
     tiles.sort(key=lambda tile: (tile.mtime, tile.name, str(tile.path)))
     return tiles, inbox_items
+
+
+def export_tiles(tiles_dir: Path, export_dir: Path, dry_run: bool) -> int:
+    tile_paths = [
+        path
+        for path in sorted(tiles_dir.glob(f"*{PNG_SUFFIX}"))
+        if TILE_NAME_PATTERN.match(path.name)
+    ]
+    if dry_run:
+        return len(tile_paths)
+
+    export_dir.mkdir(parents=True, exist_ok=True)
+    for path in tile_paths:
+        shutil.copy2(path, export_dir / path.name)
+    return len(tile_paths)
 
 
 def cleanup_inbox_items(
@@ -475,6 +503,13 @@ def main() -> None:
             rebuild_previews(skip_previews=args.skip_previews, dry_run=args.dry_run)
             if not args.skip_previews:
                 print(f"Previews rebuilt with: {DEFAULT_BUILD_SCRIPT}")
+            exported_tiles = export_tiles(
+                tiles_dir=args.tiles_dir,
+                export_dir=args.export_dir,
+                dry_run=args.dry_run,
+            )
+            print(f"Exported tiles: {exported_tiles}")
+            print(f"Export directory: {args.export_dir}")
             cleanup_inbox_items(
                 inbox_items=inbox_items,
                 keep_inbox=args.keep_inbox,

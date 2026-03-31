@@ -202,10 +202,10 @@ python scripts/import_city_waypoints.py "C:\Users\atfas\curseforge\minecraft\Ins
 
 ## Команды для тайлов карты
 
-По умолчанию `scripts/merge_journeymap_tiles.py` берет данные из двух источников:
+По умолчанию `scripts/merge_journeymap_tiles.py` работает так:
 
-- твои локальные тайлы JourneyMap из папки игры
-- входящие файлы из `imports\journeymap_inbox`
+- если в `imports\journeymap_inbox` есть хотя бы один файл, архив или папка, merge берет тайлы только оттуда
+- если inbox пустой, merge берет твои локальные тайлы JourneyMap из папки игры
 
 В `imports\journeymap_inbox` можно класть:
 
@@ -214,6 +214,14 @@ python scripts/import_city_waypoints.py "C:\Users\atfas\curseforge\minecraft\Ins
 - отдельные файлы `x,y.png` прямо в корень inbox
 
 После успешного merge скрипт автоматически удаляет обработанные архивы, папки и отдельные `png` из inbox.
+
+После merge скрипт также копирует все объединенные `png`-тайлы в:
+
+```text
+C:\Users\atfas\Drive\Games\Minecraft\Armies of Terra\Journeymap saves
+```
+
+Копирование идет с заменой файлов, чтобы этот набор можно было сразу раздавать тиммейтам для обновления их JourneyMap.
 
 Основной merge:
 
