@@ -219,7 +219,7 @@
       margin-top: 10px;
       padding-top: 10px;
       border-top: 1px solid rgba(255, 255, 255, 0.12);
-      max-height: 220px;
+      max-height: 330px;
       overflow: auto;
     }
 
@@ -3163,13 +3163,7 @@
       syncTimelineDatesFromCities();
       rebuildNationMaps();
       runtime.timelineDates = validated.timelineDates;
-      runtime.activeDate = dataset?.timeline?.default_date ?? validated.timelineDates[validated.timelineDates.length - 1] ?? null;
-      if (runtime.activeDate && TIMELINE_DATE_PATTERN.test(runtime.activeDate)) {
-        runtime.activeDate = normalizeTimelineDate(runtime.activeDate);
-      }
-      if (!runtime.timelineDates.includes(runtime.activeDate)) {
-        runtime.activeDate = runtime.timelineDates[runtime.timelineDates.length - 1] ?? null;
-      }
+      runtime.activeDate = validated.timelineDates[validated.timelineDates.length - 1] ?? null;
       runtime.cityDataset.timeline = {
         dates: runtime.timelineDates,
         default_date: runtime.activeDate
