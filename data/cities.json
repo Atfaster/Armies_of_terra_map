@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-03-31T11:44:50.821Z",
+  "generated_at": "2026-04-01T07:37:54.670Z",
   "timeline": {
     "dates": [
       "10.01.2026",
@@ -39,7 +39,7 @@
       "27.03.2026",
       "28.03.2026"
     ],
-    "default_date": "23.01.2026"
+    "default_date": "24.03.2026"
   },
   "nations": [
     {
@@ -1314,6 +1314,27 @@
             "waypoint_id": "town-Limnion-nation-Eleftheria-capital_1455-83-1316",
             "waypoint_name": "town Limnion nation Eleftheria capital"
           }
+        }
+      ]
+    },
+    {
+      "id": "morveth",
+      "name": "Morveth",
+      "founder": null,
+      "kind": "city",
+      "x": 4513,
+      "y": 7878,
+      "states": [
+        {
+          "from": "24.03.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": "lusitania",
+          "label": "Morveth",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": null
         }
       ]
     },
