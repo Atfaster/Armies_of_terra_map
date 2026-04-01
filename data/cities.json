@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-04-01T07:37:54.670Z",
+  "generated_at": "2026-04-01T15:16:11.656Z",
   "timeline": {
     "dates": [
       "10.01.2026",
@@ -39,7 +39,7 @@
       "27.03.2026",
       "28.03.2026"
     ],
-    "default_date": "24.03.2026"
+    "default_date": "28.03.2026"
   },
   "nations": [
     {
@@ -1660,6 +1660,27 @@
             "waypoint_id": "town-Rebelion_2800-77-9300",
             "waypoint_name": "town Rebelion"
           }
+        }
+      ]
+    },
+    {
+      "id": "red-keep",
+      "name": "Red_Keep",
+      "founder": null,
+      "kind": "city",
+      "x": 7541,
+      "y": 821,
+      "states": [
+        {
+          "from": "28.03.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": null,
+          "label": "Red_Keep",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": null
         }
       ]
     },
