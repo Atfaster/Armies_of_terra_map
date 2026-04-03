@@ -535,6 +535,16 @@
       white-space: nowrap;
     }
 
+    .geo-label.is-centered-label {
+      display: inline-block;
+      text-align: center;
+      white-space: nowrap;
+      overflow-wrap: normal;
+      word-break: normal;
+      transform: translateX(-50%);
+      will-change: transform;
+    }
+
     .geo-label.is-sea,
     .geo-label.is-lake,
     .geo-label.is-river {
@@ -944,7 +954,8 @@
       tileCount: 0,
       tileModeLabel: "Loading",
       detailTilesByKey: new Map(),
-      detailTileOverlays: new Map()
+      detailTileOverlays: new Map(),
+      textMarkerLayoutFrame: null
     };
 
     if (EDITOR_IS_LOCAL) {
@@ -1313,6 +1324,12 @@
       }).addTo(layers.worldBorder);
     }
 
+    function getWorldBorderLayerBounds() {
+      const topLeft = map.latLngToLayerPoint(gameToLatLng(WORLD_BORDER_CONFIG.minX, WORLD_BORDER_CONFIG.maxY));
+      const bottomRight = map.latLngToLayerPoint(gameToLatLng(WORLD_BORDER_CONFIG.maxX, WORLD_BORDER_CONFIG.minY));
+      return L.bounds(topLeft, bottomRight);
+    }
+
     const CoordControl = L.Control.extend({
       onAdd: function() {
         this._div = L.DomUtil.create("div", "coord-box");
@@ -1490,6 +1507,55 @@
       return false;
     }
 
+    function updateCenteredGeoLabelLayout(layer) {
+      if (!(layer instanceof L.Marker)) return;
+      const icon = layer._icon;
+      if (!icon || !icon.isConnected) return;
+
+      const label = icon.querySelector(".geo-label");
+      if (!label) return;
+
+      const worldBounds = getWorldBorderLayerBounds();
+      const worldWidth = Math.max(0, worldBounds.max.x - worldBounds.min.x);
+      label.style.maxWidth = "";
+
+      const width = label.offsetWidth;
+      if (!width || !worldWidth) return;
+
+      const anchorPoint = map.latLngToLayerPoint(layer.getLatLng());
+      const centeredLeft = anchorPoint.x - width / 2;
+      const maxLeft = Math.max(worldBounds.min.x, worldBounds.max.x - width);
+      const clampedLeft = Math.min(Math.max(centeredLeft, worldBounds.min.x), maxLeft);
+      const offsetX = clampedLeft - centeredLeft;
+
+      label.style.transform = `translateX(calc(-50% + ${offsetX}px))`;
+    }
+
+    function updateAllTextMarkerLayouts() {
+      for (const entry of runtime.geographyEntries) {
+        if (!isTextGeographyLayer(entry.layer)) continue;
+        updateCenteredGeoLabelLayout(entry.layer);
+      }
+      layers.geographyLabels.eachLayer((layer) => {
+        updateCenteredGeoLabelLayout(layer);
+      });
+    }
+
+    function buildCenteredGeoLabelHtml(kind, text, extraClass = "") {
+      const classSuffix = extraClass ? ` ${extraClass}` : "";
+      return `<span class="${getLabelClass(kind)} is-centered-label${classSuffix}">${escapeHtml(text)}</span>`;
+    }
+
+    function scheduleTextMarkerLayoutUpdate() {
+      if (runtime.textMarkerLayoutFrame !== null) {
+        cancelAnimationFrame(runtime.textMarkerLayoutFrame);
+      }
+      runtime.textMarkerLayoutFrame = requestAnimationFrame(() => {
+        runtime.textMarkerLayoutFrame = null;
+        updateAllTextMarkerLayouts();
+      });
+    }
+
     function getGeographyPaneName(layer, kind) {
       const normalizedKind = normalizeKind(kind);
       if (["continent", "island", "sea"].includes(normalizedKind)) {
@@ -1596,7 +1662,7 @@
         if (isTextGeographyLayer(layer)) {
           layer.setIcon(L.divIcon({
             className: "geo-label-icon",
-            html: `<span class="${getLabelClass(kind)}">${escapeHtml(getLayerName(layer) || kind)}</span>`
+            html: buildCenteredGeoLabelHtml(kind, getLayerName(layer) || kind, "is-text-marker")
           }));
           return;
         }
@@ -1720,7 +1786,7 @@
           pane: "geoLabelPane",
           icon: L.divIcon({
             className: "geo-label-icon",
-            html: `<span class="${getLabelClass(kind)}">${escapeHtml(name)}</span>`
+            html: buildCenteredGeoLabelHtml(kind, name)
           })
         }).addTo(layers.geographyLabels);
       }
@@ -1773,6 +1839,7 @@
       }
 
       refreshGeographyLabels();
+      scheduleTextMarkerLayoutUpdate();
     }
 
     function configureGeographyLayer(layer) {
@@ -1870,6 +1937,7 @@
     function syncGeographyEditor() {
       serializeGeography();
       refreshGeographyLabels();
+      scheduleTextMarkerLayoutUpdate();
     }
 
     function getGeographyEditOptions() {
@@ -3387,11 +3455,18 @@
       });
     }
 
+    map.on("zoom", scheduleTextMarkerLayoutUpdate);
+    map.on("move", scheduleTextMarkerLayoutUpdate);
+
     map.on("zoomend", function() {
       updateZoomLayers();
       syncVisibleDetailTiles();
+      scheduleTextMarkerLayoutUpdate();
     });
-    map.on("moveend", syncVisibleDetailTiles);
+    map.on("moveend", function() {
+      syncVisibleDetailTiles();
+      scheduleTextMarkerLayoutUpdate();
+    });
 
     window.addEventListener("beforeunload", function(event) {
       if (!EDITOR_IS_LOCAL || (!runtime.geographyDirty && !runtime.cityDirty)) return;
