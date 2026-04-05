@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-04-05T17:03:30.156Z",
+  "generated_at": "2026-04-05T18:23:58.427Z",
   "timeline": {
     "dates": [
       "10.01.2026",
@@ -28,6 +28,7 @@
       "23.02.2026",
       "24.02.2026",
       "27.02.2026",
+      "28.02.2026",
       "05.03.2026",
       "06.03.2026",
       "08.03.2026",
@@ -40,9 +41,11 @@
       "22.03.2026",
       "24.03.2026",
       "27.03.2026",
-      "28.03.2026"
+      "28.03.2026",
+      "04.04.2026",
+      "05.04.2026"
     ],
-    "default_date": "14.03.2026"
+    "default_date": "05.04.2026"
   },
   "nations": [
     {
@@ -92,6 +95,12 @@
       "name": "Lusitania",
       "color": "#00ff00",
       "founded": "11.02.2026"
+    },
+    {
+      "id": "new-aridus-republic",
+      "name": "New_Aridus_Republic",
+      "color": "#ffd60a",
+      "founded": "04.04.2026"
     },
     {
       "id": "visigoth",
@@ -692,7 +701,7 @@
         },
         {
           "from": "20.03.2026",
-          "to": null,
+          "to": "04.04.2026",
           "status": "active",
           "nation_id": "warbound",
           "label": "Fort Vann",
@@ -719,7 +728,7 @@
         },
         {
           "from": "28.03.2026",
-          "to": null,
+          "to": "04.04.2026",
           "status": "active",
           "nation_id": "warbound",
           "label": "Fort Vann",
@@ -732,6 +741,33 @@
             "waypoint_id": "town-Fort_Vann-nation-Warbound_-2585-89-5385",
             "waypoint_name": "town Fort_Vann nation Warbound"
           }
+        },
+        {
+          "from": "04.04.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": "new-aridus-republic",
+          "label": "Fort Vann",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": {
+            "type": "journeymap-waypoint",
+            "file": "town-Fort_Vann-nation-Warbound_-2585-89-5385.json",
+            "waypoint_id": "town-Fort_Vann-nation-Warbound_-2585-89-5385",
+            "waypoint_name": "town Fort_Vann nation Warbound"
+          }
+        },
+        {
+          "from": "04.04.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": "new-aridus-republic",
+          "label": "Fort Vann",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": null
         }
       ]
     },
@@ -1065,7 +1101,7 @@
         },
         {
           "from": "20.03.2026",
-          "to": null,
+          "to": "04.04.2026",
           "status": "active",
           "nation_id": "warbound",
           "label": "Havenport",
@@ -1076,7 +1112,7 @@
         },
         {
           "from": "27.03.2026",
-          "to": null,
+          "to": "04.04.2026",
           "status": "active",
           "nation_id": "warbound",
           "label": "Havenport",
@@ -1089,6 +1125,33 @@
             "waypoint_id": "town-Havenport-nation-Warbound_-9848-74-4642",
             "waypoint_name": "town Havenport nation Warbound"
           }
+        },
+        {
+          "from": "04.04.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": "new-aridus-republic",
+          "label": "Havenport",
+          "tags": [],
+          "is_capital": true,
+          "mayor": null,
+          "source": {
+            "type": "journeymap-waypoint",
+            "file": "town-Havenport-nation-Warbound_-9848-74-4642.json",
+            "waypoint_id": "town-Havenport-nation-Warbound_-9848-74-4642",
+            "waypoint_name": "town Havenport nation Warbound"
+          }
+        },
+        {
+          "from": "04.04.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": "new-aridus-republic",
+          "label": "Havenport",
+          "tags": [],
+          "is_capital": true,
+          "mayor": null,
+          "source": null
         }
       ]
     },
@@ -1268,7 +1331,7 @@
       "states": [
         {
           "from": "17.02.2026",
-          "to": null,
+          "to": "05.04.2026",
           "status": "active",
           "nation_id": null,
           "label": "Leesburg",
@@ -1279,7 +1342,7 @@
         },
         {
           "from": "27.03.2026",
-          "to": null,
+          "to": "05.04.2026",
           "status": "active",
           "nation_id": null,
           "label": "Leesburg",
@@ -1292,6 +1355,33 @@
             "waypoint_id": "town-Leesburg_-6500-77-400",
             "waypoint_name": "town Leesburg"
           }
+        },
+        {
+          "from": "05.04.2026",
+          "to": null,
+          "status": "ruins",
+          "nation_id": null,
+          "label": "Leesburg",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": {
+            "type": "journeymap-waypoint",
+            "file": "town-Leesburg_-6500-77-400.json",
+            "waypoint_id": "town-Leesburg_-6500-77-400",
+            "waypoint_name": "town Leesburg"
+          }
+        },
+        {
+          "from": "05.04.2026",
+          "to": null,
+          "status": "ruins",
+          "nation_id": null,
+          "label": "Leesburg",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": null
         }
       ]
     },
@@ -1672,7 +1762,7 @@
         },
         {
           "from": "20.03.2026",
-          "to": null,
+          "to": "04.04.2026",
           "status": "active",
           "nation_id": "warbound",
           "label": "RaysTown",
@@ -1683,7 +1773,7 @@
         },
         {
           "from": "27.03.2026",
-          "to": null,
+          "to": "04.04.2026",
           "status": "active",
           "nation_id": "warbound",
           "label": "RaysTown",
@@ -1696,6 +1786,33 @@
             "waypoint_id": "town-RaysTown-nation-Warbound_-1997-79-3799",
             "waypoint_name": "town RaysTown nation Warbound"
           }
+        },
+        {
+          "from": "04.04.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": null,
+          "label": "RaysTown",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": {
+            "type": "journeymap-waypoint",
+            "file": "town-RaysTown-nation-Warbound_-1997-79-3799.json",
+            "waypoint_id": "town-RaysTown-nation-Warbound_-1997-79-3799",
+            "waypoint_name": "town RaysTown nation Warbound"
+          }
+        },
+        {
+          "from": "04.04.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": null,
+          "label": "RaysTown",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": null
         }
       ]
     },
@@ -1865,6 +1982,27 @@
             "waypoint_id": "town-Slutsk-nation-Warbound_3558-71-2968",
             "waypoint_name": "town Slutsk nation Warbound"
           }
+        }
+      ]
+    },
+    {
+      "id": "the-charred-council",
+      "name": "The_Charred_Council",
+      "founder": null,
+      "kind": "city",
+      "x": -5928,
+      "y": -376,
+      "states": [
+        {
+          "from": "28.02.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": null,
+          "label": "The_Charred_Council",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": null
         }
       ]
     },
