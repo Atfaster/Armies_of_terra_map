@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-04-05T12:14:17.488Z",
+  "generated_at": "2026-04-05T17:03:30.156Z",
   "timeline": {
     "dates": [
       "10.01.2026",
@@ -33,6 +33,7 @@
       "08.03.2026",
       "10.03.2026",
       "11.03.2026",
+      "14.03.2026",
       "18.03.2026",
       "20.03.2026",
       "21.03.2026",
@@ -41,7 +42,7 @@
       "27.03.2026",
       "28.03.2026"
     ],
-    "default_date": "28.03.2026"
+    "default_date": "14.03.2026"
   },
   "nations": [
     {
@@ -1539,6 +1540,27 @@
           "label": "NovyGrad",
           "tags": [],
           "is_capital": true,
+          "mayor": null,
+          "source": null
+        }
+      ]
+    },
+    {
+      "id": "oasenstadt",
+      "name": "Oasenstadt",
+      "founder": null,
+      "kind": "city",
+      "x": -9641,
+      "y": -1768,
+      "states": [
+        {
+          "from": "14.03.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": null,
+          "label": "Oasenstadt",
+          "tags": [],
+          "is_capital": false,
           "mayor": null,
           "source": null
         }
