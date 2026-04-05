@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-04-01T16:31:15.058Z",
+  "generated_at": "2026-04-05T12:14:17.488Z",
   "timeline": {
     "dates": [
       "10.01.2026",
@@ -24,9 +24,11 @@
       "18.02.2026",
       "19.02.2026",
       "21.02.2026",
+      "22.02.2026",
       "23.02.2026",
       "24.02.2026",
       "27.02.2026",
+      "05.03.2026",
       "06.03.2026",
       "08.03.2026",
       "10.03.2026",
@@ -47,6 +49,12 @@
       "name": "Avernia",
       "color": "#d46f35",
       "founded": "06.03.2026"
+    },
+    {
+      "id": "dur-fenrgard",
+      "name": "Dur-Fenrgard",
+      "color": "#0ae2ff",
+      "founded": "05.03.2026"
     },
     {
       "id": "eleftheria",
@@ -1117,6 +1125,49 @@
             "waypoint_id": "town-HoffersMeer-nation-Visigoth_-3922-72-3410",
             "waypoint_name": "town HoffersMeer nation Visigoth"
           }
+        }
+      ]
+    },
+    {
+      "id": "ironhold",
+      "name": "Ironhold",
+      "founder": null,
+      "kind": "city",
+      "x": 713,
+      "y": -8041,
+      "states": [
+        {
+          "from": "22.02.2026",
+          "to": "05.03.2026",
+          "status": "active",
+          "nation_id": null,
+          "label": "Ironhold",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": null
+        },
+        {
+          "from": "05.03.2026",
+          "to": "28.03.2026",
+          "status": "active",
+          "nation_id": "dur-fenrgard",
+          "label": "Ironhold",
+          "tags": [],
+          "is_capital": true,
+          "mayor": null,
+          "source": null
+        },
+        {
+          "from": "28.03.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": "dur-fenrgard",
+          "label": "Ironhold",
+          "tags": [],
+          "is_capital": true,
+          "mayor": null,
+          "source": null
         }
       ]
     },
