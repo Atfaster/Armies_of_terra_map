@@ -948,7 +948,7 @@
     const ZOOM_OVERVIEW_16 = -6;
     const ZOOM_OVERVIEW_8 = -4;
     const ZOOM_OVERVIEW_4 = -2;
-    const ZOOM_DETAILS = 0;
+    const ZOOM_DETAILS = -0.25;
     const DETAIL_TILE_BUFFER = 1;
     const EDITOR_IS_LOCAL = isLocalEnvironment();
 
@@ -961,6 +961,8 @@
 
     map.createPane("geoBasePane");
     map.getPane("geoBasePane").style.zIndex = 410;
+    map.createPane("chunkGridPane");
+    map.getPane("chunkGridPane").style.zIndex = 405;
     map.createPane("geoRegionPane");
     map.getPane("geoRegionPane").style.zIndex = 420;
     map.createPane("geoFeaturePane");
@@ -983,6 +985,7 @@
 
     const layers = {
       worldBorder: L.layerGroup().addTo(map),
+      chunkGrid: null,
       cities: L.layerGroup().addTo(map),
       geography: L.featureGroup().addTo(map),
       geographyLabels: L.layerGroup().addTo(map)
@@ -1023,6 +1026,7 @@
       nationEditorCollapsed: false,
       nationEditorDrag: null,
       showRaster: true,
+      showChunkGrid: true,
       tileCount: 0,
       tileModeLabel: "Loading",
       detailTilesByKey: new Map(),
@@ -1396,6 +1400,129 @@
       }).addTo(layers.worldBorder);
     }
 
+    function getChunkGridSizeForZoom(zoom) {
+      if (zoom >= ZOOM_DETAILS) return 16;
+      if (zoom >= -2) return 64;
+      return 512;
+    }
+
+    function isMajorChunkGridLine(value) {
+      return Number.isInteger(value / 512);
+    }
+
+    const ChunkGridLayer = L.Layer.extend({
+      options: {
+        pane: "chunkGridPane"
+      },
+
+      onAdd: function(mapInstance) {
+        this._map = mapInstance;
+        this._canvas = L.DomUtil.create("canvas", "leaflet-layer");
+        this._canvas.style.pointerEvents = "none";
+        this._context = this._canvas.getContext("2d");
+        mapInstance.getPane(this.options.pane).appendChild(this._canvas);
+        mapInstance.on("move zoom zoomend resize", this._redraw, this);
+        this._redraw();
+      },
+
+      onRemove: function(mapInstance) {
+        mapInstance.off("move zoom zoomend resize", this._redraw, this);
+        if (this._canvas?.parentNode) {
+          this._canvas.parentNode.removeChild(this._canvas);
+        }
+        this._map = null;
+        this._canvas = null;
+        this._context = null;
+      },
+
+      _redraw: function() {
+        if (!this._map || !this._canvas || !this._context) return;
+
+        const viewportTopLeft = this._map.containerPointToLayerPoint([0, 0]);
+        const viewportSize = this._map.getSize();
+        const width = Math.max(1, Math.ceil(viewportSize.x));
+        const height = Math.max(1, Math.ceil(viewportSize.y));
+
+        L.DomUtil.setPosition(this._canvas, viewportTopLeft);
+        if (this._canvas.width !== width) this._canvas.width = width;
+        if (this._canvas.height !== height) this._canvas.height = height;
+        this._canvas.style.width = `${width}px`;
+        this._canvas.style.height = `${height}px`;
+
+        const context = this._context;
+        context.clearRect(0, 0, width, height);
+
+        if (!runtime.showChunkGrid) return;
+
+        const zoom = this._map.getZoom();
+        const gridSize = getChunkGridSizeForZoom(zoom);
+        const worldBounds = getWorldBorderBounds();
+        const visibleBounds = this._map.getBounds().pad(0.1);
+        const clippedSouth = Math.max(visibleBounds.getSouth(), worldBounds.getSouth());
+        const clippedWest = Math.max(visibleBounds.getWest(), worldBounds.getWest());
+        const clippedNorth = Math.min(visibleBounds.getNorth(), worldBounds.getNorth());
+        const clippedEast = Math.min(visibleBounds.getEast(), worldBounds.getEast());
+
+        if (clippedSouth >= clippedNorth || clippedWest >= clippedEast) return;
+
+        const visibleMinX = clippedWest;
+        const visibleMaxX = clippedEast;
+        const visibleMinY = -clippedNorth;
+        const visibleMaxY = -clippedSouth;
+
+        const startX = Math.max(
+          WORLD_BORDER_CONFIG.minX,
+          Math.ceil(visibleMinX / gridSize) * gridSize
+        );
+        const endX = Math.min(
+          WORLD_BORDER_CONFIG.maxX,
+          Math.floor(visibleMaxX / gridSize) * gridSize
+        );
+        const startY = Math.max(
+          WORLD_BORDER_CONFIG.minY,
+          Math.ceil(visibleMinY / gridSize) * gridSize
+        );
+        const endY = Math.min(
+          WORLD_BORDER_CONFIG.maxY,
+          Math.floor(visibleMaxY / gridSize) * gridSize
+        );
+
+        for (let x = startX; x <= endX; x += gridSize) {
+          const topPoint = this._map.latLngToLayerPoint(gameToLatLng(x, visibleMinY));
+          const bottomPoint = this._map.latLngToLayerPoint(gameToLatLng(x, visibleMaxY));
+          const localX = Math.round(topPoint.x - viewportTopLeft.x) + 0.5;
+          const localTopY = Math.round(topPoint.y - viewportTopLeft.y) + 0.5;
+          const localBottomY = Math.round(bottomPoint.y - viewportTopLeft.y) + 0.5;
+          context.beginPath();
+          context.strokeStyle = isMajorChunkGridLine(x)
+            ? "rgba(40, 40, 40, 0.55)"
+            : "rgba(255, 255, 255, 0.45)";
+          context.lineWidth = 1;
+          context.moveTo(localX, localTopY);
+          context.lineTo(localX, localBottomY);
+          context.stroke();
+        }
+
+        for (let y = startY; y <= endY; y += gridSize) {
+          const leftPoint = this._map.latLngToLayerPoint(gameToLatLng(visibleMinX, y));
+          const rightPoint = this._map.latLngToLayerPoint(gameToLatLng(visibleMaxX, y));
+          const localY = Math.round(leftPoint.y - viewportTopLeft.y) + 0.5;
+          const localLeftX = Math.round(leftPoint.x - viewportTopLeft.x) + 0.5;
+          const localRightX = Math.round(rightPoint.x - viewportTopLeft.x) + 0.5;
+          context.beginPath();
+          context.strokeStyle = isMajorChunkGridLine(y)
+            ? "rgba(40, 40, 40, 0.55)"
+            : "rgba(255, 255, 255, 0.45)";
+          context.lineWidth = 1;
+          context.moveTo(localLeftX, localY);
+          context.lineTo(localRightX, localY);
+          context.stroke();
+        }
+      }
+    });
+
+    layers.chunkGrid = new ChunkGridLayer().addTo(map);
+
     function getWorldBorderLayerBounds() {
       const topLeft = map.latLngToLayerPoint(gameToLatLng(WORLD_BORDER_CONFIG.minX, WORLD_BORDER_CONFIG.maxY));
       const bottomRight = map.latLngToLayerPoint(gameToLatLng(WORLD_BORDER_CONFIG.maxX, WORLD_BORDER_CONFIG.minY));
@@ -1474,6 +1601,10 @@
       <label class="checkbox-row">
         <input id="toggle-raster-map" type="checkbox" checked />
         <span>Raster map</span>
+      </label>
+      <label class="checkbox-row">
+        <input id="toggle-chunk-grid" type="checkbox" checked />
+        <span>Chunk grid</span>
       </label>
     `;
     layerControl.getContainer().querySelector(".leaflet-control-layers-list").appendChild(geographyKindSection);
@@ -3472,6 +3603,11 @@
     document.getElementById("toggle-raster-map").addEventListener("change", function(event) {
       runtime.showRaster = event.target.checked;
       updateZoomLayers();
+    });
+
+    document.getElementById("toggle-chunk-grid").addEventListener("change", function(event) {
+      runtime.showChunkGrid = event.target.checked;
+      layers.chunkGrid?._redraw();
     });
 
     document.getElementById("city-select").addEventListener("change", function(event) {
