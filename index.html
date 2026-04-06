@@ -80,8 +80,9 @@
     .filter-panel {
       top: 12px;
       left: 56px;
-      padding: 10px 12px;
-      min-width: 180px;
+      padding: 0;
+      width: max-content;
+      max-width: calc(100vw - 68px);
     }
 
     .timeline-panel {
@@ -161,6 +162,10 @@
       flex: 0 0 auto;
     }
 
+    .panel-header .panel-title {
+      margin: 0;
+    }
+
     .panel-close-button {
       appearance: none;
       border: 1px solid rgba(255, 255, 255, 0.18);
@@ -176,6 +181,48 @@
 
     .panel-close-button:hover {
       background: rgba(255, 255, 255, 0.14);
+    }
+
+    .panel-collapse-button {
+      font-size: 16px;
+      font-weight: 700;
+      padding-bottom: 2px;
+    }
+
+    .panel-body {
+      min-width: 0;
+    }
+
+    .filter-panel-body {
+      padding: 10px 12px;
+      width: max-content;
+      max-width: calc(100vw - 68px);
+    }
+
+    .is-collapsed {
+      overflow: hidden;
+      max-height: none;
+    }
+
+    .is-collapsed .panel-body {
+      height: 0;
+      min-height: 0;
+      margin: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      border: 0;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .map-panel.is-dragging-panel {
+      will-change: transform;
+    }
+
+    .geography-panel-body,
+    #geography-json {
+      contain: layout paint;
     }
 
     .city-editor-body {
@@ -604,7 +651,13 @@
         bottom: 104px;
         left: 12px;
         right: 12px;
-        min-width: 0;
+        width: auto;
+        max-width: none;
+      }
+
+      .filter-panel-body {
+        width: auto;
+        max-width: none;
       }
 
       .timeline-panel {
@@ -628,32 +681,41 @@
   <div id="map"></div>
 
   <div class="map-panel filter-panel">
-    <div class="panel-title">City Filters</div>
-    <div class="checkbox-list">
-      <label class="checkbox-row">
-        <input id="toggle-capitals" type="checkbox" checked />
-        <span>Show capitals</span>
-      </label>
-      <label class="checkbox-row">
-        <input id="toggle-national" type="checkbox" checked />
-        <span>Show national cities</span>
-      </label>
-      <label class="checkbox-row">
-        <input id="toggle-free" type="checkbox" checked />
-        <span>Show free cities</span>
-      </label>
-      <label class="checkbox-row">
-        <input id="toggle-bankrupt" type="checkbox" checked />
-        <span>Show bankrupt cities</span>
-      </label>
-      <label class="checkbox-row">
-        <input id="toggle-ruins" type="checkbox" checked />
-        <span>Show ruins</span>
-      </label>
+    <div class="panel-header is-draggable" id="city-filters-header">
+      <div class="panel-row">
+        <div class="panel-title">City Filters</div>
+      </div>
+      <div class="panel-header-actions">
+        <button id="toggle-city-filters" class="panel-close-button panel-collapse-button" type="button" aria-label="Collapse City Filters" aria-expanded="true">-</button>
+      </div>
     </div>
-    <div class="nation-filters">
-      <div class="panel-title">Nations</div>
-      <div id="nation-filters" class="checkbox-list"></div>
+    <div class="filter-panel-body panel-body">
+      <div class="checkbox-list">
+        <label class="checkbox-row">
+          <input id="toggle-capitals" type="checkbox" checked />
+          <span>Show capitals</span>
+        </label>
+        <label class="checkbox-row">
+          <input id="toggle-national" type="checkbox" checked />
+          <span>Show national cities</span>
+        </label>
+        <label class="checkbox-row">
+          <input id="toggle-free" type="checkbox" checked />
+          <span>Show free cities</span>
+        </label>
+        <label class="checkbox-row">
+          <input id="toggle-bankrupt" type="checkbox" checked />
+          <span>Show bankrupt cities</span>
+        </label>
+        <label class="checkbox-row">
+          <input id="toggle-ruins" type="checkbox" checked />
+          <span>Show ruins</span>
+        </label>
+      </div>
+      <div class="nation-filters">
+        <div class="panel-title">Nations</div>
+        <div id="nation-filters" class="checkbox-list"></div>
+      </div>
     </div>
   </div>
 
@@ -672,8 +734,11 @@
         <div class="panel-title">Geography Editor</div>
         <div id="geography-count" class="timeline-value">0</div>
       </div>
+      <div class="panel-header-actions">
+        <button id="toggle-geography-editor" class="panel-close-button panel-collapse-button" type="button" aria-label="Collapse Geography Editor" aria-expanded="true">-</button>
+      </div>
     </div>
-    <div class="geography-panel-body">
+    <div class="geography-panel-body panel-body">
       <div class="panel-note">Use the Geoman toolbar on the left to draw markers, lines and polygons. Double-click an object to rename it.</div>
       <div class="panel-actions">
         <button id="save-geography" class="panel-button" type="button">Save Geo</button>
@@ -694,10 +759,11 @@
         <div id="city-editor-date" class="timeline-value">-</div>
       </div>
       <div class="panel-header-actions">
+        <button id="toggle-city-editor" class="panel-close-button panel-collapse-button" type="button" aria-label="Collapse City Editor" aria-expanded="true">-</button>
         <button id="close-city-editor" class="panel-close-button" type="button" aria-label="Close City Editor">x</button>
       </div>
     </div>
-    <div class="city-editor-body">
+    <div class="city-editor-body panel-body">
       <div class="panel-note">Local-only editor. Changes affect the selected city state for the active timeline date.</div>
 
       <div class="panel-field">
@@ -821,10 +887,11 @@
         <div id="nation-editor-status" class="panel-note">-</div>
       </div>
       <div class="panel-header-actions">
+        <button id="toggle-nation-editor" class="panel-close-button panel-collapse-button" type="button" aria-label="Collapse Nation Editor" aria-expanded="true">-</button>
         <button id="close-nation-editor" class="panel-close-button" type="button" aria-label="Close Nation Editor">x</button>
       </div>
     </div>
-    <div class="city-editor-body">
+    <div class="city-editor-body panel-body">
       <div class="panel-note">Local-only editor. Nation dates also use the timeline format dd.mm.yyyy.</div>
       <div class="panel-field">
         <label for="nation-editor-select">Nation</label>
@@ -939,6 +1006,9 @@
       geographyKindVisibility: new Map(),
       geographyFileHandle: null,
       geographyDirty: false,
+      cityFiltersCollapsed: false,
+      cityFiltersDrag: null,
+      geographyEditorCollapsed: false,
       geographyEditorDrag: null,
       geographyEditSelectionEnabled: false,
       activeGeographyEditLayer: null,
@@ -947,8 +1017,10 @@
       selectedCityId: null,
       selectedNationId: null,
       cityEditorVisible: false,
+      cityEditorCollapsed: false,
       cityEditorDrag: null,
       nationEditorVisible: false,
+      nationEditorCollapsed: false,
       nationEditorDrag: null,
       showRaster: true,
       tileCount: 0,
@@ -2759,6 +2831,10 @@
       fields.classList.toggle("is-hidden", select.value !== "__new__");
     }
 
+    function isPanelMeasurable(panel) {
+      return !!panel && panel.offsetWidth > 0 && panel.offsetHeight > 0;
+    }
+
     function syncPanelVisibility(panelSelector, isVisible) {
       const panel = document.querySelector(panelSelector);
       if (!panel) return;
@@ -2795,21 +2871,66 @@
       syncNationEditorVisibility();
     }
 
-    function clampEditorPosition(panelSelector) {
+    function setPanelPosition(panelSelector, left, top) {
       const panel = document.querySelector(panelSelector);
-      if (!panel) return;
-      panel.style.right = "auto";
-      panel.style.bottom = "auto";
+      if (!isPanelMeasurable(panel)) return;
       const maxLeft = Math.max(12, window.innerWidth - panel.offsetWidth - 12);
       const maxTop = Math.max(12, window.innerHeight - panel.offsetHeight - 12);
-      const currentLeft = Number.parseFloat(panel.style.left || "0");
-      const currentTop = Number.parseFloat(panel.style.top || "0");
-      panel.style.left = `${Math.min(Math.max(12, currentLeft || maxLeft), maxLeft)}px`;
-      panel.style.top = `${Math.min(Math.max(12, currentTop || 12), maxTop)}px`;
+      panel.style.right = "auto";
+      panel.style.bottom = "auto";
+      panel.style.left = `${Math.min(Math.max(12, left), maxLeft)}px`;
+      panel.style.top = `${Math.min(Math.max(12, top), maxTop)}px`;
+    }
+
+    function setPanelToCorner(panelSelector, corner) {
+      const panel = document.querySelector(panelSelector);
+      if (!isPanelMeasurable(panel)) return;
+      const targetLeft = corner.includes("right")
+        ? window.innerWidth - panel.offsetWidth - 12
+        : 12;
+      const targetTop = corner.includes("bottom")
+        ? window.innerHeight - panel.offsetHeight - 12
+        : 12;
+      setPanelPosition(panelSelector, targetLeft, targetTop);
+    }
+
+    function clampEditorPosition(panelSelector) {
+      const panel = document.querySelector(panelSelector);
+      if (!isPanelMeasurable(panel)) return;
+      const rect = panel.getBoundingClientRect();
+      const inlineLeft = Number.parseFloat(panel.style.left);
+      const inlineTop = Number.parseFloat(panel.style.top);
+      const currentLeft = Number.isFinite(inlineLeft) ? inlineLeft : rect.left;
+      const currentTop = Number.isFinite(inlineTop) ? inlineTop : rect.top;
+      setPanelPosition(panelSelector, currentLeft, currentTop);
+    }
+
+    function syncCollapsiblePanel(panelSelector, isCollapsed, buttonId, expandedLabel, collapsedLabel) {
+      const panel = document.querySelector(panelSelector);
+      const button = document.getElementById(buttonId);
+      if (!panel || !button) return;
+      panel.classList.toggle("is-collapsed", isCollapsed);
+      button.textContent = isCollapsed ? "+" : "-";
+      button.setAttribute("aria-expanded", String(!isCollapsed));
+      button.setAttribute("aria-label", isCollapsed ? expandedLabel : collapsedLabel);
+      if (!isCollapsed) {
+        clampEditorPosition(panelSelector);
+      }
+    }
+
+    function configureCollapsiblePanel(panelSelector, buttonId, stateKey, labels) {
+      const button = document.getElementById(buttonId);
+      if (!button) return;
+
+      button.addEventListener("click", function() {
+        runtime[stateKey] = !runtime[stateKey];
+        syncCollapsiblePanel(panelSelector, runtime[stateKey], buttonId, labels.expand, labels.collapse);
+      });
+
+      syncCollapsiblePanel(panelSelector, runtime[stateKey], buttonId, labels.expand, labels.collapse);
     }
 
     function configureDraggableEditor(panelSelector, headerId, dragStateKey, syncVisibility) {
-      if (!EDITOR_IS_LOCAL) return;
       const panel = document.querySelector(panelSelector);
       const header = document.getElementById(headerId);
       if (!panel || !header) return;
@@ -2818,11 +2939,21 @@
         if (event.target.closest("button, input, select, textarea, label")) return;
 
         const rect = panel.getBoundingClientRect();
+        const maxLeft = Math.max(12, window.innerWidth - panel.offsetWidth - 12);
+        const maxTop = Math.max(12, window.innerHeight - panel.offsetHeight - 12);
+        const startLeft = Math.min(Math.max(12, rect.left), maxLeft);
+        const startTop = Math.min(Math.max(12, rect.top), maxTop);
         runtime[dragStateKey] = {
           pointerId: event.pointerId,
           offsetX: event.clientX - rect.left,
-          offsetY: event.clientY - rect.top
+          offsetY: event.clientY - rect.top,
+          startLeft,
+          startTop,
+          nextLeft: startLeft,
+          nextTop: startTop
         };
+        panel.classList.add("is-dragging-panel");
+        panel.style.transform = "translate3d(0, 0, 0)";
         header.setPointerCapture(event.pointerId);
       });
 
@@ -2833,16 +2964,20 @@
         const nextTop = event.clientY - runtime[dragStateKey].offsetY;
         const maxLeft = Math.max(12, window.innerWidth - panel.offsetWidth - 12);
         const maxTop = Math.max(12, window.innerHeight - panel.offsetHeight - 12);
-
-        panel.style.right = "auto";
-        panel.style.bottom = "auto";
-        panel.style.left = `${Math.min(Math.max(12, nextLeft), maxLeft)}px`;
-        panel.style.top = `${Math.min(Math.max(12, nextTop), maxTop)}px`;
+        runtime[dragStateKey].nextLeft = Math.min(Math.max(12, nextLeft), maxLeft);
+        runtime[dragStateKey].nextTop = Math.min(Math.max(12, nextTop), maxTop);
+        const deltaX = runtime[dragStateKey].nextLeft - runtime[dragStateKey].startLeft;
+        const deltaY = runtime[dragStateKey].nextTop - runtime[dragStateKey].startTop;
+        panel.style.transform = `translate3d(${deltaX}px, ${deltaY}px, 0)`;
       });
 
       function releaseDrag(event) {
         if (!runtime[dragStateKey] || runtime[dragStateKey].pointerId !== event.pointerId) return;
+        const { nextLeft, nextTop } = runtime[dragStateKey];
         runtime[dragStateKey] = null;
+        panel.classList.remove("is-dragging-panel");
+        panel.style.transform = "";
+        setPanelPosition(panelSelector, nextLeft, nextTop);
         try {
           header.releasePointerCapture(event.pointerId);
         } catch (error) {
@@ -2860,6 +2995,14 @@
       clampEditorPosition(panelSelector);
     }
 
+    function configureCityFiltersPanel() {
+      configureDraggableEditor(".filter-panel", "city-filters-header", "cityFiltersDrag", function() {});
+      configureCollapsiblePanel(".filter-panel", "toggle-city-filters", "cityFiltersCollapsed", {
+        expand: "Expand City Filters",
+        collapse: "Collapse City Filters"
+      });
+    }
+
     function configureCityEditorDrag() {
       configureDraggableEditor(".city-editor-panel", "city-editor-header", "cityEditorDrag", syncCityEditorVisibility);
     }
@@ -2870,6 +3013,27 @@
 
     function configureGeographyEditorDrag() {
       configureDraggableEditor(".geography-panel", "geography-editor-header", "geographyEditorDrag", function() {});
+      setPanelToCorner(".geography-panel", "bottom-right");
+      configureCollapsiblePanel(".geography-panel", "toggle-geography-editor", "geographyEditorCollapsed", {
+        expand: "Expand Geography Editor",
+        collapse: "Collapse Geography Editor"
+      });
+    }
+
+    function configureCityEditorPanels() {
+      configureCityEditorDrag();
+      configureCollapsiblePanel(".city-editor-panel", "toggle-city-editor", "cityEditorCollapsed", {
+        expand: "Expand City Editor",
+        collapse: "Collapse City Editor"
+      });
+    }
+
+    function configureNationEditorPanels() {
+      configureNationEditorDrag();
+      configureCollapsiblePanel(".nation-editor-panel", "toggle-nation-editor", "nationEditorCollapsed", {
+        expand: "Expand Nation Editor",
+        collapse: "Collapse Nation Editor"
+      });
     }
 
     function configureDateFieldBinding(textInputId, pickerInputId) {
@@ -3484,9 +3648,10 @@
         configureDateFieldBinding("nation-editor-founded", "nation-editor-founded-picker");
         await loadMap();
         await configureGeoman();
+        configureCityFiltersPanel();
         configureGeographyEditorDrag();
-        configureCityEditorDrag();
-        configureNationEditorDrag();
+        configureCityEditorPanels();
+        configureNationEditorPanels();
       } catch (error) {
         console.error(error);
         statusControl.setText(`Error: ${error.message}`);
