@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-04-05T18:23:58.427Z",
+  "generated_at": "2026-04-07T14:55:45.535Z",
   "timeline": {
     "dates": [
       "10.01.2026",
@@ -43,9 +43,10 @@
       "27.03.2026",
       "28.03.2026",
       "04.04.2026",
-      "05.04.2026"
+      "05.04.2026",
+      "06.04.2026"
     ],
-    "default_date": "05.04.2026"
+    "default_date": "06.04.2026"
   },
   "nations": [
     {
@@ -744,7 +745,7 @@
         },
         {
           "from": "04.04.2026",
-          "to": null,
+          "to": "06.04.2026",
           "status": "active",
           "nation_id": "new-aridus-republic",
           "label": "Fort Vann",
@@ -760,7 +761,7 @@
         },
         {
           "from": "04.04.2026",
-          "to": null,
+          "to": "06.04.2026",
           "status": "active",
           "nation_id": "new-aridus-republic",
           "label": "Fort Vann",
@@ -768,6 +769,33 @@
           "is_capital": false,
           "mayor": null,
           "source": null
+        },
+        {
+          "from": "06.04.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": "new-aridus-republic",
+          "label": "Fort Vann",
+          "tags": [],
+          "is_capital": true,
+          "mayor": null,
+          "source": null
+        },
+        {
+          "from": "06.04.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": "new-aridus-republic",
+          "label": "Fort Vann",
+          "tags": [],
+          "is_capital": true,
+          "mayor": null,
+          "source": {
+            "type": "journeymap-waypoint",
+            "file": "town-Fort_Vann-nation-Warbound_-2585-89-5385.json",
+            "waypoint_id": "town-Fort_Vann-nation-Warbound_-2585-89-5385",
+            "waypoint_name": "town Fort_Vann nation Warbound"
+          }
         }
       ]
     },
@@ -1128,7 +1156,7 @@
         },
         {
           "from": "04.04.2026",
-          "to": null,
+          "to": "06.04.2026",
           "status": "active",
           "nation_id": "new-aridus-republic",
           "label": "Havenport",
@@ -1144,7 +1172,7 @@
         },
         {
           "from": "04.04.2026",
-          "to": null,
+          "to": "06.04.2026",
           "status": "active",
           "nation_id": "new-aridus-republic",
           "label": "Havenport",
@@ -1152,6 +1180,33 @@
           "is_capital": true,
           "mayor": null,
           "source": null
+        },
+        {
+          "from": "06.04.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": "warbound",
+          "label": "Havenport",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": null
+        },
+        {
+          "from": "06.04.2026",
+          "to": null,
+          "status": "active",
+          "nation_id": "warbound",
+          "label": "Havenport",
+          "tags": [],
+          "is_capital": false,
+          "mayor": null,
+          "source": {
+            "type": "journeymap-waypoint",
+            "file": "town-Havenport-nation-Warbound_-9848-74-4642.json",
+            "waypoint_id": "town-Havenport-nation-Warbound_-9848-74-4642",
+            "waypoint_name": "town Havenport nation Warbound"
+          }
         }
       ]
     },
