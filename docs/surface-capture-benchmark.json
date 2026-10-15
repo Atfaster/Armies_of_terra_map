@@ -1,0 +1,10 @@
+{
+  "regions": 8,
+  "times_seconds": {
+    "legacy": 39.055,
+    "cold": 13.738,
+    "warm": 9.217
+  },
+  "sha256_equivalent": true,
+  "workers": 8
+}

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Скачать карту — TerraFirmaColonies: Steel &amp; Soil</title>
+  <style>
+    body{margin:0;background:#101820;color:#edf3f6;font:16px/1.6 system-ui,sans-serif}
+    main{max-width:680px;margin:48px auto;padding:0 24px 32px}
+    h1{font-size:28px;line-height:1.25}a{color:#9cdbff}
+    .download{display:inline-block;background:#a4dc98;color:#142411;padding:12px 20px;
+      border-radius:8px;font-weight:650;text-decoration:none}
+    .download:hover{background:#c1edb8}li{margin:12px 0}code{overflow-wrap:anywhere}
+    .detail{color:#b6c5ce}#details{min-height:26px}ol{padding-left:24px}
+    @media(max-width:480px){main{margin-top:28px}h1{font-size:24px}}
+  </style>
+</head>
+<body><main>
+  <a href="./">← Открыть веб-карту</a>
+  <h1>Общая карта TerraFirmaColonies: Steel &amp; Soil</h1>
+  <p>Последняя объединённая карта команды для JourneyMap. Архив обновляется после каждой успешной сборки и публикации.</p>
+  <p>Континенты видны благодаря обзорной подложке BlueMap. Детальные исследования JourneyMap всегда отображаются поверх неё; при посещении новых мест карта сможет обновляться данными клиента.</p>
+  <p><a id="download" class="download" href="downloads/Steel-Soil-JourneyMap-latest.zip" download>Скачать карту ZIP</a></p>
+  <p id="details" class="detail"></p>
+  <h2>Как обновить карту</h2>
+  <ol>
+    <li>Закройте Minecraft. Если после предыдущего обновления вы исследовали новые территории, передайте свою свежую карту в общую сборку <strong>до замены файлов</strong>.</li>
+    <li>Скопируйте папку своего сервера <code>journeymap/data/mp/…</code> в другое место — это резервная копия.</li>
+    <li>Распакуйте архив. Скопируйте папки <code>overworld</code> и <code>addon-data</code> из ZIP в папку своего сервера с заменой совпадающих файлов. Если <code>addon-data</code> в ZIP нет, копируйте только <code>overworld</code>. Остальные файлы своей карты оставьте на месте.</li>
+    <li>Запустите Minecraft. В JourneyMap появятся объединённые исследования команды.</li>
+  </ol>
+  <p class="detail">Название папки сервера может отличаться; у atfaster это <code>Steel~Soil</code>. Архив содержит дневную карту, доступные сведения о поверхностных блоках, известные границы колоний и инструкцию. Личные метки и настройки передавать не нужно.</p>
+  <h2>Как передать свою карту команде</h2>
+  <p class="detail">Передайте две папки целиком: так в общую сборку попадут карта, доступные сведения о блоках и границы колоний.</p>
+  <ol>
+    <li>Закройте Minecraft.</li>
+    <li>В CurseForge откройте свою сборку → меню с тремя точками → <strong>Открыть папку</strong>.</li>
+    <li>Откройте <code>journeymap → data → mp → Steel~Soil</code>. Название папки сервера у вас может отличаться.</li>
+    <li>Выделите папки <strong>overworld</strong> и <strong>addon-data</strong>, удерживая Ctrl. Если <code>addon-data</code> нет, выделите только <code>overworld</code>.</li>
+    <li>Нажмите правой кнопкой → <strong>Сжать в ZIP-файл</strong>. В Windows 10: <strong>Отправить → Сжатая ZIP-папка</strong>.</li>
+    <li>Назовите архив своим ником, например <code>Ivan.zip</code>, и отправьте тому, кто собирает общую карту.</li>
+  </ol>
+  <p>Ничего внутри папок искать или удалять не нужно. Передавайте файлы из своей игры, а не скачанный архив общей карты. Свои новые исследования отправляйте до установки следующего обновления.</p>
+</main>
+<script>
+  fetch('downloads/latest.json', {cache:'no-store'}).then(response => {
+    if (!response.ok) throw new Error('Download metadata unavailable');
+    return response.json();
+  }).then(info => {
+    document.getElementById('details').textContent = info.tiles + ' тайлов' +
+      (info.background ? ' · ' + info.explored_tiles + ' с исследованиями JourneyMap' : '') +
+      ' · ' + (info.bytes / 1048576).toFixed(1) + ' МБ';
+    document.getElementById('download').href = info.url || 'downloads/Steel-Soil-JourneyMap-latest.zip?v=' + encodeURIComponent(info.build_id);
+  }).catch(() => {});
+</script>
+</body></html>

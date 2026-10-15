@@ -1,0 +1,36 @@
+{
+  "measurements": [
+    {
+      "mode": "legacy",
+      "seconds": 66.251,
+      "regions": 8,
+      "surface_columns": 1042862,
+      "identical_sha256": true
+    },
+    {
+      "mode": "eight_processes",
+      "seconds": 14.454,
+      "regions": 8,
+      "surface_columns": 1042862,
+      "identical_sha256": true
+    },
+    {
+      "mode": "warm_cache",
+      "seconds": 0.207,
+      "regions": 8,
+      "surface_columns": 1042862,
+      "identical_sha256": true
+    }
+  ],
+  "regions": [
+    "r.-1.-1.mca",
+    "r.-10.0.mca",
+    "r.-11.0.mca",
+    "r.-12.0.mca",
+    "r.-14.0.mca",
+    "r.-17.0.mca",
+    "r.-2.-1.mca",
+    "r.-2.1.mca"
+  ],
+  "baseline_build": "bd82008e47a2d010135b"
+}

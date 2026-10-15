@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import threading
+import webbrowser
 from http import HTTPStatus
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -15,6 +17,14 @@ CITIES_PATH = ROOT / "data" / "cities.json"
 class LocalMapRequestHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, directory: str | None = None, **kwargs):
         super().__init__(*args, directory=str(ROOT), **kwargs)
+
+    def translate_path(self, path: str) -> str:
+        clean_path = path.split("?", 1)[0]
+        if clean_path == "/data/geography.json":
+            return str(GEOGRAPHY_PATH)
+        if clean_path == "/data/cities.json":
+            return str(CITIES_PATH)
+        return super().translate_path(path)
 
     def end_headers(self) -> None:
         self.send_header("Cache-Control", "no-store")
@@ -72,7 +82,7 @@ class LocalMapRequestHandler(SimpleHTTPRequestHandler):
         self.send_json_response(
             {
                 "ok": True,
-                "path": str(GEOGRAPHY_PATH.relative_to(ROOT)).replace("\\", "/"),
+                "path": "data/geography.json",
             }
         )
 
@@ -104,7 +114,7 @@ class LocalMapRequestHandler(SimpleHTTPRequestHandler):
         self.send_json_response(
             {
                 "ok": True,
-                "path": str(CITIES_PATH.relative_to(ROOT)).replace("\\", "/"),
+                "path": "data/cities.json",
             }
         )
 
@@ -115,15 +125,31 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8000)
+    parser.add_argument("--season", help="Serve the selected season's current release")
+    parser.add_argument("--open-browser", action="store_true", help="Open the map in the default browser after starting the server")
     return parser.parse_args()
 
 
 def main() -> None:
+    global ROOT, GEOGRAPHY_PATH, CITIES_PATH
     args = parse_args()
+    if args.season:
+        import re
+        if not re.fullmatch(r"[a-z0-9-]+", args.season):
+            raise ValueError("Invalid season id")
+        season = ROOT / "seasons" / args.season
+        current = json.loads((season / "current.json").read_text(encoding="utf-8"))
+        ROOT = (season / current["site"]).resolve()
+        if not ROOT.is_relative_to((season / "builds").resolve()):
+            raise ValueError("Invalid release path")
+        GEOGRAPHY_PATH = season / "data" / "geography.json"
+        CITIES_PATH = season / "data" / "cities.json"
     server = ThreadingHTTPServer((args.host, args.port), LocalMapRequestHandler)
     print(f"Serving {ROOT} at http://{args.host}:{args.port}")
     print(f"Direct geography save endpoint: http://{args.host}:{args.port}/api/save-geography")
     print(f"Direct city save endpoint: http://{args.host}:{args.port}/api/save-cities")
+    if args.open_browser:
+        threading.Thread(target=webbrowser.open, args=(f"http://{args.host}:{server.server_port}/",), daemon=True).start()
     try:
         server.serve_forever()
     except KeyboardInterrupt:

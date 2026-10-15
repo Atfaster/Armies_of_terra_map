@@ -1,0 +1,35 @@
+{
+  "id": "steel-soil",
+  "title": "TerraFirmaColonies: Steel & Soil",
+  "dimension": "overworld",
+  "layer": "day",
+  "tile_size": 512,
+  "server_open_date": null,
+  "initial_snapshot_date": "02.10.2026",
+  "world_border": {
+    "minX": -12512,
+    "maxX": 12512,
+    "minY": -12512,
+    "maxY": 12512
+  },
+  "source_order": [
+    "atfaster",
+    "teammate-1",
+    "teammate-2",
+    "zip-day",
+    "zip-sinshluhi",
+    "zip-armies-of-terra-data-20261004t124004z-1-001",
+    "zip-drive-download-20261010t142446z-1-001",
+    "zip-6767"
+  ],
+  "background": {
+    "image": "background/source.png",
+    "sha256": "4a32e7dba5d78bbb7927c0c133272e06a63ff9d36912dcfc7b441af490ad7284",
+    "bounds": {
+      "min_x": -12512,
+      "max_x": 12512,
+      "min_z": -12512,
+      "max_z": 12512
+    }
+  }
+}

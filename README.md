@@ -1,5 +1,18 @@
 # Armies of Terra Map
 
+Рабочая папка: `C:\Dev\TerraFirmaColonies-map`. [Пути импорта и доставки после переноса](docs/project-location.md).
+
+Новый сезон **TerraFirmaColonies: Steel & Soil**: [сборка, обновление и распространение](docs/steel-soil.md).
+Для тиммейтов: [простая инструкция по передаче и установке карты](docs/team-map.md).
+Для просмотра новой карты запустите `start_steel_soil_map.bat`. Старая карта сохранена в корне.
+Для объединения нового сезона и безопасного обновления тайлов клиента запустите
+`merge_steel_soil.bat` с закрытым Minecraft. Свежие изменения проверяются до замены,
+предыдущие тайлы клиента сохраняются в резервную копию.
+Готовый ZIP копируется в папку `C:\Users\atfas\Drive\Games\Minecraft\TerraFirmaColonies map`.
+Ярлык `Merge map` на рабочем столе передаёт `--no-publish` и отключает GitHub.
+Запуск `merge_steel_soil.bat` без параметров сохраняет публикацию на GitHub.
+Для сборки и выгрузки в Google Drive без GitHub: `merge_steel_soil.bat --no-publish`.
+
 Этот проект собирает общую карту сервера из тайлов JourneyMap и отображает города на веб-карте.
 
 ## Что есть в проекте
